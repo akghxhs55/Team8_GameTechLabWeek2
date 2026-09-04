@@ -14,15 +14,24 @@
     <Filter Include="Source\Runtime\Core\Concepts">
       <UniqueIdentifier>{9f9201b4-3552-4aef-8adf-f3a222f2fa35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Rendering">
+      <UniqueIdentifier>{a3a80823-0a19-4d49-9c56-6563149fb11c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\FRenderer.cpp">
+      <Filter>Source\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Core\Concepts\UObject.h">
       <Filter>Source\Runtime\Core\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\FRenderer.h">
+      <Filter>Source\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

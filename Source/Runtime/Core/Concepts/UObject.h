@@ -1,3 +1,10 @@
 #pragma once
 
-class UObject;
+#include <cstdint>
+
+class UObject
+{
+public:
+	uint32_t UUID;
+	uint32_t InternalIndex;
+};
