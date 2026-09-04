@@ -11,17 +11,20 @@
     <Filter Include="Source\Runtime\Core">
       <UniqueIdentifier>{2a364282-caf2-43f8-a9a0-817ee81dea55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Runtime\Core\Concepts">
-      <UniqueIdentifier>{9f9201b4-3552-4aef-8adf-f3a222f2fa35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{015633ac-dd91-4734-aeeb-76a384dd096f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Runtime\Geometry">
-      <UniqueIdentifier>{9483d3bc-1e43-4a69-9e5d-16a4ae6ebfb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Runtime\Rendering">
       <UniqueIdentifier>{a3a80823-0a19-4d49-9c56-6563149fb11c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Math">
+      <UniqueIdentifier>{9483d3bc-1e43-4a69-9e5d-16a4ae6ebfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Engine">
+      <UniqueIdentifier>{99c01897-05bf-43cd-9f9f-ea8a04872d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\CoreUObject">
+      <UniqueIdentifier>{f5b1c9d1-7d03-44dc-8d17-8975a56853fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,13 +34,73 @@
     <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Rendering\FMesh.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Rendering\FMaterial.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Runtime\Core\Concepts\UObject.h">
-      <Filter>Source\Runtime\Core\Concepts</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
       <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\TVector.h">
+      <Filter>Source\Runtime\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\FScene.h">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\Vectors.h">
+      <Filter>Source\Runtime\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Types.h">
+      <Filter>Source\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\TArray.h">
+      <Filter>Source\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UObject.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Pointers.h">
+      <Filter>Source\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\FMesh.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\FMaterial.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\Vertices.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\FString.h">
+      <Filter>Source\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

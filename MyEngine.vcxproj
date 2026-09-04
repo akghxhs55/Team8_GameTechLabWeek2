@@ -137,6 +137,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +162,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,6 +185,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -204,6 +210,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -221,6 +229,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Analysis|Win32'">
     <ClCompile>
       <EnablePREfast>true</EnablePREfast>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -234,6 +244,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Analysis|x64'">
     <ClCompile>
       <EnablePREfast>true</EnablePREfast>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -246,11 +258,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp" />
+    <ClCompile Include="Source\Runtime\Rendering\FMaterial.cpp" />
+    <ClCompile Include="Source\Runtime\Rendering\FMesh.cpp" />
+    <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Runtime\Core\Concepts\UObject.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UObject.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
+    <ClInclude Include="Source\Runtime\Core\FString.h" />
+    <ClInclude Include="Source\Runtime\Core\Pointers.h" />
+    <ClInclude Include="Source\Runtime\Core\TArray.h" />
+    <ClInclude Include="Source\Runtime\Core\Types.h" />
+    <ClInclude Include="Source\Runtime\Engine\FScene.h" />
+    <ClInclude Include="Source\Runtime\Math\Vectors.h" />
+    <ClInclude Include="Source\Runtime\Math\TVector.h" />
+    <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />
+    <ClInclude Include="Source\Runtime\Rendering\Vertices.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h" />
+    <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
+    <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">

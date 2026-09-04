@@ -1,5 +1,9 @@
 #pragma once
 
+#include "FMesh.h"
+#include "FMaterial.h"
+#include "FRenderPipeline.h"
+#include "Runtime/Core/Pointers.h"
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -10,15 +14,20 @@ public:
 	bool Initialize(HWND Window);
 	void Shutdown();
 	void BeginFrame();
-	void Draw();
+	void Draw(const FMesh& Mesh, const FMaterial& Material);
 	void SwapBuffer();
+	
+	[[nodiscard]]
+	TSharedPtr<FMesh> CreateMesh(const FMeshDesc& Desc);
+	[[nodiscard]]
+	TSharedPtr<FMaterial> CreateMaterial(const FMaterialDesc& Desc);
 
 private:
 	bool InitializeDeviceAndSwapChain(HWND Window);
 	bool InitializeBackBuffer();
 
-	// TODO: 외부에서 주입하도록 변경
-	bool InitializeShaderAndRasterizer();
+	[[nodiscard]]
+	TSharedPtr<FRenderPipeline> FindOrCreateRenderPipeline(const FMaterialDesc& Desc);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> Device;
@@ -27,9 +36,4 @@ private:
 	D3D11_VIEWPORT Viewport{};
 
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> BackBufferRTV;
-
-	// TODO: 외부에서 주입하도록 변경
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> VertexShader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> PixelShader;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerState;
 };
