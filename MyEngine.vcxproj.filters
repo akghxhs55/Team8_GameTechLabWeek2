@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source\Runtime">
+      <UniqueIdentifier>{8c9f3762-3e0e-4971-af4e-e8df83d8ada2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Core">
+      <UniqueIdentifier>{2a364282-caf2-43f8-a9a0-817ee81dea55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Core\Concepts">
+      <UniqueIdentifier>{9f9201b4-3552-4aef-8adf-f3a222f2fa35}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Runtime\Core\Concepts\UObject.h">
+      <Filter>Source\Runtime\Core\Concepts</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
