@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#include "Rendering/FRenderer.h"
+#include "Runtime/Rendering/FRenderer.h"
 
 namespace
 {
@@ -25,7 +25,10 @@ int WINAPI wWinMain(
 	ShowWindow(Window, nShowCmd);
 
 	FRenderer Renderer;
-	Renderer.Initialize(Window);
+	if (!Renderer.Initialize(Window))
+	{
+		return -1;
+	}
 
 	bool bQuit = false;
     while (!bQuit)
@@ -38,14 +41,14 @@ int WINAPI wWinMain(
 
         // UpdateCamera();
 
-		Renderer.PrepareFrame();
+		Renderer.BeginFrame();
 		
     	Renderer.Draw();
 
 		Renderer.SwapBuffer();
     }
 
-	Renderer.Release();
+	Renderer.Shutdown();
 
 	return 0;
 }

@@ -14,7 +14,13 @@
     <Filter Include="Source\Runtime\Core\Concepts">
       <UniqueIdentifier>{9f9201b4-3552-4aef-8adf-f3a222f2fa35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Rendering">
+    <Filter Include="Shader">
+      <UniqueIdentifier>{015633ac-dd91-4734-aeeb-76a384dd096f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Geometry">
+      <UniqueIdentifier>{9483d3bc-1e43-4a69-9e5d-16a4ae6ebfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Runtime\Rendering">
       <UniqueIdentifier>{a3a80823-0a19-4d49-9c56-6563149fb11c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -22,16 +28,24 @@
     <ClCompile Include="Source\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\FRenderer.cpp">
-      <Filter>Source\Rendering</Filter>
+    <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Core\Concepts\UObject.h">
       <Filter>Source\Runtime\Core\Concepts</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\FRenderer.h">
-      <Filter>Source\Rendering</Filter>
+    <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
+      <Filter>Source\Runtime\Rendering</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\ExamplePS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ExampleVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
