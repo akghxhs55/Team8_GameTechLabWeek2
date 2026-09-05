@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Runtime/Math/MatrixTypes.h"
+#include "Runtime/Math/FMatrix.h"
 
 // b0에 바인딩
 struct FFrameConstants

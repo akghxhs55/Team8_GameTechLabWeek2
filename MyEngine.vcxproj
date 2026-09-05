@@ -284,9 +284,8 @@
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
     <ClInclude Include="Source\Runtime\Input\FInputManager.h" />
     <ClInclude Include="Source\Runtime\Math\FMatrix.h" />
-    <ClInclude Include="Source\Runtime\Math\MatrixTypes.h" />
-    <ClInclude Include="Source\Runtime\Math\VectorTypes.h" />
-    <ClInclude Include="Source\Runtime\Math\TVector.h" />
+    <ClInclude Include="Source\Runtime\Math\FQuaternion.h" />
+    <ClInclude Include="Source\Runtime\Math\FVector.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderResourceLibrary.h" />
     <ClInclude Include="Source\Runtime\Rendering\ShaderConstants.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />

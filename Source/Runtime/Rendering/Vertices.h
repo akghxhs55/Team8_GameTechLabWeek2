@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Runtime/Core/IntTypes.h"
-#include "Runtime/Math/VectorTypes.h"
+#include "Runtime/Math/FVector.h"
 #include <d3d11.h>
 #include <iterator>
 
@@ -47,6 +47,6 @@ inline FVertexLayoutDesc GetVertexLayoutDesc(EVertexLayout Layout)
 
 struct FVertexPositionColor
 {
-	FVector3f Position;
-	FVector3f Color;
+	FVector Position;
+	FVector Color;
 };

@@ -66,13 +66,10 @@
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
       <Filter>Source\Runtime\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Math\TVector.h">
-      <Filter>Source\Runtime\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\UScene.h">
       <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Math\VectorTypes.h">
+    <ClInclude Include="Source\Runtime\Math\FVector.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Core\IntTypes.h">
@@ -114,13 +111,10 @@
     <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Math\FMatrix.h">
-      <Filter>Source\Runtime\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h">
       <Filter>Source\Runtime\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Math\MatrixTypes.h">
+    <ClInclude Include="Source\Runtime\Math\FMatrix.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Input\FInputManager.h">
@@ -134,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\FQuaternion.h">
+      <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
