@@ -231,6 +231,7 @@
       <EnablePREfast>true</EnablePREfast>
       <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -246,6 +247,7 @@
       <EnablePREfast>true</EnablePREfast>
       <AdditionalIncludeDirectories>$(SolutionDir)Source</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -259,28 +261,34 @@
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
-    <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
+    <ClCompile Include="Source\Runtime\Input\FInputManager.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FMaterial.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FMesh.cpp" />
+    <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UObject.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
     <ClInclude Include="Source\Runtime\Core\FString.h" />
     <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
-    <ClInclude Include="Source\Runtime\Engine\FScene.h" />
+    <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
+    <ClInclude Include="Source\Runtime\Input\FInputManager.h" />
     <ClInclude Include="Source\Runtime\Math\FMatrix.h" />
     <ClInclude Include="Source\Runtime\Math\MatrixTypes.h" />
     <ClInclude Include="Source\Runtime\Math\VectorTypes.h" />
     <ClInclude Include="Source\Runtime\Math\TVector.h" />
+    <ClInclude Include="Source\Runtime\Rendering\FRenderResourceLibrary.h" />
+    <ClInclude Include="Source\Runtime\Rendering\ShaderConstants.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />
     <ClInclude Include="Source\Runtime\Rendering\Vertices.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h" />
@@ -328,6 +336,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Analysis|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Constants.hlsli">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

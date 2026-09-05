@@ -29,6 +29,9 @@
     <Filter Include="Source\Runtime\Geometry">
       <UniqueIdentifier>{a6289691-b20a-4be6-b27a-0c57e7a01f5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Runtime\Input">
+      <UniqueIdentifier>{3ab891cc-31a1-4e46-850b-cd4dd3a5dcef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -49,8 +52,14 @@
     <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp">
-      <Filter>Source\Runtime\CoreUObject</Filter>
+    <ClCompile Include="Source\Runtime\Input\FInputManager.cpp">
+      <Filter>Source\Runtime\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\UScene.cpp">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +69,7 @@
     <ClInclude Include="Source\Runtime\Math\TVector.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Engine\FScene.h">
+    <ClInclude Include="Source\Runtime\Engine\UScene.h">
       <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Math\VectorTypes.h">
@@ -114,6 +123,18 @@
     <ClInclude Include="Source\Runtime\Math\MatrixTypes.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Runtime\Input\FInputManager.h">
+      <Filter>Source\Runtime\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\ShaderConstants.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Rendering\FRenderResourceLibrary.h">
+      <Filter>Source\Runtime\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">
@@ -122,5 +143,10 @@
     <FxCompile Include="Shader\ExampleVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Constants.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

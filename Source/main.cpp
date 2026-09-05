@@ -1,10 +1,10 @@
 ﻿#include <Windows.h>
 
-#include "Runtime/Core/PointerTypes.h"
-#include "Runtime/Core/TArray.h"
-#include "Runtime/Core/FString.h"
+#include "Runtime/Engine/UScene.h"
+#include "Runtime/CoreUObject/UObjectGlobals.h"
+#include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/Rendering/FRenderer.h"
-#include <filesystem>
+#include "Runtime/Rendering/FRenderResourceLibrary.h"
 
 namespace
 {
@@ -12,66 +12,6 @@ namespace
 
 	HWND CreateWindowHandle(HINSTANCE Instance);
 	bool ProcessWindowMessage();
-	FWString GetExecutableDirectory();
-
-	// TODO: 좀 더 잘 된 팩토리 구현
-	TSharedPtr<FMesh> CreateCubeMesh(FRenderer& Renderer, FVector Location, FVector Rotation, FVector Scale)
-	{
-		// TODO: Rotation 적용
-		const auto MakePosition = [Location, Scale](float X, float Y, float Z) -> FVector3f
-			{
-				return {
-					static_cast<float>(Location.X + X * Scale.X),
-					static_cast<float>(Location.Y + Y * Scale.Y),
-					static_cast<float>(Location.Z + Z * Scale.Z)
-				};
-			};
-
-		TArray<FVertexPositionColor> Vertices = {
-			{ MakePosition(-0.5, -0.5, -0.5), FVector3f(0.0, 0.0, 0.0) },
-			{ MakePosition(0.5, -0.5, -0.5), FVector3f(1.0, 0.0, 0.0) },
-			{ MakePosition(0.5,  0.5, -0.5), FVector3f(1.0, 1.0, 0.0) },
-			{ MakePosition(-0.5,  0.5, -0.5), FVector3f(0.0, 1.0, 0.0) },
-			{ MakePosition(-0.5, -0.5,  0.5), FVector3f(0.0, 0.0, 1.0) },
-			{ MakePosition(0.5, -0.5,  0.5), FVector3f(1.0, 0.0, 1.0) },
-			{ MakePosition(0.5,  0.5,  0.5), FVector3f(1.0, 1.0, 1.0) },
-			{ MakePosition(-0.5,  0.5,  0.5), FVector3f(0.0, 1.0, 1.0) },
-		};
-
-		const TArray<uint32> Indices = {
-			0, 2, 1, 0, 3, 2, // -Z
-			4, 5, 6, 4, 6, 7, // +Z
-			0, 1, 5, 0, 5, 4, // -Y
-			3, 7, 6, 3, 6, 2, // +Y
-			0, 4, 7, 0, 7, 3, // -X
-			1, 2, 6, 1, 6, 5, // +X
-		};
-
-		FMeshDesc MeshDesc{
-			.VertexLayout = EVertexLayout::PositionColor,
-			.VertexData = Vertices.data(),
-			.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
-			.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
-			.VertexCount = static_cast<uint32>(Vertices.size()),
-			.IndexData = Indices.data(),
-			.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
-			.IndexCount = static_cast<uint32>(Indices.size()),
-		};
-
-		return Renderer.CreateMesh(MeshDesc);
-	}
-
-	TSharedPtr<FMaterial> CreateSimpleMaterial(FRenderer& Renderer)
-	{
-		FWString Path = GetExecutableDirectory();
-
-		FMaterialDesc Desc = {
-			.VertexShaderFileName = Path + L"/Shader/ExampleVS.cso",
-			.PixelShaderFileName = Path + L"/Shader/ExamplePS.cso",
-			.VertexLayout = EVertexLayout::PositionColor,
-		};
-		return Renderer.CreateMaterial(Desc);
-	}
 }
 
 int WINAPI wWinMain(
@@ -94,8 +34,17 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
-	TSharedPtr<FMesh> CubeMesh = CreateCubeMesh(Renderer, FVector(0.0, 0.0, 0.0), FVector(0.0, 0.0, 0.0), FVector(0.3, 0.3, 0.3));
-	TSharedPtr<FMaterial> CubeMaterial = CreateSimpleMaterial(Renderer);
+	FRenderResourceLibrary RenderResources;
+	if (!RenderResources.Initialize(Renderer))
+	{
+		return -1;
+	}
+
+	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
+	UScene* Scene = NewObject<UScene>(RenderResources);
+	UCubeComp* CubeComp = NewObject<UCubeComp>();
+	CubeComp->RelativeTransform.Scale3D = FVector(0.5, 0.5, 0.5);
+	Scene->RegisterComponent(*CubeComp);
 
 	bool bQuit = false;
     while (!bQuit)
@@ -106,11 +55,12 @@ int WINAPI wWinMain(
 			break;
 		}
 
-        // UpdateCamera();
-
 		Renderer.BeginFrame();
 		
-    	Renderer.Draw(*CubeMesh, *CubeMaterial);
+		for (const auto& Component : Scene->GetPrimitiveComponents())
+		{
+			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
+		}
 
 		Renderer.SwapBuffer();
     }
@@ -173,12 +123,5 @@ namespace
 		}
 
 		return true;
-	}
-
-	FWString GetExecutableDirectory()
-	{
-		wchar_t Buffer[256];
-		GetModuleFileNameW(nullptr, Buffer, 256);
-		return std::filesystem::path(Buffer).parent_path();
 	}
 }

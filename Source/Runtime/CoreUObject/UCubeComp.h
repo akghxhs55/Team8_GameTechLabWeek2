@@ -1,13 +1,22 @@
 ﻿#pragma once
 
 #include "UPrimitiveComponent.h"
-#include "Runtime/Math/VectorTypes.h"
+#include "Runtime/Engine/UScene.h"
 
 class UCubeComp : public UPrimitiveComponent
 {
-protected:
-	explicit UCubeComp(FVector Location, float Size = 1.0f);
+	GENERATED_BODY()
 
-private:
-	float Size = 1.0f;
+protected:
+	explicit UCubeComp() = default;
+
+	void OnRegister(UScene& Scene) override;
 };
+
+inline void UCubeComp::OnRegister(UScene& Scene)
+{
+	UPrimitiveComponent::OnRegister(Scene);
+	
+	SetMesh(Scene.GetRenderResourceLibrary().GetCubeMesh());
+	SetMaterial(Scene.GetRenderResourceLibrary().GetSimpleMaterial());
+}

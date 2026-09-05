@@ -3,6 +3,7 @@
 #include "UObject.h"
 #include "Runtime/Core/TArray.h"
 #include "Runtime/Core/IntTypes.h"
+#include <utility>
 
 class FUObjectArray final
 {
@@ -38,14 +39,3 @@ private:
 		requires std::derived_from<TObject, UObject>
 	friend TObject* NewObject(TArgs&&... Args);
 };
-
-extern FUObjectArray GUObjectArray;
-
-template <typename TObject, typename ... TArgs>
-	requires std::derived_from<TObject, UObject>
-TObject* NewObject(TArgs&&... Args)
-{
-	TObject* Object = new TObject(std::forward<TArgs>(Args)...);
-	GUObjectArray.AddObject(Object);
-	return Object;
-}

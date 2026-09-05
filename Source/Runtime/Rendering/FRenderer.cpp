@@ -1,5 +1,6 @@
 ﻿#include "FRenderer.h"
 
+#include "ShaderConstants.h"
 #include "FMesh.h"
 #include "FMaterial.h"
 #include "FRenderPipeline.h"
@@ -13,7 +14,8 @@
 bool FRenderer::Initialize(HWND Window)
 {
 	if (!InitializeDeviceAndSwapChain((Window)) ||
-		!InitializeBackBuffer())
+		!InitializeBackBuffer() ||
+		!InitializeConstantBuffers())
 	{
 		Shutdown();
 		return false;
@@ -29,6 +31,9 @@ void FRenderer::Shutdown()
 		Context->ClearState();
 		Context->Flush();
 	}
+
+	FrameConstantBuffer.Reset();
+	ObjectConstantBuffer.Reset();
 
 	BackBufferRTV.Reset();
 
@@ -69,6 +74,24 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
 	{
 		Context->Draw(Mesh.VertexCount, 0);
 	}
+}
+
+void FRenderer::UpdateFrameConstants(const FFrameConstants& Constants)
+{
+	Context->UpdateSubresource(FrameConstantBuffer.Get(), 0, nullptr, &Constants, 0, 0);
+	Context->VSSetConstantBuffers(0, 1, FrameConstantBuffer.GetAddressOf());
+	// 필요할 시 PSSetConstantBuffers도 사용
+}
+
+void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
+{
+	D3D11_MAPPED_SUBRESOURCE MappedResource{};
+	Context->Map(ObjectConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
+	memcpy(MappedResource.pData, &Constants, sizeof(Constants));
+	Context->Unmap(ObjectConstantBuffer.Get(), 0);
+
+	Context->VSSetConstantBuffers(1, 1, ObjectConstantBuffer.GetAddressOf());
+	// 필요할 시 PSSetConstantBuffers도 사용
 }
 
 void FRenderer::SwapBuffer()
@@ -215,6 +238,36 @@ bool FRenderer::InitializeBackBuffer()
 	}
 
 	Result = Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &BackBufferRTV);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool FRenderer::InitializeConstantBuffers()
+{
+	D3D11_BUFFER_DESC FrameConstantBufferDesc = {
+		.ByteWidth = sizeof(FFrameConstants),
+		.Usage = D3D11_USAGE_DEFAULT,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+	};
+
+	HRESULT Result = Device->CreateBuffer(&FrameConstantBufferDesc, nullptr, &FrameConstantBuffer);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	D3D11_BUFFER_DESC ObjectConstantBufferDesc = {
+		.ByteWidth = sizeof(FObjectConstants),
+		.Usage = D3D11_USAGE_DYNAMIC,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+	};
+
+	Result = Device->CreateBuffer(&ObjectConstantBufferDesc, nullptr, &ObjectConstantBuffer);
 	if (FAILED(Result))
 	{
 		return false;

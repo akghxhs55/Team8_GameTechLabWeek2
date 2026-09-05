@@ -7,15 +7,18 @@
 
 class UPrimitiveComponent : public USceneComponent
 {
-public:
-	void SetMesh(TSharedPtr<FMesh> Mesh) { PrimitiveMesh = std::move(Mesh); }
-	[[nodiscard]] TSharedPtr<FMesh> GetMesh() const { return PrimitiveMesh; }
+	GENERATED_BODY()
 
-	void SetMaterial(TSharedPtr<FMaterial> Material) { PrimitiveMaterial = std::move(Material); }
+public:
+	[[nodiscard]] TSharedPtr<FMesh> GetMesh() const { return PrimitiveMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetMaterial() const { return PrimitiveMaterial; }
+	[[nodiscard]] FMatrix GetModelMatrix() const { return RelativeTransform.ToMatrix(); }
 
 protected:
 	UPrimitiveComponent() = default;
+
+	void SetMesh(TSharedPtr<FMesh> Mesh) { PrimitiveMesh = std::move(Mesh); }
+	void SetMaterial(TSharedPtr<FMaterial> Material) { PrimitiveMaterial = std::move(Material); }
 
 private:
 	TSharedPtr<FMesh> PrimitiveMesh;
