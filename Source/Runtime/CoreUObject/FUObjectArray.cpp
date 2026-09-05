@@ -1,17 +1,15 @@
-#include "FUObjectArray.h"
+﻿#include "FUObjectArray.h"
 
 #include <algorithm>
-
-FUObjectArray GUObjectArray;
 
 void FUObjectArray::AddObject(UObject* Object)
 {
 	Object->InternalIndex = static_cast<uint32>(Objects.size());
-	Object->UUID = NextUUID++;
+	Object->UUID = AcquireUUID();
 	Objects.push_back(Object);
 }
 
 void FUObjectArray::RemoveObject(UObject* Object)
 {
-	Objects.erase(std::remove(Objects.begin(), Objects.end(), Object), Objects.end());
+	std::erase(Objects, Object);
 }
