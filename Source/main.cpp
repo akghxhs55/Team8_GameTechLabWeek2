@@ -134,11 +134,11 @@ namespace
 					PostQuitMessage(0);
 					break;
 
-				case WM_LBUTTONDOWN:
+				case WM_RBUTTONDOWN:
 					bMousePressed = true;
 					break;
 
-				case WM_LBUTTONUP:
+				case WM_RBUTTONUP:
 					bMousePressed = false;
 					break;
 
