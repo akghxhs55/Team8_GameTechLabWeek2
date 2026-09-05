@@ -59,8 +59,8 @@ struct FMatrix
 	{
 		const float c = cosf(Rad), s = sinf(Rad);
 		FMatrix R = GetIdentity();
-		R.M[1][1] = c;  R.M[1][2] = s;
-		R.M[2][1] = -s;  R.M[2][2] = c;
+		R.M[1][1] = c;  R.M[1][2] = -s;
+		R.M[2][1] = s;  R.M[2][2] = c;
 		return R;
 	}
 
@@ -68,8 +68,8 @@ struct FMatrix
 	{
 		const float c = cosf(Rad), s = sinf(Rad);
 		FMatrix R = GetIdentity();
-		R.M[0][0] = c;  R.M[0][2] = -s;
-		R.M[2][0] = s;  R.M[2][2] = c;
+		R.M[0][0] = c;  R.M[0][2] = s;
+		R.M[2][0] = -s;  R.M[2][2] = c;
 		return R;
 	}
 

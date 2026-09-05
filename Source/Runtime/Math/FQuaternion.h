@@ -85,17 +85,17 @@ struct FQuaternion
         float wx = w * x, wy = w * y, wz = w * z;
 
         FMatrix R = FMatrix::Identity;
-        // === columns are axes (col0=+X, col1=+Y, col2=+Z) ===
+        
         R.M[0][0] = 1.0f - 2.0f * (yy + zz);
-        R.M[1][0] = 2.0f * (xy + wz);
-        R.M[2][0] = 2.0f * (xz - wy);
+        R.M[1][0] = 2.0f * (xy - wz);
+        R.M[2][0] = 2.0f * (xz + wy);
 
-        R.M[0][1] = 2.0f * (xy - wz);
+        R.M[0][1] = 2.0f * (xy + wz);
         R.M[1][1] = 1.0f - 2.0f * (xx + zz);
-        R.M[2][1] = 2.0f * (yz + wx);
+        R.M[2][1] = 2.0f * (yz - wx);
 
-        R.M[0][2] = 2.0f * (xz + wy);
-        R.M[1][2] = 2.0f * (yz - wx);
+        R.M[0][2] = 2.0f * (xz - wy);
+        R.M[1][2] = 2.0f * (yz + wx);
         R.M[2][2] = 1.0f - 2.0f * (xx + yy);
         return R;
     }

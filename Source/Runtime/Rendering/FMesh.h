@@ -16,7 +16,7 @@ public:
 	[[nodiscard]] EVertexLayout GetVertexLayout() const { return VertexLayout; }
 	[[nodiscard]] uint32 GetVertexCount() const { return VertexCount; }
 	[[nodiscard]] uint32 GetIndexCount() const { return IndexCount; }
-
+	
 private:
 	FMesh() = default;
 

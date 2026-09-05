@@ -293,6 +293,8 @@
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">

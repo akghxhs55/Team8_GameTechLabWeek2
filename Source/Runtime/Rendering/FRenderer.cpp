@@ -283,7 +283,7 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	TSharedPtr<FRenderPipeline> Pipeline{ new FRenderPipeline() };
 	Pipeline->VertexLayout = Desc.VertexLayout;
 
-	Microsoft::WRL::ComPtr<ID3DBlob> Blob;
+	Microsoft::WRL::ComPtr<ID3DBlob> Blob;	
 	HRESULT Result = D3DReadFileToBlob(Desc.VertexShaderFileName.c_str(), &Blob);
 	if (FAILED(Result))
 	{
