@@ -2,8 +2,8 @@
 
 #include "FRenderer.h"
 #include "Vertices.h"
-#include "Runtime/Core/Pointers.h"
-#include "Runtime/Math/Vectors.h"
+#include "Runtime/Core/PointerTypes.h"
+#include "Runtime/Math/VectorTypes.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 

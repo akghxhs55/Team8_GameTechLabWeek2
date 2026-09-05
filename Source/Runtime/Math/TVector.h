@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cassert>
 #include <cmath>
@@ -7,7 +7,8 @@
 
 namespace Math
 {
-	template<typename T> requires std::is_floating_point_v<T>
+	template<typename T> 
+		requires std::is_floating_point_v<T>
 	struct TVector
 	{
 		T X;
@@ -27,17 +28,17 @@ namespace Math
 		// [[nodiscard]] explicit TVector(const TVector2<T>& V, T InZ);
 		// [[nodiscard]] TVector(const TVector4<T>& V);
 
-		[[nodiscard]] TVector operator+(const TVector V) const;
+		[[nodiscard]] TVector operator+(const TVector& V) const;
 		
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		[[nodiscard]] TVector operator+(ScalarType Scale) const;
 
-		[[nodiscard]] TVector operator-(const TVector V) const;
+		[[nodiscard]] TVector operator-(const TVector& V) const;
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		[[nodiscard]] TVector operator-(ScalarType Scale) const;
 
-		[[nodiscard]] TVector operator*(const TVector V) const;
+		[[nodiscard]] TVector operator*(const TVector& V) const;
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		[[nodiscard]] TVector operator*(ScalarType Scale) const;
@@ -45,28 +46,28 @@ namespace Math
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		[[nodiscard]] TVector operator/(ScalarType Scale) const;
 
-		[[nodiscard]] bool operator==(const TVector V) const;
+		[[nodiscard]] bool operator==(const TVector& V) const;
 
-		[[nodiscard]] bool operator!=(const TVector V) const;
+		[[nodiscard]] bool operator!=(const TVector& V) const;
 
 		[[nodiscard]] TVector operator-() const;
 
-		TVector& operator+=(const TVector V);
+		TVector& operator+=(const TVector& V);
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 			TVector& operator+=(ScalarType Scale);
 
-		TVector& operator-=(const TVector V);
+		TVector& operator-=(const TVector& V);
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 			TVector& operator-=(ScalarType Scale);
 
-		TVector& operator*=(const TVector V);
+		TVector& operator*=(const TVector& V);
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		TVector& operator*=(ScalarType Scale);
 
-		TVector& operator/=(const TVector V);
+		TVector& operator/=(const TVector& V);
 
 		template<typename ScalarType> requires std::is_arithmetic_v<ScalarType>
 		TVector& operator/=(ScalarType Scale);
@@ -74,9 +75,9 @@ namespace Math
 		[[nodiscard]] T& operator[](int32_t Index);
 		[[nodiscard]] const T& operator[](int32_t Index) const;
 
-		[[nodiscard]] TVector Cross(const TVector V) const;
+		[[nodiscard]] TVector Cross(const TVector& V) const;
 
-		[[nodiscard]] T Dot(const TVector V) const;
+		[[nodiscard]] T Dot(const TVector& V) const;
 
 		[[nodiscard]] T Size() const;
 		[[nodiscard]] T SizeSquared() const;
@@ -112,7 +113,7 @@ namespace Math
 	{}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T> TVector<T>::operator+(const TVector V) const
+	TVector<T> TVector<T>::operator+(const TVector& V) const
 	{
 		return TVector(X + V.X, Y + V.Y, Z + V.Z);
 	}
@@ -126,7 +127,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T> TVector<T>::operator-(const TVector V) const
+	TVector<T> TVector<T>::operator-(const TVector& V) const
 	{
 		return TVector(X - V.X, Y - V.Y, Z - V.Z);
 	}
@@ -139,7 +140,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T> TVector<T>::operator*(const TVector V) const
+	TVector<T> TVector<T>::operator*(const TVector& V) const
 	{
 		return TVector(X * V.X, Y * V.Y, Z * V.Z);
 	}
@@ -161,13 +162,13 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	bool TVector<T>::operator==(const TVector V) const
+	bool TVector<T>::operator==(const TVector& V) const
 	{
 		return X == V.X && Y == V.Y && Z == V.Z;
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	bool TVector<T>::operator!=(const TVector V) const
+	bool TVector<T>::operator!=(const TVector& V) const
 	{
 		return !(*this == V);
 	}
@@ -179,7 +180,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T>& TVector<T>::operator+=(const TVector V)
+	TVector<T>& TVector<T>::operator+=(const TVector& V)
 	{
 		X += V.X; Y += V.Y; Z += V.Z;
 		return *this;
@@ -195,7 +196,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T>& TVector<T>::operator-=(const TVector V)
+	TVector<T>& TVector<T>::operator-=(const TVector& V)
 	{
 		X -= V.X; Y -= V.Y; Z -= V.Z;
 		return *this;
@@ -211,7 +212,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T>& TVector<T>::operator*=(const TVector V)
+	TVector<T>& TVector<T>::operator*=(const TVector& V)
 	{
 		X *= V.X; Y *= V.Y; Z *= V.Z;
 		return *this;
@@ -227,7 +228,7 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T>& TVector<T>::operator/=(const TVector V)
+	TVector<T>& TVector<T>::operator/=(const TVector& V)
 	{
 		X /= V.X; Y /= V.Y; Z /= V.Z;
 		return *this;
@@ -257,13 +258,13 @@ namespace Math
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	TVector<T> TVector<T>::Cross(const TVector V) const
+	TVector<T> TVector<T>::Cross(const TVector& V) const
 	{
 		return TVector(Y * V.Z - Z * V.Y, Z * V.X - X * V.Z, X * V.Y - Y * V.X);
 	}
 
 	template <typename T> requires std::is_floating_point_v<T>
-	T TVector<T>::Dot(const TVector V) const
+	T TVector<T>::Dot(const TVector& V) const
 	{
 		return X * V.X + Y * V.Y + Z * V.Z;
 	}

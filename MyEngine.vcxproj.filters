@@ -26,6 +26,9 @@
     <Filter Include="Source\Runtime\CoreUObject">
       <UniqueIdentifier>{f5b1c9d1-7d03-44dc-8d17-8975a56853fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Runtime\Geometry">
+      <UniqueIdentifier>{a6289691-b20a-4be6-b27a-0c57e7a01f5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -60,10 +63,10 @@
     <ClInclude Include="Source\Runtime\Engine\FScene.h">
       <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Math\Vectors.h">
+    <ClInclude Include="Source\Runtime\Math\VectorTypes.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Core\Types.h">
+    <ClInclude Include="Source\Runtime\Core\IntTypes.h">
       <Filter>Source\Runtime\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Core\TArray.h">
@@ -81,7 +84,7 @@
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Core\Pointers.h">
+    <ClInclude Include="Source\Runtime\Core\PointerTypes.h">
       <Filter>Source\Runtime\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h">
@@ -101,6 +104,15 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\FMatrix.h">
+      <Filter>Source\Runtime\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Geometry\FTransform.h">
+      <Filter>Source\Runtime\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\MatrixTypes.h">
+      <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

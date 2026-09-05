@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 
-#include "Runtime/Core/Types.h"
+#include "Runtime/Core/IntTypes.h"
 
 class UObject
 {

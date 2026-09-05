@@ -4,7 +4,7 @@
 #include "FMaterial.h"
 #include "FRenderPipeline.h"
 #include "Vertices.h"
-#include "Runtime/Core/Pointers.h"
+#include "Runtime/Core/PointerTypes.h"
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl/client.h>

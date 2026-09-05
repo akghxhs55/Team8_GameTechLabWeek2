@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "UPrimitiveComponent.h"
-#include "Runtime/Math/Vectors.h"
+#include "Runtime/Math/VectorTypes.h"
 
 class UCubeComp : public UPrimitiveComponent
 {

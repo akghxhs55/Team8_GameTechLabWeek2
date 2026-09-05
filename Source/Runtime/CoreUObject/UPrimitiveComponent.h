@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 
 #include "USceneComponent.h"
-#include "Runtime/Core/Pointers.h"
+#include "Runtime/Core/PointerTypes.h"
 #include "Runtime/Rendering/FMaterial.h"
 #include "Runtime/Rendering/FMesh.h"
 

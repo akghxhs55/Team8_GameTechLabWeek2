@@ -272,11 +272,14 @@
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
     <ClInclude Include="Source\Runtime\Core\FString.h" />
-    <ClInclude Include="Source\Runtime\Core\Pointers.h" />
+    <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
-    <ClInclude Include="Source\Runtime\Core\Types.h" />
+    <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
     <ClInclude Include="Source\Runtime\Engine\FScene.h" />
-    <ClInclude Include="Source\Runtime\Math\Vectors.h" />
+    <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
+    <ClInclude Include="Source\Runtime\Math\FMatrix.h" />
+    <ClInclude Include="Source\Runtime\Math\MatrixTypes.h" />
+    <ClInclude Include="Source\Runtime\Math\VectorTypes.h" />
     <ClInclude Include="Source\Runtime\Math\TVector.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />
     <ClInclude Include="Source\Runtime\Rendering\Vertices.h" />

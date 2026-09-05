@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "Runtime/Core/Types.h"
-#include "Runtime/Math/Vectors.h"
+#include "Runtime/Core/IntTypes.h"
+#include "Runtime/Math/VectorTypes.h"
 #include <d3d11.h>
 #include <iterator>
 

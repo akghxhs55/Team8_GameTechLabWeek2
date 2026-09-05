@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "UObject.h"
 #include "Runtime/Core/TArray.h"
-#include "Runtime/Core/Types.h"
+#include "Runtime/Core/IntTypes.h"
 
 class FUObjectArray final
 {

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Vertices.h"
-#include "Runtime/Core/Types.h"
+#include "Runtime/Core/IntTypes.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 

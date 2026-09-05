@@ -1,8 +1,7 @@
 ﻿#include <Windows.h>
 
-#include "Runtime/Core/Pointers.h"
+#include "Runtime/Core/PointerTypes.h"
 #include "Runtime/Core/TArray.h"
-#include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/Rendering/FRenderer.h"
 
 namespace
