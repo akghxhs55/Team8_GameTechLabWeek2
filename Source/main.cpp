@@ -2,7 +2,9 @@
 
 #include "Runtime/Core/PointerTypes.h"
 #include "Runtime/Core/TArray.h"
+#include "Runtime/Core/FString.h"
 #include "Runtime/Rendering/FRenderer.h"
+#include <filesystem>
 
 namespace
 {
@@ -10,6 +12,7 @@ namespace
 
 	HWND CreateWindowHandle(HINSTANCE Instance);
 	bool ProcessWindowMessage();
+	FWString GetExecutableDirectory();
 
 	// TODO: 좀 더 잘 된 팩토리 구현
 	TSharedPtr<FMesh> CreateCubeMesh(FRenderer& Renderer, FVector Location, FVector Rotation, FVector Scale)
@@ -60,9 +63,11 @@ namespace
 
 	TSharedPtr<FMaterial> CreateSimpleMaterial(FRenderer& Renderer)
 	{
+		FWString Path = GetExecutableDirectory();
+
 		FMaterialDesc Desc = {
-			.VertexShaderFileName = L"Shader/ExampleVS.cso",
-			.PixelShaderFileName = L"Shader/ExamplePS.cso",
+			.VertexShaderFileName = Path + L"/Shader/ExampleVS.cso",
+			.PixelShaderFileName = Path + L"/Shader/ExamplePS.cso",
 			.VertexLayout = EVertexLayout::PositionColor,
 		};
 		return Renderer.CreateMaterial(Desc);
@@ -168,5 +173,12 @@ namespace
 		}
 
 		return true;
+	}
+
+	FWString GetExecutableDirectory()
+	{
+		wchar_t Buffer[256];
+		GetModuleFileNameW(nullptr, Buffer, 256);
+		return std::filesystem::path(Buffer).parent_path();
 	}
 }
