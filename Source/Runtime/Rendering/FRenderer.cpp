@@ -327,7 +327,6 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	D3D11_RASTERIZER_DESC RasterizerDesc{
 		.FillMode = D3D11_FILL_SOLID,
 		.CullMode = D3D11_CULL_BACK,
-		.FrontCounterClockwise = true,
 	};
 
 	Result = Device->CreateRasterizerState(&RasterizerDesc, &Pipeline->RasterizerState);

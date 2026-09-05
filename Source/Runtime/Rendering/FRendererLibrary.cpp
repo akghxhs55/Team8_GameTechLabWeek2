@@ -19,7 +19,9 @@ namespace
 bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 {
 	if (!CreateCubeMesh(Renderer) ||
-		!CreateCylinderMesh(Renderer) ||
+		!CreateCylinderMesh(Renderer, 0) ||
+		!CreateCylinderMesh(Renderer, 1) ||
+		!CreateCylinderMesh(Renderer, 2) ||
 		!CreateSimpleMaterial(Renderer))
 	{
 		return false;
@@ -66,34 +68,48 @@ bool FRenderResourceLibrary::CreateCubeMesh(FRenderer& Renderer)
 	return CubeMesh != nullptr;
 }
 
-bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer)
+// TODO: 컬러는 테스트용
+bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 {
 	constexpr float BottomRadius = 0.5f;
 	constexpr float TopRadius = 0.5f;
 	constexpr float Height = 1.0f;
-	constexpr uint32   SliceCount = 24;
-	constexpr float PI2 = 6.28318530718f;
+	constexpr uint32 SliceCount = 24;
+	constexpr float TAU = std::numbers::pi_v<float> * 2.0f;
 
-	const float dTheta = -PI2 / static_cast<float>(SliceCount);
+	constexpr float DTheta = -TAU / static_cast<float>(SliceCount);
+
+	FVector Color;
+	if (Axis == 0)
+	{
+		Color = FVector(1.0f, 0.0f, 0.0f);
+	}
+	else if (Axis == 1)
+	{
+		Color = FVector(0.0f, 1.0f, 0.0f);
+	}
+	else
+	{
+		Color = FVector(0.0f, 0.0f, 1.0f);
+	}
 
 	TArray<FVertexPositionColor> Vertices;
-
 
 	for (int Ring = 0; Ring < 2; ++Ring)
 	{
 		const float Radius = (Ring == 0) ? BottomRadius : TopRadius;
 		const float Y = (Ring == 0) ? -0.5f * Height : 0.5f * Height;
 
-		for (int i = 0; i <= SliceCount; ++i)
+		for (uint32 i = 0u; i <= SliceCount; ++i)
 		{
-			const float Theta = dTheta * static_cast<float>(i);
+			const float Theta = DTheta * static_cast<float>(i);
 			const float c = cosf(Theta);
 			const float s = sinf(Theta);
 
 			const FVector Pos(Radius * c, Y, -Radius * s);
 
 			const float t = static_cast<float>(i) / static_cast<float>(SliceCount);
-			const FVector Color(t, static_cast<float>(Ring), 1.0f - t);
+			// const FVector Color(t, static_cast<float>(Ring), 1.0f - t);
 
 			Vertices.push_back({ Pos, Color });
 		}
@@ -102,7 +118,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer)
 	TArray<uint32> Indices;
 	Indices.reserve(SliceCount * 6);
 
-	for (int i = 0; i < SliceCount; ++i)
+	for (uint32 i = 0u; i < SliceCount; ++i)
 	{
 		Indices.push_back(i);
 		Indices.push_back(i + SliceCount + 1);
@@ -117,15 +133,17 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer)
 	{
 		//중심
 		const uint32 Center = static_cast<uint32>(Vertices.size());
-		Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), FVector(1,1,1) });
+		//Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), FVector(1,1,1) });
+		Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
 		for (int i = 0; i <= SliceCount; ++i)
 		{
-			const float Theta = dTheta * static_cast<float>(i);
+			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
 				FVector(TopRadius * cosf(Theta), 0.5f * Height, -TopRadius * sinf(Theta)),
-				FVector(0.9f, 0.9f, 0.2f) });
+				//FVector(0.9f, 0.9f, 0.2f) });
+				Color });
 		}
 
 		for (int i = 0; i < SliceCount; ++i)
@@ -139,15 +157,17 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer)
 	// 아래 뚜껑
 	{
 		const uint32 Center = static_cast<uint32>(Vertices.size());
-		Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), FVector(0.3f, 0.3f, 0.3f) });
+		//Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), FVector(0.3f, 0.3f, 0.3f) });
+		Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
 		for (int i = 0; i <= SliceCount; ++i)
 		{
-			const float Theta = dTheta * static_cast<float>(i);
+			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
 				FVector(BottomRadius * cosf(Theta), -0.5f * Height, -BottomRadius * sinf(Theta)),
-				FVector(0.2f, 0.2f, 0.5f) });
+				//FVector(0.2f, 0.2f, 0.5f) });
+				Color });
 		}
 
 		for (int i = 0; i < SliceCount; ++i)
@@ -156,21 +176,21 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer)
 			Indices.push_back(First + i);
 			Indices.push_back(First + i + 1);
 		}
-
-		FMeshDesc MeshDesc{
-			.VertexLayout = EVertexLayout::PositionColor,
-			.VertexData = Vertices.data(),
-			.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
-			.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
-			.VertexCount = static_cast<uint32>(Vertices.size()),
-			.IndexData = Indices.data(),
-			.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
-			.IndexCount = static_cast<uint32>(Indices.size()),
-		};
-
-		CylinderMesh = Renderer.CreateMesh(MeshDesc);
-		return CylinderMesh != nullptr;
 	}
+
+	FMeshDesc MeshDesc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	CylinderMesh[Axis] = Renderer.CreateMesh(MeshDesc);
+	return CylinderMesh[Axis] != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)

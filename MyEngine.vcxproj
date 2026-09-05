@@ -272,6 +272,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UCylinderComp.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UObject.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />

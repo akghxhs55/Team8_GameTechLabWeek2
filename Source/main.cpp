@@ -4,6 +4,7 @@
 #include "Runtime/Engine/FViewportCamera.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
+#include "Runtime/CoreUObject/UCylinderComp.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
@@ -47,15 +48,33 @@ int WINAPI wWinMain(
 	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
 	UScene* Scene = NewObject<UScene>(RenderResources);
 	UCubeComp* CubeComp = NewObject<UCubeComp>();
-	CubeComp->RelativeTransform.Location = FVector(0.0, 0.0, 0.0);
-	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector(0.5, 0.5, 0.5));
-	CubeComp->RelativeTransform.Scale3D = FVector(0.5, 0.5, 0.5);
+	CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
+	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
+	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 	Scene->RegisterComponent(*CubeComp);
 
+	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
+	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
+	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
+	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	Scene->RegisterComponent(*CylinderCompX);
+
+	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
+	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
+	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
+	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	Scene->RegisterComponent(*CylinderCompY);
+
+	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
+	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
+	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
+	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	Scene->RegisterComponent(*CylinderCompZ);
+
 	FViewportCamera Camera{};
-	Camera.Position = FVector(-3.0f, -3.0f, 2.0f);
+	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
 	Camera.Pitch = -25.0f;
-	Camera.Yaw = 45.0f;
+	Camera.Yaw = -45.0f;
 
 	bool bQuit = false;
     while (!bQuit)
