@@ -15,9 +15,9 @@ public:
 	//  GetConstCubeMesh() -> const FMesh를 반환, GetCubeMesh() -> FMesh를 생성해서 반환으로 나눌 수 있음
 	//  지금은 어차피 FMesh로 반환해도 Getter만 있어서 수정 못 함
 	//  UPrimitive가 비const FMesh를 소유하도록 되어 있어서 이렇게 둠
-	[[nodiscard]] TSharedPtr<FMesh> GetCubeMesh() { return CubeMesh; };
-	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh() { return CylinderMesh; };
-	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; };
+	[[nodiscard]] TSharedPtr<FMesh> GetCubeMesh() { return CubeMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh() { return CylinderMesh; }
+	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);

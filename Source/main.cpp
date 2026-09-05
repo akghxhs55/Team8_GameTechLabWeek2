@@ -1,8 +1,10 @@
 ﻿#include <Windows.h>
 
 #include "Runtime/Engine/UScene.h"
+#include "Runtime/Engine/FViewportCamera.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
+#include "Runtime/Input/FInputManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector.h"
@@ -50,24 +52,10 @@ int WINAPI wWinMain(
 	CubeComp->RelativeTransform.Scale3D = FVector(0.5, 0.5, 0.5);
 	Scene->RegisterComponent(*CubeComp);
 
-	// Sample camera: eye (-3, -3, 2), target (0, 0, 0), world up +Z.
-	// Left-handed view space; row vectors match mul(Position, ViewProjection).
-	const FMatrix ViewMatrix{
-		FVector( 0.70710678f, 0.30151134f,  0.63960215f),
-		FVector(-0.70710678f, 0.30151134f,  0.63960215f),
-		FVector( 0.0f,        0.90453403f, -0.42640143f),
-		FVector( 0.0f,        0.0f,         4.69041576f)
-	};
-
-	// Perspective: vertical FOV 60 degrees, fixed aspect 4:3, near 0.1, far 100.
-	// Direct3D depth range [0, 1]. Update aspect when adding resize support.
-	FMatrix ProjectionMatrix(0.0f);
-	ProjectionMatrix.M[0][0] = 1.29903811f;
-	ProjectionMatrix.M[1][1] = 1.73205081f;
-	ProjectionMatrix.M[2][2] = 1.00100100f;
-	ProjectionMatrix.M[2][3] = 1.0f;
-	ProjectionMatrix.M[3][2] = -0.10010010f;
-	Renderer.UpdateFrameConstants({ ViewMatrix * ProjectionMatrix });
+	FViewportCamera Camera{};
+	Camera.Position = FVector(-3.0f, -3.0f, 2.0f);
+	Camera.Pitch = -25.0f;
+	Camera.Yaw = 45.0f;
 
 	bool bQuit = false;
     while (!bQuit)
@@ -78,11 +66,31 @@ int WINAPI wWinMain(
 			break;
 		}
 
+		FInputManager::Get().Update();
+		if (FInputManager::Get().IsKeyPressed(VK_LEFT))
+		{
+			Camera.Position.Y -= 1;
+		}
+		if (FInputManager::Get().IsKeyPressed(VK_RIGHT))
+		{
+			Camera.Position.Y += 1;
+		}
+		if (FInputManager::Get().IsKeyPressed(VK_UP))
+		{
+			Camera.Position.X += 1;
+		}
+		if (FInputManager::Get().IsKeyPressed(VK_DOWN))
+		{
+			Camera.Position.X -= 1;
+		}
+
+		const FMatrix VP = Camera.CreateViewProjectionMatrix();
+
 		Renderer.BeginFrame();
 		
 		for (const auto& Component : Scene->GetPrimitiveComponents())
 		{
-			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() });
+			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
 			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
 		}
 

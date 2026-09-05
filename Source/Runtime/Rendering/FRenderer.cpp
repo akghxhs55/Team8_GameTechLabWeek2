@@ -13,7 +13,7 @@
 
 bool FRenderer::Initialize(HWND Window)
 {
-	if (!InitializeDeviceAndSwapChain((Window)) ||
+	if (!InitializeDeviceAndSwapChain(Window) ||
 		!InitializeBackBuffer() ||
 		!InitializeConstantBuffers())
 	{
@@ -248,17 +248,17 @@ bool FRenderer::InitializeBackBuffer()
 
 bool FRenderer::InitializeConstantBuffers()
 {
-	D3D11_BUFFER_DESC FrameConstantBufferDesc = {
-		.ByteWidth = sizeof(FFrameConstants),
-		.Usage = D3D11_USAGE_DEFAULT,
-		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
-	};
+	// D3D11_BUFFER_DESC FrameConstantBufferDesc = {
+	// 	 .ByteWidth = sizeof(FFrameConstants),
+	//	 .Usage = D3D11_USAGE_DEFAULT,
+	//	 .BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+	// };
 
-	HRESULT Result = Device->CreateBuffer(&FrameConstantBufferDesc, nullptr, &FrameConstantBuffer);
-	if (FAILED(Result))
-	{
-		return false;
-	}
+	// HRESULT Result = Device->CreateBuffer(&FrameConstantBufferDesc, nullptr, &FrameConstantBuffer);
+	// if (FAILED(Result))
+	// {
+	// 	 return false;
+	// }
 
 	D3D11_BUFFER_DESC ObjectConstantBufferDesc = {
 		.ByteWidth = sizeof(FObjectConstants),
@@ -267,7 +267,7 @@ bool FRenderer::InitializeConstantBuffers()
 		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
 	};
 
-	Result = Device->CreateBuffer(&ObjectConstantBufferDesc, nullptr, &ObjectConstantBuffer);
+	HRESULT Result = Device->CreateBuffer(&ObjectConstantBufferDesc, nullptr, &ObjectConstantBuffer);
 	if (FAILED(Result))
 	{
 		return false;

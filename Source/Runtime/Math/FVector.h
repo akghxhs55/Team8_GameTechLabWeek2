@@ -19,7 +19,7 @@ struct FVector
 	static const FVector RightVector;
 	static const FVector LeftVector;
 
-	[[nodiscard]] constexpr FVector(float InX, float InY, float InZ);
+	[[nodiscard]] constexpr FVector(float InX = 0.0f, float InY = 0.0f, float InZ = 0.0f);
 	// [[nodiscard]] explicit FVector(const FVector2& V, float InZ);
 	// [[nodiscard]] FVector(const FVector4& V);
 

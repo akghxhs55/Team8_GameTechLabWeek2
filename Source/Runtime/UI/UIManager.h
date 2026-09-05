@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 //진짜 많이 배워갑니다...
 
 //상속을 막는 final

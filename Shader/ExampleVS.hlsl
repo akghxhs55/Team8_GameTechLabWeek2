@@ -17,8 +17,7 @@ PS_INPUT MainVS(VS_INPUT Input)
     PS_INPUT Output;
 
     Output.Position = float4(Input.Position, 1.0f);
-    Output.Position = mul(Output.Position, Model);
-    Output.Position = mul(Output.Position, ViewProjection);
+    Output.Position = mul(Output.Position, MVP);
 
     Output.Color = float4(Input.Color, 1.0f);
 

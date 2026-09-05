@@ -94,13 +94,16 @@ struct FMatrix
 		return R;
 	}
 
-	static FMatrix MakeRotationXYZ(const FVector& Deg)
-	{
-		constexpr float DegToRad = std::numbers::pi_v<float> / 180.0f;
-		return MakeRotationX(Deg.X * DegToRad)
-			* MakeRotationY(Deg.Y * DegToRad)
-			* MakeRotationZ(Deg.Z * DegToRad);
-	}
+	[[nodiscard]]
+	static FMatrix MakeRotation(const FVector& Deg);
+
+	// Yaw-Pitch-Roll
+	[[nodiscard]]
+	static FMatrix MakeRotationXYZ(const FVector& Deg);
+
+	// Roll-Pitch-Yaw
+	[[nodiscard]]
+	static FMatrix MakeRotationZYX(const FVector& Deg);
 };
 
 inline const FMatrix FMatrix::Identity = FMatrix{
@@ -127,4 +130,25 @@ inline FMatrix::FMatrix(float N)
 			j = N;
 		}
 	}
+}
+
+inline FMatrix FMatrix::MakeRotation(const FVector& Deg)
+{
+	return MakeRotationXYZ(Deg);
+}
+
+inline FMatrix FMatrix::MakeRotationXYZ(const FVector& Deg)
+{
+	constexpr float DegToRad = std::numbers::pi_v<float> / 180.0f;
+	return MakeRotationX(Deg.X * DegToRad)
+		* MakeRotationY(Deg.Y * DegToRad)
+		* MakeRotationZ(Deg.Z * DegToRad);
+}
+
+inline FMatrix FMatrix::MakeRotationZYX(const FVector& Deg)
+{
+	constexpr float DegToRad = std::numbers::pi_v<float> / 180.0f;
+	return MakeRotationZ(Deg.Z * DegToRad)
+		* MakeRotationY(Deg.Y * DegToRad)
+		* MakeRotationX(Deg.X * DegToRad);
 }

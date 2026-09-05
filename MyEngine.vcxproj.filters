@@ -32,7 +32,7 @@
     <Filter Include="Source\Runtime\Input">
       <UniqueIdentifier>{3ab891cc-31a1-4e46-850b-cd4dd3a5dcef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
+    <Filter Include="Source\Runtime\UI">
       <UniqueIdentifier>{f9e08c8f-2c3c-41c2-8223-43c62d69588d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -135,10 +135,18 @@
     <ClInclude Include="Source\Runtime\Math\FQuaternion.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h">
+      <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
+    <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\USceneManager.h">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\UI\UIManager.h">
+      <Filter>Source\Runtime\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">

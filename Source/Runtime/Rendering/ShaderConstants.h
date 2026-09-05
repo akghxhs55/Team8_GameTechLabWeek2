@@ -5,13 +5,14 @@
 // b0에 바인딩
 struct FFrameConstants
 {
-	FMatrix ViewProjection;
+	// FMatrix ViewProjection;
 };
-static_assert(sizeof(FFrameConstants) % 16 == 0);
+// static_assert(sizeof(FFrameConstants) % 16 == 0);
 
 // b1에 바인딩
 struct FObjectConstants
 {
-	FMatrix Model;
+	FMatrix MVP;
+	// FMatrix Model;
 };
 static_assert(sizeof(FObjectConstants) % 16 == 0);

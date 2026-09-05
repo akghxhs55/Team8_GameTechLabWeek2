@@ -280,6 +280,8 @@
     <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
+    <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
+    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
     <ClInclude Include="Source\Runtime\Input\FInputManager.h" />
@@ -293,8 +295,8 @@
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
-    <ClInclude Include="UIManager.h" />
     <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
+    <ClInclude Include="Source\Runtime\UI\UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">

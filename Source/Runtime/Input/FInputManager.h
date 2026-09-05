@@ -2,11 +2,11 @@
 
 #include "Runtime/Core/IntTypes.h"
 
-constexpr uint32 MAX_KEYS = 256;
-
 class FInputManager final
 {
 public:
+	static constexpr int32 MAX_KEYS = 256;
+
 	static FInputManager& Get()
 	{
 		static FInputManager Instance;
@@ -15,10 +15,10 @@ public:
 	
 	void Update();
 
-	[[nodiscard]] bool IsKeyDown(uint8 Key) const;
-	[[nodiscard]] bool IsPrevKeyDown(uint8 Key) const;
-	[[nodiscard]] bool IsKeyPressed(uint8 Key) const;
-	[[nodiscard]] bool IsKeyReleased(uint8 Key) const;
+	[[nodiscard]] bool IsKeyDown(uint32 Key) const;
+	[[nodiscard]] bool IsPrevKeyDown(uint32 Key) const;
+	[[nodiscard]] bool IsKeyPressed(uint32 Key) const;
+	[[nodiscard]] bool IsKeyReleased(uint32 Key) const;
 
 	FInputManager(const FInputManager&) = delete;
 	FInputManager& operator=(const FInputManager&) = delete;
