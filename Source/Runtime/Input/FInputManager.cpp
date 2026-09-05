@@ -11,6 +11,7 @@ void FInputManager::Update()
 	{
 		CurrentKeyStates[i] = GetAsyncKeyState(i) & 0x8000 ? true : false;
 	}
+	MouseDelta = {};
 }
 
 bool FInputManager::IsKeyDown(uint32 Key) const
@@ -47,4 +48,14 @@ bool FInputManager::IsKeyReleased(uint32 Key) const
 		return false;
 	}
 	return !IsKeyDown(Key) && IsPrevKeyDown(Key);
+}
+
+void FInputManager::AddMouseInput(const FVector2& Delta)
+{
+	MouseDelta = Delta;
+}
+
+FVector2 FInputManager::GetMouseDelta() const
+{
+	return MouseDelta;
 }

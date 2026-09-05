@@ -1,15 +1,17 @@
-﻿#include <Windows.h>
-
-#include "Runtime/Engine/UScene.h"
+﻿#include "Runtime/Engine/UScene.h"
 #include "Runtime/Engine/FViewportCamera.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
+#include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector.h"
+#include "Runtime/Math/FVector2.h"
 #include "Runtime/Math/FMatrix.h"
+#include <Windows.h>
+#include <windowsx.h>
 
 namespace
 {
@@ -77,6 +79,10 @@ int WINAPI wWinMain(
 	Camera.Yaw = -45.0f;
 	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
 
+	// TODO: 추상화
+	static FCameraInputController CameraController;
+
+	// TODO: DeltaTime 계산
 	bool bQuit = false;
     while (!bQuit)
     {
@@ -86,23 +92,9 @@ int WINAPI wWinMain(
 			break;
 		}
 
+		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().Update();
-		if (FInputManager::Get().IsKeyPressed(VK_LEFT))
-		{
-			Camera.Position.Y -= 1;
-		}
-		if (FInputManager::Get().IsKeyPressed(VK_RIGHT))
-		{
-			Camera.Position.Y += 1;
-		}
-		if (FInputManager::Get().IsKeyPressed(VK_UP))
-		{
-			Camera.Position.X += 1;
-		}
-		if (FInputManager::Get().IsKeyPressed(VK_DOWN))
-		{
-			Camera.Position.X -= 1;
-		}
+		CameraController.UpdateKeyInput(Camera, 1.0f / 60.0f);
 
 		const FMatrix VP = Camera.CreateViewProjectionMatrix();
 
@@ -124,8 +116,14 @@ int WINAPI wWinMain(
 
 namespace
 {
+	// TODO: Resizing 처리
+	// TODO: 마우스 입력 추상화. FInputManager에 합칠 수 있을까?
+	// TODO: 마우스가 화면 밖에 나갈 때 처리가 잘 안 됨
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
+		static FVector2 PrevMousePos{ 0.0f, 0.0f };
+		static bool bMousePressed = false;
+
 		WNDCLASS WindowClass{};
 		WindowClass.lpfnWndProc =
 			[](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -135,6 +133,31 @@ namespace
 				case WM_DESTROY:
 					PostQuitMessage(0);
 					break;
+
+				case WM_LBUTTONDOWN:
+					bMousePressed = true;
+					break;
+
+				case WM_LBUTTONUP:
+					bMousePressed = false;
+					break;
+
+				case WM_MOUSEMOVE:
+					if (bMousePressed)
+					{
+						const FVector2 MousePos{
+							static_cast<float>(GET_X_LPARAM(lParam)),
+							static_cast<float>(GET_Y_LPARAM(lParam))
+						};
+						const FVector2 MouseDelta = MousePos - PrevMousePos;
+						FInputManager::Get().AddMouseInput(MouseDelta);
+					}
+					PrevMousePos = FVector2{
+						static_cast<float>(GET_X_LPARAM(lParam)),
+						static_cast<float>(GET_Y_LPARAM(lParam))
+					};
+					break;
+
 				default:
 					return DefWindowProc(hWnd, uMsg, wParam, lParam);
 				}

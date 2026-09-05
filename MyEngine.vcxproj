@@ -262,6 +262,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
+    <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />
     <ClCompile Include="Source\Runtime\Input\FInputManager.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FMaterial.cpp" />
@@ -285,10 +286,12 @@
     <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
+    <ClInclude Include="Source\Runtime\Input\FCameraInputController.h" />
     <ClInclude Include="Source\Runtime\Input\FInputManager.h" />
     <ClInclude Include="Source\Runtime\Math\FMatrix.h" />
     <ClInclude Include="Source\Runtime\Math\FQuaternion.h" />
     <ClInclude Include="Source\Runtime\Math\FVector.h" />
+    <ClInclude Include="Source\Runtime\Math\FVector2.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderResourceLibrary.h" />
     <ClInclude Include="Source\Runtime\Rendering\ShaderConstants.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />

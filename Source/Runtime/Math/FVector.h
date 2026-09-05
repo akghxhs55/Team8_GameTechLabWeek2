@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "Runtime/Core/IntTypes.h"
-#include "cassert"
-#include "cmath"
+#include <cassert>
+#include <cmath>
 
 struct FVector
 {
@@ -40,6 +40,8 @@ struct FVector
 	template <typename ScalarType> 
 		requires std::is_arithmetic_v<ScalarType>
 	[[nodiscard]] FVector operator*(ScalarType Scale) const;
+
+	[[nodiscard]] FVector operator/(const FVector& V) const;
 
 	template <typename ScalarType> 
 		requires std::is_arithmetic_v<ScalarType>
@@ -86,14 +88,14 @@ struct FVector
 	[[nodiscard]] float SizeSquared() const;
 };
 
-inline const FVector FVector::ZeroVector{ 0, 0, 0 };
-inline const FVector FVector::OneVector{ 1, 1, 1 };
-inline const FVector FVector::UpVector{ 0, 0, 1 };
-inline const FVector FVector::DownVector{ 0, 0, -1 };
-inline const FVector FVector::ForwardVector{ 1, 0, 0 };
-inline const FVector FVector::BackwardVector{ -1, 0, 0 };
-inline const FVector FVector::RightVector{ 0, 1, 0 };
-inline const FVector FVector::LeftVector{ 0, -1, 0 };
+inline const FVector FVector::ZeroVector{ 0.0f, 0.0f, 0.0f };
+inline const FVector FVector::OneVector{ 1.0f, 1.0f, 1.0f };
+inline const FVector FVector::UpVector{ 0.0f, 0.0f, 1.0f };
+inline const FVector FVector::DownVector{ 0.0f, 0.0f, -1.0f };
+inline const FVector FVector::ForwardVector{ 1.0f, 0.0f, 0.0f };
+inline const FVector FVector::BackwardVector{ -1.0f, 0.0f, 0.0f };
+inline const FVector FVector::RightVector{ 0.0f, 1.0f, 0.0f };
+inline const FVector FVector::LeftVector{ 0.0f, -1.0f, 0.0f };
 
 constexpr FVector::FVector(float InX, float InY, float InZ)
 	: X(InX), Y(InY), Z(InZ)
@@ -133,6 +135,11 @@ template <typename ScalarType>
 FVector FVector::operator*(ScalarType Scale) const
 {
 	return FVector(X * Scale, Y * Scale, Z * Scale);
+}
+
+inline FVector FVector::operator/(const FVector& V) const
+{
+	return FVector(X / V.X, Y / V.Y, Z / V.Z);
 }
 
 template <typename ScalarType> 
