@@ -20,7 +20,7 @@ public:
 private:
 	FMesh() = default;
 
-	void BindResources(ID3D11DeviceContext* Context) const;
+	void BindResources(ID3D11DeviceContext& Context) const;
 
 	EVertexLayout VertexLayout = EVertexLayout::None;
 

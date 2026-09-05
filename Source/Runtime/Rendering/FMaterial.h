@@ -18,7 +18,7 @@ public:
 private:
 	FMaterial() = default;
 
-	void BindResources(ID3D11DeviceContext* Context) const;
+	void BindResources(ID3D11DeviceContext& Context) const;
 
 	TSharedPtr<FRenderPipeline> Pipeline;
 };

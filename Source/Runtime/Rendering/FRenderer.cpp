@@ -55,9 +55,9 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
 
 	const auto& Pipeline = Material.Pipeline;
 
-	Pipeline->Bind(Context.Get());
-	Material.BindResources(Context.Get());
-	Mesh.BindResources(Context.Get());
+	Pipeline->Bind(*Context.Get());
+	Material.BindResources(*Context.Get());
+	Mesh.BindResources(*Context.Get());
 
 	Context->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 

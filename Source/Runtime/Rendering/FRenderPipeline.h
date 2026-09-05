@@ -1,7 +1,6 @@
-#pragma once
+﻿#pragma once
 
 #include "Vertices.h"
-#include "Runtime/Core/FString.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 
@@ -15,7 +14,7 @@ public:
 private:
 	FRenderPipeline() = default;
 
-	void Bind(ID3D11DeviceContext* Context) const;
+	void Bind(ID3D11DeviceContext& Context) const;
 
 	EVertexLayout VertexLayout = EVertexLayout::None;
 
