@@ -8,4 +8,5 @@ void FRenderPipeline::Bind(ID3D11DeviceContext& Context) const
 	Context.PSSetShader(PixelShader.Get(), nullptr, 0);
 
 	Context.RSSetState(RasterizerState.Get());
+	Context.OMSetDepthStencilState(DepthStencilState.Get(), 0);
 }

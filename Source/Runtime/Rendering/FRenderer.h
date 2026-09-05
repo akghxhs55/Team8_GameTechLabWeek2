@@ -27,7 +27,7 @@ public:
 
 private:
 	bool InitializeDeviceAndSwapChain(HWND Window);
-	bool InitializeBackBuffer();
+	bool InitializeBackBufferAndDepthStencil();
 	bool InitializeConstantBuffers();
 
 	[[nodiscard]]
@@ -40,6 +40,8 @@ private:
 	D3D11_VIEWPORT Viewport{};
 
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> BackBufferRTV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencilBuffer;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView;
 
 	// TODO: FRenderer가 Constants 형태에 종속되는 상태. 필요하다면 분리할 수 있음
 	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;

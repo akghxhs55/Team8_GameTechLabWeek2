@@ -14,7 +14,7 @@
 bool FRenderer::Initialize(HWND Window)
 {
 	if (!InitializeDeviceAndSwapChain(Window) ||
-		!InitializeBackBuffer() ||
+		!InitializeBackBufferAndDepthStencil() ||
 		!InitializeConstantBuffers())
 	{
 		Shutdown();
@@ -36,6 +36,8 @@ void FRenderer::Shutdown()
 	ObjectConstantBuffer.Reset();
 
 	BackBufferRTV.Reset();
+	DepthStencilView.Reset();
+	DepthStencilBuffer.Reset();
 
 	SwapChain.Reset();
 	Context.Reset();
@@ -45,10 +47,11 @@ void FRenderer::Shutdown()
 void FRenderer::BeginFrame()
 {
 	Context->RSSetViewports(1, &Viewport);
-	Context->OMSetRenderTargets(1, BackBufferRTV.GetAddressOf(), nullptr);
+	Context->OMSetRenderTargets(1, BackBufferRTV.GetAddressOf(), DepthStencilView.Get());
 
 	constexpr float ClearColor[] = { 0.05f, 0.05f, 0.08f, 1.0f };
 	Context->ClearRenderTargetView(BackBufferRTV.Get(), ClearColor);
+	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
@@ -228,7 +231,7 @@ bool FRenderer::InitializeDeviceAndSwapChain(HWND Window)
 	return true;
 }
 
-bool FRenderer::InitializeBackBuffer()
+bool FRenderer::InitializeBackBufferAndDepthStencil()
 {
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> BackBuffer;
 	HRESULT Result = SwapChain->GetBuffer(0, IID_PPV_ARGS(&BackBuffer));
@@ -238,6 +241,31 @@ bool FRenderer::InitializeBackBuffer()
 	}
 
 	Result = Device->CreateRenderTargetView(BackBuffer.Get(), nullptr, &BackBufferRTV);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	D3D11_TEXTURE2D_DESC DepthStencilDesc = {
+		.Width = static_cast<UINT>(Viewport.Width),
+		.Height = static_cast<UINT>(Viewport.Height),
+		.MipLevels = 1u,
+		.ArraySize = 1u,
+		.Format = DXGI_FORMAT_D24_UNORM_S8_UINT,
+		.SampleDesc = {
+			.Count = 1u,
+		},
+		.Usage = D3D11_USAGE_DEFAULT,
+		.BindFlags = D3D11_BIND_DEPTH_STENCIL,
+	};
+
+	Result = Device->CreateTexture2D(&DepthStencilDesc, nullptr, &DepthStencilBuffer);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	Result = Device->CreateDepthStencilView(DepthStencilBuffer.Get(), nullptr, &DepthStencilView);
 	if (FAILED(Result))
 	{
 		return false;
@@ -330,6 +358,18 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	};
 
 	Result = Device->CreateRasterizerState(&RasterizerDesc, &Pipeline->RasterizerState);
+	if (FAILED(Result))
+	{
+		return nullptr;
+	}
+
+	D3D11_DEPTH_STENCIL_DESC DepthStencilDesc{
+		.DepthEnable = true,
+		.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
+		.DepthFunc = D3D11_COMPARISON_LESS,
+	};
+
+	Result = Device->CreateDepthStencilState(&DepthStencilDesc, &Pipeline->DepthStencilState);
 	if (FAILED(Result))
 	{
 		return nullptr;

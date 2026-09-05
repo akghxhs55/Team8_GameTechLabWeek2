@@ -23,5 +23,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout;
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerState;
-	// Blend Mode, Depth Mode 등 추가 가능
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilState;
+	// Blend Mode 등 추가 가능
 };
