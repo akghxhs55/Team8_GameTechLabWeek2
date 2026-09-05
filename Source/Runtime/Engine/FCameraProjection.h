@@ -6,16 +6,18 @@
 enum class EProjectionType : uint8
 {
 	Perspective,
-	Orthogonal,
+	Orthographic,
 };
 
 struct FCameraProjection
 {
 	EProjectionType ProjectionType = EProjectionType::Perspective;
-	// TODO: 뭐가 필요할까...
-	float FOV;
-	float NearPlane;
-	float FarPlane;
+	float FOV = 60.0f; // Perspective 전용
+	float Aspect = 1.0f; // Perspective 전용. Width / Height
+	float Width = 4.0f; // Orthographic 전용
+	float Height = 4.0f; // Orthographic 전용
+	float NearZ = 0.1f;
+	float FarZ = 100.0f;
 	
 	// TODO: 캐시 가능
 	[[nodiscard]] FMatrix CreateProjectionMatrix() const;
@@ -23,15 +25,29 @@ struct FCameraProjection
 
 inline FMatrix FCameraProjection::CreateProjectionMatrix() const
 {
-	// TODO: 구현
-	// Sample camera: eye (-3, -3, 2), target (0, 0, 0), world up +Z.
-	// Left-handed view space; row vectors match mul(Position, ViewProjection).
-	FMatrix ProjectionMatrix(0.0f);
-	ProjectionMatrix.M[0][0] = 1.29903811f;
-	ProjectionMatrix.M[1][1] = 1.73205081f;
-	ProjectionMatrix.M[2][2] = 1.00100100f;
-	ProjectionMatrix.M[2][3] = 1.0f;
-	ProjectionMatrix.M[3][2] = -0.10010010f;
+	FMatrix Matrix{ 0.0f };
+	switch (ProjectionType)
+	{
+	case EProjectionType::Perspective:
+	{
+		const float Phi = FOV * std::numbers::pi_v<float> / 180.0f;
+		const float C = 1.0f / std::tan(Phi * 0.5f);
+		Matrix.M[0][0] = C / Aspect;
+		Matrix.M[1][1] = C;
+		Matrix.M[2][2] = FarZ / (FarZ - NearZ);
+		Matrix.M[2][3] = 1.0f;
+		Matrix.M[3][2] = -NearZ * FarZ / (FarZ - NearZ);
+		break;
+	}
 
-	return ProjectionMatrix;
+	case EProjectionType::Orthographic:
+		Matrix.M[0][0] = 2.0f / Width;
+		Matrix.M[1][1] = 2.0f / Height;
+		Matrix.M[2][2] = 1.0f / (FarZ - NearZ);
+		Matrix.M[3][2] = -NearZ / (FarZ - NearZ);
+		Matrix.M[3][3] = 1.0f;
+		break;
+	}
+
+	return Matrix;
 }

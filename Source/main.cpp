@@ -75,6 +75,7 @@ int WINAPI wWinMain(
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
 	Camera.Pitch = -25.0f;
 	Camera.Yaw = -45.0f;
+	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
 
 	bool bQuit = false;
     while (!bQuit)
@@ -152,7 +153,7 @@ namespace
 			WindowClass.lpszClassName,
 			WindowName,
 			WS_POPUP | WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
+			CW_USEDEFAULT, CW_USEDEFAULT, 800, 800,
 			nullptr, nullptr, Instance, nullptr);
 
 		return Window;
