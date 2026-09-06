@@ -37,27 +37,64 @@ struct FMatrix
 		return result;
 	}
 
-	FMatrix Inverse() const
+	bool Inverse(FMatrix& Dst) const
 	{
-		//역함수 = 1/행렬식 * 여인수 행렬
-		FMatrix result;
+		const float Det = Determinant();
+		if (fabsf(Det) < 1e-8f)
+			return false;
 
-		
+		const float rDet = 1.0f / Det;
 
+		FMatrix Result;
+		for (int r = 0; r < 4; ++r)
+			for (int c = 0; c < 4; ++c)
+				Result.M[r][c] = Cofactor(r, c);
 
-
-
+		Dst = Result.Transpose() * rDet;
+		return true;
 	}
 
-	FMatrix Determinant() const
+	inline float Minor(int r, int c) const
 	{
-		FMatrix result;
+		int R[3], C[3];
+		for (int i = 0, k = 0; i < 4; ++i) if (i != r) R[k++] = i;
+		for (int j = 0, k = 0; j < 4; ++j) if (j != c) C[k++] = j;
 
+		return
+			M[R[0]][C[0]] * (M[R[1]][C[1]] * M[R[2]][C[2]] - M[R[1]][C[2]] * M[R[2]][C[1]]) -
+			M[R[0]][C[1]] * (M[R[1]][C[0]] * M[R[2]][C[2]] - M[R[1]][C[2]] * M[R[2]][C[0]]) +
+			M[R[0]][C[2]] * (M[R[1]][C[0]] * M[R[2]][C[1]] - M[R[1]][C[1]] * M[R[2]][C[0]]);
+	}
 
+	inline float Cofactor(int r, int c) const
+	{
+		const float Sign = ((r + c) & 1) ? -1.0f : 1.0f;
+		return Sign * Minor(r, c);
+	}
 
-
-
-
+	//언리얼에서도 그냥 전개식을 때려박음
+	inline float Determinant() const
+	{
+		return	M[0][0] * (
+			M[1][1] * (M[2][2] * M[3][3] - M[2][3] * M[3][2]) -
+			M[2][1] * (M[1][2] * M[3][3] - M[1][3] * M[3][2]) +
+			M[3][1] * (M[1][2] * M[2][3] - M[1][3] * M[2][2])
+			) -
+			M[1][0] * (
+				M[0][1] * (M[2][2] * M[3][3] - M[2][3] * M[3][2]) -
+				M[2][1] * (M[0][2] * M[3][3] - M[0][3] * M[3][2]) +
+				M[3][1] * (M[0][2] * M[2][3] - M[0][3] * M[2][2])
+				) +
+			M[2][0] * (
+				M[0][1] * (M[1][2] * M[3][3] - M[1][3] * M[3][2]) -
+				M[1][1] * (M[0][2] * M[3][3] - M[0][3] * M[3][2]) +
+				M[3][1] * (M[0][2] * M[1][3] - M[0][3] * M[1][2])
+				) -
+			M[3][0] * (
+				M[0][1] * (M[1][2] * M[2][3] - M[1][3] * M[2][2]) -
+				M[1][1] * (M[0][2] * M[2][3] - M[0][3] * M[2][2]) +
+				M[2][1] * (M[0][2] * M[1][3] - M[0][3] * M[1][2])
+				);
 	}
 
 
@@ -117,6 +154,15 @@ struct FMatrix
 				+ M[i][2] * Other.M[2][j]
 				+ M[i][3] * Other.M[3][j];
 		return R;
+	}
+
+	FMatrix operator*(float Scalar) const
+	{
+		FMatrix Result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				Result.M[i][j] = M[i][j] * Scalar;
+		return Result;
 	}
 
 	[[nodiscard]]
