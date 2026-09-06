@@ -239,29 +239,28 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 		Indices.push_back(i + 1);
 	}
 
-	//// 아래 뚜껑
-	//{
-	//	const uint32 Center = static_cast<uint32>(Vertices.size());
-	//	//Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), FVector(0.3f, 0.3f, 0.3f) });
-	//	Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), Color });
+	// 아래 뚜껑
+	{
+		const uint32 Center = static_cast<uint32>(Vertices.size());
+		Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), Color });
+		const uint32 First = static_cast<uint32>(Vertices.size());
+		for (int i = 0; i <= SliceCount; ++i)
+		{
+			const float Theta = DTheta * static_cast<float>(i);
+			Vertices.push_back({
+				FVector(BottomRadius * cosf(Theta), -0.5f * Height, BottomRadius * sinf(Theta)),
+				//FVector(0.2f, 0.2f, 0.5f) });
+				Color });
+		}
 
-	//	const uint32 First = static_cast<uint32>(Vertices.size());
-	//	for (int i = 0; i <= SliceCount; ++i)
-	//	{
-	//		const float Theta = DTheta * static_cast<float>(i);
-	//		Vertices.push_back({
-	//			FVector(BottomRadius * cosf(Theta), -0.5f * Height, -BottomRadius * sinf(Theta)),
-	//			//FVector(0.2f, 0.2f, 0.5f) });
-	//			Color });
-	//	}
+		for (int i = 0; i < SliceCount; ++i)
+		{
 
-	//	for (int i = 0; i < SliceCount; ++i)
-	//	{
-	//		Indices.push_back(Center);
-	//		Indices.push_back(First + i + 1);
-	//		Indices.push_back(First + i);
-	//	}
-	//}
+			Indices.push_back(Center);
+			Indices.push_back(i + First);
+			Indices.push_back(i + First + 1);
+		}
+	}
 
 	FMeshDesc MeshDesc{
 		.VertexLayout = EVertexLayout::PositionColor,

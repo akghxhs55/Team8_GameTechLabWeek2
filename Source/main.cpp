@@ -84,6 +84,7 @@ int WINAPI wWinMain(
 	
 
 	UConeComp* ConeComp = NewObject<UConeComp>();
+	ConeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{-90.0f, 90.0f, 0.0f });
 	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
