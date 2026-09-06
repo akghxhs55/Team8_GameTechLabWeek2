@@ -261,6 +261,7 @@
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
     <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
     <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
+    <ClInclude Include="Source\Runtime\Engine\FTimeManager.h" />
     <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />

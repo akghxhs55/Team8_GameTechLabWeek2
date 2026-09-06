@@ -6,6 +6,7 @@
 #include "Runtime/CoreUObject/UConeComp.h"
 #include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
+#include "Runtime/Engine/FTimeManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector.h"
@@ -15,6 +16,7 @@
 #include <windowsx.h>
 
 #include "Runtime/Engine/USceneManager.h"
+
 
 namespace
 {
@@ -113,7 +115,10 @@ int WINAPI wWinMain(
 
 		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().Update();
-		CameraController.UpdateKeyInput(Camera, 1.0f / 60.0f);
+		FTimeManager::Get().Update();
+		FTimeManager::Get().Resume();
+
+		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 
 		const FMatrix VP = Camera.CreateViewProjectionMatrix();
 

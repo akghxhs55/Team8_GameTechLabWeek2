@@ -78,7 +78,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 	constexpr uint32 SliceCount = 24;
 	constexpr float TAU = std::numbers::pi_v<float> * 2.0f;
 
-	constexpr float DTheta = TAU / static_cast<float>(SliceCount);
+	constexpr float DTheta = TAU / SliceCount;
 
 	FVector Color;
 	if (Axis == 0)
@@ -210,7 +210,7 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 
 		const float Radius = BottomRadius;
 
-		const FVector Center(0.0f, 0.5f);
+		const FVector Center(0.0f, 0.5f,0.0f);
 
 		Vertices.push_back({Center,Color});
 
@@ -232,7 +232,7 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 	TArray<uint32> Indices;
 	Indices.reserve(SliceCount * 6);
 
-	for (uint32 i = 0u; i < SliceCount; ++i)
+	for (uint32 i = 1u; i <= SliceCount; ++i)
 	{
 		Indices.push_back(i);
 		Indices.push_back(0);

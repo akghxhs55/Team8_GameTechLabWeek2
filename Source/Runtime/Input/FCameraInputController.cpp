@@ -20,22 +20,22 @@ void FCameraInputController::UpdateKeyInput(FViewportCamera& Camera, float Delta
 
 	FVector Direction{};
 
-	if (FInputManager::Get().IsKeyPressed(VK_LEFT) || FInputManager::Get().IsKeyPressed('A'))
+	if (FInputManager::Get().IsKeyDown(VK_LEFT) || FInputManager::Get().IsKeyDown('A'))
 	{
 		Direction -= Right;
 	}
 
-	if (FInputManager::Get().IsKeyPressed(VK_RIGHT) || FInputManager::Get().IsKeyPressed('D'))
+	if (FInputManager::Get().IsKeyDown(VK_RIGHT) || FInputManager::Get().IsKeyDown('D'))
 	{
 		Direction += Right;
 	}
 
-	if (FInputManager::Get().IsKeyPressed(VK_UP) || FInputManager::Get().IsKeyPressed('W'))
+	if (FInputManager::Get().IsKeyDown(VK_UP) || FInputManager::Get().IsKeyDown('W'))
 	{
 		Direction += Forward;
 	}
 
-	if (FInputManager::Get().IsKeyPressed(VK_DOWN) || FInputManager::Get().IsKeyPressed('S'))
+	if (FInputManager::Get().IsKeyDown(VK_DOWN) || FInputManager::Get().IsKeyDown('S'))
 	{
 		Direction -= Forward;
 	}
