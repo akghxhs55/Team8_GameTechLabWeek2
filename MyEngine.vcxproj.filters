@@ -64,6 +64,9 @@
     <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">

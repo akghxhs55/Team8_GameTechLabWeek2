@@ -37,6 +37,31 @@ struct FMatrix
 		return result;
 	}
 
+	FMatrix Inverse() const
+	{
+		//역함수 = 1/행렬식 * 여인수 행렬
+		FMatrix result;
+
+		
+
+
+
+
+	}
+
+	FMatrix Determinant() const
+	{
+		FMatrix result;
+
+
+
+
+
+
+	}
+
+
+
 	static FMatrix MakeScale(const FVector& S)
 	{
 		FMatrix R = GetIdentity();

@@ -30,3 +30,13 @@ TArray<UPrimitiveComponent*> UScene::GetPrimitiveComponents() const
 	}
 	return PrimitiveComponents;
 }
+
+json::JSON UScene::Serialize() const
+{
+	json::JSON result;
+
+	result["NextUUID"] = NextUUID;
+
+
+	return result;
+}

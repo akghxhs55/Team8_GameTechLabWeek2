@@ -3,6 +3,7 @@
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
+#include "Runtime/CoreUObject/UConeComp.h"
 #include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Rendering/FRenderer.h"
@@ -12,6 +13,8 @@
 #include "Runtime/Math/FMatrix.h"
 #include <Windows.h>
 #include <windowsx.h>
+
+#include "Runtime/Engine/USceneManager.h"
 
 namespace
 {
@@ -55,28 +58,43 @@ int WINAPI wWinMain(
 	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 	Scene->RegisterComponent(*CubeComp);
 
-	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
-	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
-	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
-	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompX);
+	//해당 경로에 UUID 기록 성공
+	USceneManager tmp;
+	tmp.currentScene = Scene;
+	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
 
-	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
-	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
-	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
-	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompY);
+	// Sample camera: eye (-3, -3, 2), target (0, 0, 0), world up +Z.
+	// Left-handed view space; row vectors match mul(Position, ViewProjection).
+	const FMatrix ViewMatrix{
+		FVector( 0.70710678f, 0.30151134f,  0.63960215f),
+		FVector(-0.70710678f, 0.30151134f,  0.63960215f),
+		FVector( 0.0f,        0.90453403f, -0.42640143f),
+		FVector( 0.0f,        0.0f,         4.69041576f)
+	};
 
+	// Perspective: vertical FOV 60 degrees, fixed aspect 4:3, near 0.1, far 100.
+	// Direct3D depth range [0, 1]. Update aspect when adding resize support.
+	FMatrix ProjectionMatrix(0.0f);
+	ProjectionMatrix.M[0][0] = 1.29903811f;
+	ProjectionMatrix.M[1][1] = 1.73205081f;
+	ProjectionMatrix.M[2][2] = 1.00100100f;
+	ProjectionMatrix.M[2][3] = 1.0f;
+	ProjectionMatrix.M[3][2] = -0.10010010f;
+	//Renderer.UpdateFrameConstants({ ViewMatrix * ProjectionMatrix });
+	
+
+	UConeComp* ConeComp = NewObject<UConeComp>();
 	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompZ);
+	Scene->RegisterComponent(*ConeComp);
 
 	FViewportCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
 	Camera.Pitch = -25.0f;
 	Camera.Yaw = -45.0f;
+
 	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
 
 	// TODO: 추상화
