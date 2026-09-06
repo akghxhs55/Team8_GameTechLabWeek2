@@ -32,7 +32,7 @@ void FTimeManager::Update()
     }
 
 
-    deltaTime = isRunning ? deltaTime : 0.0;
+    deltaTime = bisRunning ? deltaTime : 0.0;
     prevTime = currentTime;
 }
 

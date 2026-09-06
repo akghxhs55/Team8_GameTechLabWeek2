@@ -10,8 +10,8 @@ public:
 		return Instance;
 	}
 
-	void Resume() { isRunning = true; }
-	void Pause() { isRunning = false; };
+	void Resume() { bisRunning = true; }
+	void Pause() { bisRunning = false; };
 	float GetDeltaTime() const { return deltaTime; };
 	void Update();
 	void SetTargetFPS(float _targetFPS) { targetFPS = _targetFPS; };
@@ -27,7 +27,7 @@ private:
 	float targetFrameTime;
 	float deltaTime = 0.0f;
 
-	bool isRunning = false;
+	bool bisRunning = false;
 
 
 };
