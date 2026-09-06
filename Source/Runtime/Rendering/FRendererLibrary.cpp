@@ -19,9 +19,9 @@ namespace
 bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 {
 	if (!CreateCubeMesh(Renderer) ||
-		!CreateCylinderMesh(Renderer, 0) ||
-		!CreateCylinderMesh(Renderer, 1) ||
-		!CreateCylinderMesh(Renderer, 2) ||
+		!CreateCylinderMesh(Renderer, 0,1.0f,24,1.0f,1.0f) ||
+		!CreateCylinderMesh(Renderer, 1, 1.0f, 24, 1.0f, 1.0f) ||
+		!CreateCylinderMesh(Renderer, 2, 1.0f, 24, 1.0f, 1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer))
 	{
@@ -70,29 +70,15 @@ bool FRenderResourceLibrary::CreateCubeMesh(FRenderer& Renderer)
 }
 
 // TODO: 컬러는 테스트용
-bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
+bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,float Height,uint32 SliceCount,float TopRadius,float BottomRadius)
 {
-	constexpr float BottomRadius = 0.5f;
-	constexpr float TopRadius = 0.5f;
-	constexpr float Height = 1.0f;
-	constexpr uint32 SliceCount = 24;
 	constexpr float TAU = std::numbers::pi_v<float> * 2.0f;
-
-	constexpr float DTheta = TAU / SliceCount;
+	const float DTheta = TAU / SliceCount;
 
 	FVector Color;
-	if (Axis == 0)
-	{
-		Color = FVector(1.0f, 0.0f, 0.0f);
-	}
-	else if (Axis == 1)
-	{
-		Color = FVector(0.0f, 1.0f, 0.0f);
-	}
-	else
-	{
-		Color = FVector(0.0f, 0.0f, 1.0f);
-	}
+	if (Axis == 0){Color = FVector(1.0f, 0.0f, 0.0f);}
+	else if (Axis == 1){Color = FVector(0.0f, 1.0f, 0.0f);}
+	else{Color = FVector(0.0f, 0.0f, 1.0f);}
 
 	TArray<FVertexPositionColor> Vertices;
 
@@ -100,18 +86,14 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 	{
 		const float Radius = (Ring == 0) ? BottomRadius : TopRadius;
 		const float Y = (Ring == 0) ? -0.5f * Height : 0.5f * Height;
-
 		for (uint32 i = 0u; i <= SliceCount; ++i)
 		{
 			const float Theta = DTheta * static_cast<float>(i);
 			const float c = cosf(Theta);
 			const float s = sinf(Theta);
-
 			const FVector Pos(Radius * c, Y, Radius * s);
-
 			const float t = static_cast<float>(i) / static_cast<float>(SliceCount);
 			//const FVector Color(t, static_cast<float>(Ring), 1.0f - t);
-
 			Vertices.push_back({ Pos, Color });
 		}
 	}
@@ -134,7 +116,6 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 	{
 		//중심
 		const uint32 Center = static_cast<uint32>(Vertices.size());
-		//Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), FVector(1,1,1) });
 		Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
@@ -142,7 +123,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 		{
 			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
-				FVector(TopRadius * cosf(Theta), 0.5f * Height, -TopRadius * sinf(Theta)),
+				FVector(TopRadius * cosf(Theta), 0.5f * Height, TopRadius * sinf(Theta)),
 				//FVector(0.9f, 0.9f, 0.2f) });
 				Color });
 		}
@@ -150,15 +131,14 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 		for (int i = 0; i < SliceCount; ++i)
 		{
 			Indices.push_back(Center);
-			Indices.push_back(First + 1);
 			Indices.push_back(First + i + 1);
+			Indices.push_back(First + i);
 		}
 	}
 
 	// 아래 뚜껑
 	{
 		const uint32 Center = static_cast<uint32>(Vertices.size());
-		//Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), FVector(0.3f, 0.3f, 0.3f) });
 		Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
@@ -166,7 +146,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 		{
 			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
-				FVector(BottomRadius * cosf(Theta), -0.5f * Height, -BottomRadius * sinf(Theta)),
+				FVector(BottomRadius * cosf(Theta), -0.5f * Height, BottomRadius * sinf(Theta)),
 				//FVector(0.2f, 0.2f, 0.5f) });
 				Color });
 		}
@@ -174,8 +154,8 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis)
 		for (int i = 0; i < SliceCount; ++i)
 		{
 			Indices.push_back(Center);
+			Indices.push_back(First + i);
 			Indices.push_back(First + i + 1);
-			Indices.push_back(First + i );
 		}
 	}
 
@@ -200,43 +180,51 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 	constexpr float Height = 1.0f;
 	constexpr uint32 SliceCount = 24;
 	constexpr float TAU = std::numbers::pi_v<float> *2.0f;
-
 	constexpr float DTheta = TAU / static_cast<float>(SliceCount);
 
 	FVector Color;
-
-
 	TArray<FVertexPositionColor> Vertices;
+	const float Radius = BottomRadius;
 
-		const float Radius = BottomRadius;
-
-		const FVector Center(0.0f, 0.5f,0.0f);
-
-		Vertices.push_back({Center,Color});
-
-		for (uint32 i = 0u; i <= SliceCount; ++i)
+		for (int Ring = 0; Ring < 2; ++Ring)
 		{
-			const float Theta = DTheta * static_cast<float>(i);
-			const float c = cosf(Theta);
-			const float s = sinf(Theta);
 
-			const FVector Pos(Radius * c, -0.5f, Radius * s);
+			for (uint32 i = 0u; i <= SliceCount; ++i)
+			{
+				const float t = static_cast<float>(i) / static_cast<float>(SliceCount);
+				const FVector Color(t, static_cast<float>(i), 1.0f - t);
+				if(Ring == 0)
+				{
+					const FVector Pos(0.0f, 0.5f, 0.0f);
+					Vertices.push_back({ Pos,Color });
+					continue;
+				}
+					
+				const float Theta = DTheta * static_cast<float>(i);
+				const float c = cosf(Theta);
+				const float s = sinf(Theta);
 
-			const float t = static_cast<float>(i) / static_cast<float>(SliceCount);
-			const FVector Color(t, static_cast<float>(i), 1.0f - t);
+				const FVector Pos(Radius * c, -0.5f, Radius * s);
 
-			Vertices.push_back({ Pos, Color });
+				Vertices.push_back({ Pos, Color });
+			}
 		}
+
+
 	
 
 	TArray<uint32> Indices;
 	Indices.reserve(SliceCount * 6);
 
-	for (uint32 i = 1u; i <= SliceCount; ++i)
+	for (uint32 i = 0u; i < SliceCount; ++i)
 	{
 		Indices.push_back(i);
-		Indices.push_back(0);
+		Indices.push_back(i + SliceCount + 1);
 		Indices.push_back(i + 1);
+
+		Indices.push_back(i + 1);
+		Indices.push_back(i + SliceCount + 1);
+		Indices.push_back(i + SliceCount + 2);
 	}
 
 	// 아래 뚜껑
@@ -255,7 +243,6 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 
 		for (int i = 0; i < SliceCount; ++i)
 		{
-
 			Indices.push_back(Center);
 			Indices.push_back(i + First);
 			Indices.push_back(i + First + 1);

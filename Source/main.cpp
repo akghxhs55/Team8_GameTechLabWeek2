@@ -91,7 +91,7 @@ int WINAPI wWinMain(
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*ConeComp);
+	Scene->RegisterComponent(*CylinderCompZ);
 
 	FViewportCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);

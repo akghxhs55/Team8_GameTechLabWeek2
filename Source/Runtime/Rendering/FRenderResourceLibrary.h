@@ -22,7 +22,7 @@ public:
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
-	bool CreateCylinderMesh(FRenderer& Renderer, int Axis);
+	bool CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottonRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
 private:
