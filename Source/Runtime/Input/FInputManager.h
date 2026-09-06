@@ -3,7 +3,6 @@
 #include "Runtime/Core/IntTypes.h"
 #include "Runtime/Math/FVector2.h"
 
-// TODO: 키 꾹 누르는 입력이 안됨
 class FInputManager final
 {
 public:
@@ -18,9 +17,8 @@ public:
 	void Update();
 	// TODO: 없애야 함
 	[[nodiscard]] bool IsKeyDown(uint32 Key) const;
-	[[nodiscard]] bool IsPrevKeyDown(uint32 Key) const;
-	[[nodiscard]] bool IsKeyPressed(uint32 Key) const;
-	[[nodiscard]] bool IsKeyReleased(uint32 Key) const;
+	[[nodiscard]] bool IsKeyJustPressed(uint32 Key) const;
+	[[nodiscard]] bool IsKeyJustReleased(uint32 Key) const;
 
 	void AddMouseInput(const FVector2& Delta);
 	[[nodiscard]] FVector2 GetMouseDelta() const;
@@ -34,6 +32,8 @@ public:
 private:
 	FInputManager() = default;
 	~FInputManager() = default;
+
+	[[nodiscard]] bool IsPrevKeyDown(uint32 Key) const;
 
 	bool CurrentKeyStates[MAX_KEYS] = {};
 	bool PreviousKeyStates[MAX_KEYS] = {};
