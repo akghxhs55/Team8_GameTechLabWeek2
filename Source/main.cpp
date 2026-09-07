@@ -193,7 +193,50 @@ namespace
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
 		WNDCLASS WindowClass{};
-		WindowClass.lpfnWndProc = WindowCallback;
+		WindowClass.lpfnWndProc =
+			[](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+			{
+				LRESULT imguiResult{};
+				if (imguiResult = ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) // imgui의 프레임 스냅샷 상태를 갱신
+					return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
+
+				switch (uMsg)
+				{
+				case WM_DESTROY:
+					PostQuitMessage(0);
+					break;
+
+				case WM_RBUTTONDOWN:
+					FInputManager::Get().SetMouseRightButtonDown(true);
+					break;
+
+				case WM_RBUTTONUP:
+					FInputManager::Get().SetMouseRightButtonDown(false);
+					break;
+
+				case WM_MOUSEMOVE:
+					FInputManager::Get().SetMousePos({
+						static_cast<float>(GET_X_LPARAM(lParam)),
+						static_cast<float>(GET_Y_LPARAM(lParam))
+						});
+					break;
+				case WM_SIZE:
+				{
+					if (wParam != SIZE_MINIMIZED)
+					{
+						UINT Width = LOWORD(lParam);
+						UINT Height = HIWORD(lParam);
+
+						//Renderer.Resize(Width, Height);
+					}
+
+					return 0;
+				}
+				default:
+					return DefWindowProc(hWnd, uMsg, wParam, lParam);
+				}
+				return 0;
+			};
 		WindowClass.hInstance = Instance;
 		WindowClass.lpszClassName = L"MyEngine";
 
