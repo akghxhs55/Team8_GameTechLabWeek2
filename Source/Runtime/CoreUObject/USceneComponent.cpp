@@ -1,9 +1,14 @@
 #include "USceneComponent.h"
 #include "ThirdParty/Json/json.hpp"
 
+﻿#include "USceneComponent.h"
 
-void USceneComponent::Serialize()
+FTransform USceneComponent::GetRelativeTransform()
 {
-	//FVector tmpRot = RelativeTransform.Rotation.get
+    return RelativeTransform;
+}
 
+void USceneComponent::SetRelativeTransform(FTransform RelativeTransform)
+{
+    this->RelativeTransform = RelativeTransform;
 }

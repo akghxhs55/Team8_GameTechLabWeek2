@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Analysis|Win32">
@@ -259,11 +259,15 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Editor\Core\FEditor.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
     <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />
@@ -273,8 +277,19 @@
     <ClCompile Include="Source\Runtime\Rendering\FMesh.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Editor\Application\FEditorApplication.h" />
+    <ClInclude Include="Source\Editor\Core\FEditor.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UCubeComp.h" />
@@ -289,7 +304,7 @@
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
     <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
     <ClInclude Include="Source\Runtime\Engine\FTimeManager.h" />
-    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
+    <ClInclude Include="Source\Runtime\Engine\FCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
     <ClInclude Include="Source\Runtime\Input\FCameraInputController.h" />
@@ -306,7 +321,14 @@
     <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
     <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
-    <ClInclude Include="Source\Runtime\UI\UIManager.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imconfig.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_internal.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">

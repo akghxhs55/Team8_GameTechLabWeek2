@@ -12,7 +12,7 @@ enum class EProjectionType : uint8
 struct FCameraProjection
 {
 	EProjectionType ProjectionType = EProjectionType::Perspective;
-	float FOV = 60.0f; // Perspective 전용
+	float FOV = 60.0f; // Perspective 전용, Vertical
 	float Aspect = 1.0f; // Perspective 전용. Width / Height
 	float Width = 4.0f; // Orthographic 전용
 	float Height = 4.0f; // Orthographic 전용

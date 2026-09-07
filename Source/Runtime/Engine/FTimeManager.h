@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class FTimeManager final
 {
@@ -11,10 +11,16 @@ public:
 	}
 
 	void Resume() { bisRunning = true; }
-	void Pause() { bisRunning = false; };
-	float GetDeltaTime() const { return deltaTime; };
+	void Pause() { bisRunning = false; }
+	[[nodiscard]] float GetDeltaTime() const { return deltaTime; }
 	void Update();
-	void SetTargetFPS(float _targetFPS) { targetFPS = _targetFPS; };
+	void SetTargetFPS(float _targetFPS) { targetFPS = _targetFPS; }
+
+	FTimeManager(const FTimeManager&) = delete;
+	FTimeManager& operator=(const FTimeManager&) = delete;
+
+	FTimeManager(FTimeManager&&) = delete;
+	FTimeManager&& operator=(FTimeManager&&) = delete;
 
 private:
 	FTimeManager();
@@ -28,6 +34,4 @@ private:
 	float deltaTime = 0.0f;
 
 	bool bisRunning = false;
-
-
 };
