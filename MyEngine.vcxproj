@@ -264,6 +264,8 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
     <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />

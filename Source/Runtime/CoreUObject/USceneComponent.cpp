@@ -1,3 +1,6 @@
+#include "USceneComponent.h"
+#include "ThirdParty/Json/json.hpp"
+
 ﻿#include "USceneComponent.h"
 
 FTransform USceneComponent::GetRelativeTransform()

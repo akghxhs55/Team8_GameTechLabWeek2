@@ -29,6 +29,8 @@ public:
 	const UObject& operator=(UObject&&) = delete;
 	virtual void Serialize() const;
 
+	virtual void Serialize();
+
 protected:
 	UObject() = default;
 	virtual ~UObject() = default;
