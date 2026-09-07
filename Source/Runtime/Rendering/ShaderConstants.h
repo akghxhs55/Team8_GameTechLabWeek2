@@ -4,19 +4,11 @@
 #include "Runtime/Math/FMatrix.h"
 
 // b0에 바인딩
-struct FFrameConstants
-{
-	// FMatrix ViewProjection;
-};
-// static_assert(sizeof(FFrameConstants) % 16 == 0);
-
-// b1에 바인딩
 struct FObjectConstants
 {
 	FMatrix MVP;
-	// FMatrix Model;
-	FVector Color;
+	FVector Color{ 0.0f, 0.0f, 0.0f };
 
-	float Padding;
+	float Padding = 0.0f;
 };
 static_assert(sizeof(FObjectConstants) % 16 == 0);

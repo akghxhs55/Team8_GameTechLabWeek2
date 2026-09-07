@@ -105,7 +105,6 @@ int WINAPI wWinMain(
 	Camera.Yaw = -45.0f;
 	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
 
-	// TODO: 추상화
 	static FCameraInputController CameraController;
 
 	bool bQuit = false;

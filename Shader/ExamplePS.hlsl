@@ -8,7 +8,7 @@ struct PS_INPUT
 
 float4 MainPS(PS_INPUT Input) : SV_Target
 {
-	if (length(Input.Color) > 0.0001f)
+	if (length(Color) < 0.0001f)
 	{
         return Input.Color;
     }
