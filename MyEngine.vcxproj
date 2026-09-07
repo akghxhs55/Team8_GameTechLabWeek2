@@ -261,6 +261,8 @@
   <ItemGroup>
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
