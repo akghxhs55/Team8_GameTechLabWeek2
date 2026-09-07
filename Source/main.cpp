@@ -1,5 +1,5 @@
 ﻿#include "Runtime/Engine/UScene.h"
-#include "Runtime/Engine/FViewportCamera.h"
+#include "Runtime/Engine/FCamera.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
@@ -10,8 +10,15 @@
 #include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FVector2.h"
 #include "Runtime/Math/FMatrix.h"
+#include "ThirdParty/Imgui/imgui.h"
+#include "ThirdParty/Imgui/imgui_internal.h"
+#include "ThirdParty/Imgui/imgui_impl_dx11.h"
+#include "ThirdParty/Imgui/imgui_impl_win32.h"
+#include "Editor/UI/Imgui/FImguiManager.h"
 #include <Windows.h>
 #include <windowsx.h>
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace
 {
@@ -35,6 +42,8 @@ int WINAPI wWinMain(
 
 	ShowWindow(Window, nShowCmd);
 
+	FInputManager::Get();
+
 	FRenderer Renderer;
 	if (!Renderer.Initialize(Window))
 	{
@@ -46,6 +55,13 @@ int WINAPI wWinMain(
 	{
 		return -1;
 	}
+
+	//FImguiManager& UIManager = FImguiManager::Get();
+	//{
+	//	ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
+	//	Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
+	//	UIManager.Initialize_ImplWin32DX11(Window, Device, Context);
+	//}
 
 	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
 	UScene* Scene = NewObject<UScene>(RenderResources);
@@ -73,7 +89,7 @@ int WINAPI wWinMain(
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
 	Scene->RegisterComponent(*CylinderCompZ);
 
-	FViewportCamera Camera{};
+	FCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
 	Camera.Pitch = -25.0f;
 	Camera.Yaw = -45.0f;
@@ -92,8 +108,8 @@ int WINAPI wWinMain(
 			break;
 		}
 
-		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().Update();
+		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
 		CameraController.UpdateKeyInput(Camera, 1.0f / 60.0f);
 
 		const FMatrix VP = Camera.CreateViewProjectionMatrix();
@@ -105,6 +121,19 @@ int WINAPI wWinMain(
 			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
 			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
 		}
+
+		//ImGui_ImplDX11_NewFrame();
+		//ImGui_ImplWin32_NewFrame();
+		//ImGui::NewFrame();
+
+		//// 여기
+		//ImGui::ShowDemoWindow();
+
+		//ImGui::Render();
+
+		//ImGui_ImplDX11_RenderDrawData(
+		//	ImGui::GetDrawData()
+		//);
 
 		Renderer.SwapBuffer();
     }
@@ -128,6 +157,10 @@ namespace
 		WindowClass.lpfnWndProc =
 			[](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 			{
+				LRESULT imguiResult{};
+				if (imguiResult = ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) // imgui의 프레임 스냅샷 상태를 갱신
+					return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
+
 				switch (uMsg)
 				{
 				case WM_DESTROY:
@@ -157,7 +190,18 @@ namespace
 						static_cast<float>(GET_Y_LPARAM(lParam))
 					};
 					break;
+				case WM_SIZE:
+				{
+					if (wParam != SIZE_MINIMIZED)
+					{
+						UINT Width = LOWORD(lParam);
+						UINT Height = HIWORD(lParam);
 
+						//Renderer.Resize(Width, Height);
+					}
+
+					return 0;
+				}
 				default:
 					return DefWindowProc(hWnd, uMsg, wParam, lParam);
 				}

@@ -19,4 +19,9 @@ protected:
 
 	virtual void OnRegister(UScene& Scene) {}
 	virtual void OnUnregister(UScene& Scene) {}
+public:
+	FTransform GetRelativeTransform();
+	void SetRelativeTransform(FTransform RelativeTransform);
+	FTransform GetGlobalTransform();
+	void SetRelativeTransformFromGlobal(FTransform GlobalTransform);
 };

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source">
@@ -32,8 +32,26 @@
     <Filter Include="Source\Runtime\Input">
       <UniqueIdentifier>{3ab891cc-31a1-4e46-850b-cd4dd3a5dcef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Runtime\UI">
-      <UniqueIdentifier>{f9e08c8f-2c3c-41c2-8223-43c62d69588d}</UniqueIdentifier>
+    <Filter Include="Source\Editor">
+      <UniqueIdentifier>{5ab85c01-52da-412e-953a-a9b74a09ed8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ThirdParty">
+      <UniqueIdentifier>{54d071d0-8efc-4fbc-b99e-4cf7ba4e7c0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Editor\Application">
+      <UniqueIdentifier>{c710c096-8a44-4f0b-aa47-59238fdea084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Editor\Core">
+      <UniqueIdentifier>{27ad0d68-7275-4759-bd9a-0b7ac1ec0f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Editor\UI">
+      <UniqueIdentifier>{66b7146b-e9d4-4513-ab87-851bbbc92a79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Editor\UI\Imgui">
+      <UniqueIdentifier>{8dc61f6a-aca3-4858-bc36-8db119905dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ThirdParty\Imgui">
+      <UniqueIdentifier>{00e6312a-ad83-4745-8747-939a4f5be73a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +81,42 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp">
+      <Filter>Source\Runtime\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_demo.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_draw.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_impl_dx11.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_impl_win32.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_tables.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThirdParty\Imgui\imgui_widgets.cpp">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Core\FEditor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,17 +189,59 @@
     <ClInclude Include="Source\Runtime\Math\FQuaternion.h">
       <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h">
-      <Filter>Source\Runtime\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h">
       <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\Engine\USceneManager.h">
       <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Runtime\UI\UIManager.h">
-      <Filter>Source\Runtime\UI</Filter>
+    <ClInclude Include="Source\Editor\Application\FEditorApplication.h">
+      <Filter>Source\Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\Core\FEditor.h">
+      <Filter>Source\Editor\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UCylinderComp.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\FCamera.h">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Input\FCameraInputController.h">
+      <Filter>Source\Runtime\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\FVector2.h">
+      <Filter>Source\Runtime\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imconfig.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_dx11.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_win32.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imgui_internal.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_rectpack.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_textedit.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Imgui\imstb_truetype.h">
+      <Filter>Source\ThirdParty\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
