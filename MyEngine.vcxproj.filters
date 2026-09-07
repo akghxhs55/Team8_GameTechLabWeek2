@@ -53,6 +53,9 @@
     <Filter Include="Source\ThirdParty\Imgui">
       <UniqueIdentifier>{00e6312a-ad83-4745-8747-939a4f5be73a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\ThirdParty\Json">
+      <UniqueIdentifier>{4c9c9a29-5249-4fa5-bd20-4f27df236bb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -123,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp">
       <Filter>Source\Runtime\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp">
+      <Filter>Source\Runtime\CoreUObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ThirdParty\Json\json.hpp">
+      <Filter>Source\ThirdParty\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
