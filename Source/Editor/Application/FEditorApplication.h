@@ -2,13 +2,19 @@
 #include "Editor/Core/FEditor.h"
 #include "Editor/UI/Imgui/FImguiManager.h"
 #include "Editor/UI/Imgui/FImguiPropertyWindow.h"
-
+#include "Editor/UI/Imgui/FImguiEditorViewportWindow.h"
+#include "Runtime/Engine/FRenderView.h"
 
 class FEditorApplication final {
 	FEditor Editor;
+	USceneManager* SceneManager = nullptr;
 
 	FImguiManager ImguiManager;
+
+	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
+
+	FRenderView* RenderView = nullptr;
 public:
 	static FEditorApplication& Get()
 	{
@@ -24,8 +30,14 @@ public:
 	FEditorApplication(FEditorApplication&&) = delete;
 	FEditorApplication& operator=(FEditorApplication&&) = delete;
 
-
+	void Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context);
+	void Initialize_Runtime(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager, FRenderView* RenderView); // TODO: RendererLibrary의존성 사라져야 함
+	bool CheckSceneExistsAndInitializeIfNotExists(const FString& path = "");
+	void Update(float DeltaTime);
+	void Render();
 private:
 	FEditorApplication() = default;
 	~FEditorApplication() = default;
+	void BeginFrame();
+	void Tick(float DeltaTime);
 };

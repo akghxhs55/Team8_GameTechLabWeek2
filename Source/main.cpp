@@ -1,5 +1,7 @@
-﻿#include "Runtime/Engine/UScene.h"
+﻿#include "Editor/Application/FEditorApplication.h"
+#include "Runtime/Engine/UScene.h"
 #include "Runtime/Engine/FCamera.h"
+#include "Runtime/Engine/FRenderView.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
@@ -7,17 +9,13 @@
 #include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Engine/FTimeManager.h"
+#include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FVector2.h"
 #include "Runtime/Math/FMatrix.h"
-#include "ThirdParty/Imgui/imgui.h"
-#include "ThirdParty/Imgui/imgui_internal.h"
-#include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
-#include "Editor/UI/Imgui/FImguiManager.h"
-#include "Runtime/Engine/USceneManager.h"
 #include <Windows.h>
 #include <windowsx.h>
 
@@ -54,50 +52,55 @@ int WINAPI wWinMain(
 	{
 		return -1;
 	}
+	FRenderView RenderView(Renderer);
 
 	FRenderResourceLibrary RenderResources;
 	if (!RenderResources.Initialize(Renderer))
 	{
 		return -1;
 	}
+	USceneManager tmp;
 
-	//FImguiManager& UIManager = FImguiManager::Get();
-	//{
-	//	ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
-	//	Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
-	//	UIManager.Initialize_ImplWin32DX11(Window, Device, Context);
-	//}
+	FEditorApplication& EditorApp = FEditorApplication::Get();
+	{
+		ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
+		Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
+		EditorApp.Initialize_ImguiWin32DX11(Window, Device, Context);
+	}
+	EditorApp.Initialize_Runtime(&RenderResources, &tmp, &RenderView);
+	bool bPreExisting = EditorApp.CheckSceneExistsAndInitializeIfNotExists(" "); // 부울 리턴 용례
+
 
 	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
-	UScene* Scene = NewObject<UScene>(RenderResources);
-	UCubeComp* CubeComp = NewObject<UCubeComp>();
-	CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
-	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
-	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	Scene->RegisterComponent(*CubeComp);
+	//UScene* Scene = NewObject<UScene>(RenderResources);
+	//UCubeComp* CubeComp = NewObject<UCubeComp>();
+	//CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
+	//CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
+	//CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
+	//Scene->RegisterComponent(*CubeComp);
 
 	//해당 경로에 UUID 기록 성공
-	USceneManager tmp;
-	tmp.currentScene = Scene;
-	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
+	//USceneManager tmp;
+	//tmp.currentScene = Scene;
+	//tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
 
-	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>();
-	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
-	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
-	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompX);
+	//UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
+	//CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
+	//CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
+	//CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	//Scene->RegisterComponent(*CylinderCompX);
 
-	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>();
-	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
-	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
-	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompY);
+	//UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
+	//CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
+	//CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
+	//CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	//Scene->RegisterComponent(*CylinderCompY);
 
-	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>();
-	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
-	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
-	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompZ);
+	//UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
+	//CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
+	//CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
+	//CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
+	//Scene->RegisterComponent(*CylinderCompZ);
 
 	FCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
@@ -110,6 +113,8 @@ int WINAPI wWinMain(
 	bool bQuit = false;
     while (!bQuit)
     {
+		FTimeManager::Get().Update();
+		FTimeManager::Get().Resume();
 		if (!ProcessWindowMessage())
 		{
 			bQuit = true;
@@ -120,18 +125,20 @@ int WINAPI wWinMain(
 		CameraController.UpdateMouseInput(Camera);
 		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 
-		FTimeManager::Get().Update();
-		FTimeManager::Get().Resume();
+		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		//CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 
-		const FMatrix VP = Camera.CreateViewProjectionMatrix();
-
+		EditorApp.Update(FTimeManager::Get().GetDeltaTime());
 		Renderer.BeginFrame();
-		
-		for (const auto& Component : Scene->GetPrimitiveComponents())
-		{
-			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
-			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
-		}
+		EditorApp.Render();
+		//const FMatrix VP = Camera.CreateViewProjectionMatrix();
+
+		//
+		//for (const auto& Component : Scene->GetPrimitiveComponents())
+		//{
+		//	Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
+		//	Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
+		//}
 
 		//ImGui_ImplDX11_NewFrame();
 		//ImGui_ImplWin32_NewFrame();
