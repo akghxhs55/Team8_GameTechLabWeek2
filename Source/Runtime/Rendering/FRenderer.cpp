@@ -81,16 +81,16 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
 
 void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 {
-	static const FMatrix CameraToProjectionAxes{
+	static const FMatrix UnrealClipToD3DClip{
 		FVector{ 0.0f, 0.0f, 1.0f },
 		FVector{ 1.0f, 0.0f, 0.0f },
 		FVector{ 0.0f, 1.0f, 0.0f },
 		FVector{ 0.0f, 0.0f, 0.0f }
 	};
 
-	// 언리얼 -> HLSL 좌표 변환
+	// 언리얼 Clip -> D3D Clip 좌표 변환
 	FObjectConstants ShaderConstants = Constants;
-	ShaderConstants.MVP *= CameraToProjectionAxes;
+	ShaderConstants.MVP *= UnrealClipToD3DClip;
 
 	D3D11_MAPPED_SUBRESOURCE MappedResource{};
 	Context->Map(ObjectConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);

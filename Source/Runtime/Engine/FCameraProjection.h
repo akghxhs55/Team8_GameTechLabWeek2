@@ -32,11 +32,6 @@ inline FMatrix FCameraProjection::CreateProjectionMatrix() const
 	{
 		const float Phi = FOV * std::numbers::pi_v<float> / 180.0f;
 		const float C = 1.0f / std::tan(Phi * 0.5f);
-		//Matrix.M[0][0] = C / Aspect;
-		//Matrix.M[1][1] = C;
-		//Matrix.M[2][2] = FarZ / (FarZ - NearZ);
-		//Matrix.M[2][3] = 1.0f;
-		//Matrix.M[3][2] = -NearZ * FarZ / (FarZ - NearZ);
 		Matrix.M[0][0] = FarZ / (FarZ - NearZ);
 		Matrix.M[1][1] = C / Aspect;
 		Matrix.M[2][2] = C;
