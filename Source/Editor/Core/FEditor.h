@@ -1,9 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "Runtime/CoreUObject/UObject.h"
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Core/TArray.h"
 #include "Editor/EditorViewport/FEditorViewport.h"
-#include <memory>
 
 class FEditor final {
 private:
@@ -20,8 +19,9 @@ public:
 	void LoadScene(const FString& path); // TODO: 실제 동작을 하는 코드로 갱신
 	bool CheckSceneExists();
 	
-	void AddViewport();
+	void AddViewport(FEditorViewport Viewport);
 	void DeleteViewport(int32 IndexOfViewport);
+	FEditorViewport* GetActiveViewport(); // TODO: 임시로 0번 반환
 	
 	bool SelectObject(UObject* Object);
 	void UnSelectObject();

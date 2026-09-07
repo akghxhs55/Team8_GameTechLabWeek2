@@ -1,9 +1,10 @@
-#pragma once
+﻿#pragma once
 #include "Editor/Core/FEditor.h"
 #include "Editor/UI/Imgui/FImguiManager.h"
 #include "Editor/UI/Imgui/FImguiPropertyWindow.h"
 #include "Editor/UI/Imgui/FImguiEditorViewportWindow.h"
 #include "Runtime/Engine/FRenderView.h"
+#include "Runtime/Input/FCameraInputController.h"
 
 class FEditorApplication final {
 	FEditor Editor;
@@ -13,6 +14,8 @@ class FEditorApplication final {
 
 	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
+
+	FCameraInputController CameraController;
 
 	FRenderView* RenderView = nullptr;
 public:

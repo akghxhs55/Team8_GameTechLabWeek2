@@ -1,4 +1,4 @@
-#include "FEditor.h"
+﻿#include "FEditor.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
@@ -7,29 +7,6 @@ void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager*
 {
     this->RendererLibrary = RendererLibrary;
     this->SceneManager = SceneManager;
-}
-
-bool FEditor::SelectObject(UObject* Object)
-{
-    if (Object == nullptr)
-        return false;
-    SelectedObject = Object;
-    return true;
-}
-
-void FEditor::UnSelectObject()
-{
-    SelectedObject = nullptr;
-}
-
-UObject* FEditor::GetSelectedObject()
-{
-    return SelectedObject;
-}
-
-const TArray<FEditorViewport>& FEditor::GetViewports() const
-{
-    return EditorViewports;
 }
 
 void FEditor::NewScene()
@@ -62,12 +39,44 @@ bool FEditor::CheckSceneExists()
     return true;
 }
 
-void FEditor::AddViewport()
+void FEditor::AddViewport(FEditorViewport Viewport)
 {
-    EditorViewports.push_back(FEditorViewport{});
+    EditorViewports.push_back(Viewport);
 }
 
 void FEditor::DeleteViewport(int32 IndexOfViewport)
 {
     EditorViewports.erase(EditorViewports.begin() + IndexOfViewport);
+}
+
+FEditorViewport* FEditor::GetActiveViewport()
+{
+    if (EditorViewports.empty())
+    {
+        return nullptr;
+    }
+	return &EditorViewports[0];
+}
+
+bool FEditor::SelectObject(UObject* Object)
+{
+    if (Object == nullptr)
+        return false;
+    SelectedObject = Object;
+    return true;
+}
+
+void FEditor::UnSelectObject()
+{
+    SelectedObject = nullptr;
+}
+
+UObject* FEditor::GetSelectedObject()
+{
+    return SelectedObject;
+}
+
+const TArray<FEditorViewport>& FEditor::GetViewports() const
+{
+    return EditorViewports;
 }

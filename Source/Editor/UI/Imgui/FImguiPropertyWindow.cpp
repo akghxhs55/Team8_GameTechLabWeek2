@@ -1,4 +1,4 @@
-#include "FImguiPropertyWindow.h"
+﻿#include "FImguiPropertyWindow.h"
 #include "Runtime/CoreUObject/USceneComponent.h"
 #include "ThirdParty/Imgui/imgui.h"
 #include "ThirdParty/Imgui/imgui_internal.h"
@@ -15,7 +15,7 @@ void FImguiPropertyWindow::Process(FEditor& Editor)
 		FTransform RelativeTransform = SceneComponent->GetRelativeTransform();
 		float Location[3] = { RelativeTransform.Location[0], RelativeTransform.Location[1], RelativeTransform.Location[2] };
 
-		ImGui::DragFloat3("Translation", Location);
+		ImGui::DragFloat3("Translation", Location, 0.1f);
 		RelativeTransform.Location = { Location[0], Location[1], Location[2] };
 		SceneComponent->SetRelativeTransform(RelativeTransform);
 		//ImGui::DragFloat3("Rotation", Rotation);

@@ -1,20 +1,13 @@
 ﻿#include "Editor/Application/FEditorApplication.h"
 #include "Runtime/Engine/UScene.h"
-#include "Runtime/Engine/FCamera.h"
 #include "Runtime/Engine/FRenderView.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
-#include "Runtime/CoreUObject/UCubeComp.h"
-#include "Runtime/CoreUObject/UCylinderComp.h"
-#include "Runtime/CoreUObject/UConeComp.h"
-#include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Engine/FTimeManager.h"
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
-#include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FVector2.h"
-#include "Runtime/Math/FMatrix.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
 #include <Windows.h>
 #include <windowsx.h>
@@ -59,7 +52,10 @@ int WINAPI wWinMain(
 	{
 		return -1;
 	}
+
+	UScene* Scene = NewObject<UScene>(RenderResources);
 	USceneManager tmp;
+	tmp.currentScene = Scene;
 
 	FEditorApplication& EditorApp = FEditorApplication::Get();
 	{
@@ -68,53 +64,13 @@ int WINAPI wWinMain(
 		EditorApp.Initialize_ImguiWin32DX11(Window, Device, Context);
 	}
 	EditorApp.Initialize_Runtime(&RenderResources, &tmp, &RenderView);
-	bool bPreExisting = EditorApp.CheckSceneExistsAndInitializeIfNotExists(" "); // 부울 리턴 용례
-
-
-	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
-	//UScene* Scene = NewObject<UScene>(RenderResources);
-	//UCubeComp* CubeComp = NewObject<UCubeComp>();
-	//CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
-	//CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
-	//CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	//Scene->RegisterComponent(*CubeComp);
-
-	//해당 경로에 UUID 기록 성공
-	//USceneManager tmp;
-	//tmp.currentScene = Scene;
-	//tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
-
-	//UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
-	//CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
-	//CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
-	//CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	//Scene->RegisterComponent(*CylinderCompX);
-
-	//UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
-	//CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
-	//CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
-	//CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	//Scene->RegisterComponent(*CylinderCompY);
-
-	//UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
-	//CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
-	//CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
-	//CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	//Scene->RegisterComponent(*CylinderCompZ);
-
-	FCamera Camera{};
-	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
-	Camera.Pitch = -25.0f;
-	Camera.Yaw = -45.0f;
-	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
-
-	static FCameraInputController CameraController;
 
 	bool bQuit = false;
     while (!bQuit)
     {
 		FTimeManager::Get().Update();
 		FTimeManager::Get().Resume();
+
 		if (!ProcessWindowMessage())
 		{
 			bQuit = true;
@@ -122,23 +78,12 @@ int WINAPI wWinMain(
 		}
 
 		FInputManager::Get().BeginFrame();
-		CameraController.UpdateMouseInput(Camera);
-		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
-
-		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
-		//CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 
 		EditorApp.Update(FTimeManager::Get().GetDeltaTime());
-		Renderer.BeginFrame();
-		EditorApp.Render();
-		//const FMatrix VP = Camera.CreateViewProjectionMatrix();
 
-		//
-		//for (const auto& Component : Scene->GetPrimitiveComponents())
-		//{
-		//	Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
-		//	Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
-		//}
+		Renderer.BeginFrame();
+
+		EditorApp.Render();
 
 		//ImGui_ImplDX11_NewFrame();
 		//ImGui_ImplWin32_NewFrame();
@@ -164,8 +109,6 @@ int WINAPI wWinMain(
 namespace
 {
 	// TODO: Resizing 처리
-	// TODO: 마우스 입력 추상화. FInputManager에 합칠 수 있을까?
-	// TODO: 마우스가 화면 밖에 나갈 때 처리가 잘 안 됨
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
 		WNDCLASS WindowClass{};
@@ -209,9 +152,8 @@ namespace
 
 	LRESULT CALLBACK WindowCallback(HWND Window, UINT Message, WPARAM WParam, LPARAM LParam)
 	{
-		LRESULT imguiResult{};
-		if (imguiResult = ImGui_ImplWin32_WndProcHandler(Window, Message, WParam, LParam)) // imgui의 프레임 스냅샷 상태를 갱신
-			return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
+		if (LRESULT ImGuiResult = ImGui_ImplWin32_WndProcHandler(Window, Message, WParam, LParam)) // imgui의 프레임 스냅샷 상태를 갱신
+			return ImGuiResult; // ImGuiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
 
 		const FVector2 MousePos{
 			static_cast<float>(GET_X_LPARAM(LParam)),
