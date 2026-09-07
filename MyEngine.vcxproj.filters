@@ -157,8 +157,8 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\Rendering\FRendereResourceLibrary.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Runtime\Rendering\FRenderResourceLibrary.cpp">
+      <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

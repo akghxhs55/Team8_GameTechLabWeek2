@@ -15,8 +15,7 @@ public:
 	bool Initialize(HWND Window);
 	void Shutdown();
 	void BeginFrame();
-	void Draw(const FMesh& Mesh, const FMaterial& Material);
-	void UpdateObjectConstants(const FObjectConstants& Constants);
+	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
 	void SwapBuffer();
 	
 	[[nodiscard]]
@@ -29,6 +28,7 @@ private:
 	bool InitializeDeviceAndSwapChain(HWND Window);
 	bool InitializeBackBufferAndDepthStencil();
 	bool InitializeConstantBuffers();
+	void UpdateObjectConstants(const FObjectConstants& Constants);
 
 	[[nodiscard]]
 	TSharedPtr<FRenderPipeline> FindOrCreateRenderPipeline(const FMaterialDesc& Desc);

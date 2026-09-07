@@ -21,9 +21,6 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 	if (!CreateCubeMesh(Renderer) ||
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
-		!CreateArrowMesh(Renderer, 0) ||
-		!CreateArrowMesh(Renderer, 1) ||
-		!CreateArrowMesh(Renderer, 2) ||
 		!CreateSimpleMaterial(Renderer))
 	{
 		return false;
@@ -256,11 +253,6 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 
 	ConeMesh = Renderer.CreateMesh(MeshDesc);
 	return ConeMesh != nullptr;
-}
-
-bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer, float Axis)
-{
-	return true;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
