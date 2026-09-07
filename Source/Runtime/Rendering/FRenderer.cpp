@@ -173,6 +173,11 @@ TSharedPtr<FMaterial> FRenderer::CreateMaterial(const FMaterialDesc& Desc)
 	return Material;
 }
 
+void FRenderer::GetDeviceAndContext_ImplDX11(ID3D11Device*& DeviceOut, ID3D11DeviceContext*& ContextOut) {
+	DeviceOut = Device.Get();
+	ContextOut = Context.Get();
+}
+
 bool FRenderer::InitializeDeviceAndSwapChain(HWND Window)
 {
 	constexpr D3D_FEATURE_LEVEL FeatureLevels[] = { D3D_FEATURE_LEVEL_11_0 };

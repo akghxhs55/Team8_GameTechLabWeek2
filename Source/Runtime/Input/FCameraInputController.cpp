@@ -1,12 +1,12 @@
 ﻿#include "FCameraInputController.h"
 
-#include "Runtime/Engine/FViewportCamera.h"
+#include "Runtime/Engine/FCamera.h"
 #include "Runtime/Math/FMatrix.h"
 #include <Windows.h>
 
 #include "FInputManager.h"
 
-void FCameraInputController::UpdateKeyInput(FViewportCamera& Camera, float DeltaTime) const
+void FCameraInputController::UpdateKeyInput(FCamera& Camera, float DeltaTime) const
 {
 	const FMatrix Rotation =
 		FMatrix::MakeRotation(FVector(0.0f, Camera.Pitch, Camera.Yaw));
@@ -43,8 +43,9 @@ void FCameraInputController::UpdateKeyInput(FViewportCamera& Camera, float Delta
 	Camera.Position += Direction * CameraMoveSpeed * DeltaTime;
 }
 
-void FCameraInputController::HandleMouseInput(FViewportCamera& Camera, FVector2 MouseDelta) const
+void FCameraInputController::HandleMouseInput(FCamera& Camera, float DeltaTime, FVector2 MouseDelta) const
 {
-	Camera.Yaw += MouseDelta.X * CameraRotateSpeed;
-	Camera.Pitch -= MouseDelta.Y * CameraRotateSpeed;
+	FVector2 Delta = MouseDelta.Normalized() * CameraRotateSpeed * DeltaTime;
+	Camera.Yaw += Delta.X;
+	Camera.Pitch -= Delta.Y;
 }

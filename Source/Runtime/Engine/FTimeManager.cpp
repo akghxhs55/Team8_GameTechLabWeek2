@@ -1,11 +1,11 @@
-#include <windows.h>
+﻿#include <windows.h>
 #include "FTimeManager.h"
 
 FTimeManager::FTimeManager()
 {
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&prevTime);
-    targetFrameTime = 1.0 / targetFPS;
+    targetFrameTime = 1.0f / targetFPS;
 }
 
 void FTimeManager::Update()
@@ -30,7 +30,6 @@ void FTimeManager::Update()
         deltaTime = actualDeltaTime;
 
     }
-
 
     deltaTime = bisRunning ? deltaTime : 0.0;
     prevTime = currentTime;

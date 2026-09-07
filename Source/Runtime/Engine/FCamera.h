@@ -4,7 +4,7 @@
 #include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FMatrix.h"
 
-struct FViewportCamera
+struct FCamera
 {
 	FVector Position{ 0.0f, 0.0f, 0.0f };
 	float Yaw = 0.0f;
@@ -17,7 +17,9 @@ struct FViewportCamera
 	// Move(), Rotate(), Zoom() 등 추가 가능
 };
 
-inline FMatrix FViewportCamera::CreateViewProjectionMatrix() const
+// TODO: 카메라가 렌더링엔진 좌표계를 모르게 하기(렌더러가 엔진의 좌표계 정보를 받아 변환하는 것이 바람직)
+// TODO: 실제 화면비에 따른 처리(FCameraProjection이 ratio를 들고 있는것이 의미없는것은 아닐 수 있으나, 실화면비와의 관계 정립이 필요)
+inline FMatrix FCamera::CreateViewProjectionMatrix() const
 {
 	// 언리얼 카메라 좌표계 -> HLSL 카메라 좌표계
 	static const FMatrix CameraToProjectionAxes{
