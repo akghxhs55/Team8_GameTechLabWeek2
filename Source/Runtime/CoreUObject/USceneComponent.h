@@ -13,6 +13,7 @@ class USceneComponent : public UObject
 
 public:
 	FTransform RelativeTransform;
+	virtual void Serialize() override;
 
 protected:
 	USceneComponent() = default;
