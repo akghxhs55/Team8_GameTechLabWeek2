@@ -52,7 +52,7 @@ bool FInputManager::IsKeyJustReleased(uint32 Key) const
 
 void FInputManager::AddMouseInput(const FVector2& Delta)
 {
-	MouseDelta = Delta;
+	MouseDelta += Delta;
 }
 
 FVector2 FInputManager::GetMouseDelta() const

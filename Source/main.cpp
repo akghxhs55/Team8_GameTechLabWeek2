@@ -79,19 +79,19 @@ int WINAPI wWinMain(
 	tmp.currentScene = Scene;
 	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
 
-	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
+	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>();
 	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
 	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
 	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
 	Scene->RegisterComponent(*CylinderCompX);
 
-	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
+	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>();
 	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
 	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
 	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
 	Scene->RegisterComponent(*CylinderCompY);
 
-	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
+	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>();
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
@@ -116,7 +116,7 @@ int WINAPI wWinMain(
 			break;
 		}
 
-		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
 		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 		FInputManager::Get().Update();
 
@@ -179,11 +179,20 @@ namespace
 					break;
 
 				case WM_RBUTTONDOWN:
+					PrevMousePos = FVector2{
+						static_cast<float>(GET_X_LPARAM(lParam)),
+						static_cast<float>(GET_Y_LPARAM(lParam))
+					};
 					bMousePressed = true;
+					SetCapture(hWnd);
 					break;
 
 				case WM_RBUTTONUP:
+				case WM_CAPTURECHANGED:
+				case WM_CANCELMODE:
+				case WM_KILLFOCUS:
 					bMousePressed = false;
+					ReleaseCapture();
 					break;
 
 				case WM_MOUSEMOVE:
@@ -201,6 +210,7 @@ namespace
 						static_cast<float>(GET_Y_LPARAM(lParam))
 					};
 					break;
+
 				case WM_SIZE:
 				{
 					if (wParam != SIZE_MINIMIZED)
@@ -211,11 +221,12 @@ namespace
 						//Renderer.Resize(Width, Height);
 					}
 
-					return 0;
+					break;
 				}
 				default:
 					return DefWindowProc(hWnd, uMsg, wParam, lParam);
 				}
+
 				return 0;
 			};
 		WindowClass.hInstance = Instance;

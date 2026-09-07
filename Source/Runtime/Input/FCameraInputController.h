@@ -9,8 +9,8 @@ class FCameraInputController
 {
 public:
 	void UpdateKeyInput(FCamera& Camera, float DeltaTime) const;
-	void HandleMouseInput(FCamera& Camera, float DeltaTime, FVector2 MouseDelta) const;
+	void HandleMouseInput(FCamera& Camera, FVector2 MouseDelta) const;
 
 	float CameraMoveSpeed = 10.0f;
-	float CameraRotateSpeed = 100.0f;
+	float CameraRotateSpeed = 0.5f;
 };

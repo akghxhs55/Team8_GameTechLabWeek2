@@ -16,19 +16,22 @@ public:
 	//  지금은 어차피 FMesh로 반환해도 Getter만 있어서 수정 못 함
 	//  UPrimitive가 비const FMesh를 소유하도록 되어 있어서 이렇게 둠
 	[[nodiscard]] TSharedPtr<FMesh> GetCubeMesh() { return CubeMesh; }
-	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh(int Axis) { return CylinderMesh[Axis]; }
+	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh() { return CylinderMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetArrowMesh(int Axis) { return ArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
-	bool CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
+	bool CreateCylinderMesh(FRenderer& Renderer, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
+	bool CreateArrowMesh(FRenderer& Renderer, float Axis);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
 
 private:
 	TSharedPtr<FMesh> CubeMesh;
-	TSharedPtr<FMesh> CylinderMesh[3];
+	TSharedPtr<FMesh> CylinderMesh;
 	TSharedPtr<FMesh> ConeMesh;
+	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
 };

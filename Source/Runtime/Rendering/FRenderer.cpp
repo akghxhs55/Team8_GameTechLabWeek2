@@ -94,7 +94,7 @@ void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 	Context->Unmap(ObjectConstantBuffer.Get(), 0);
 
 	Context->VSSetConstantBuffers(1, 1, ObjectConstantBuffer.GetAddressOf());
-	// 필요할 시 PSSetConstantBuffers도 사용
+	Context->PSSetConstantBuffers(1, 1, ObjectConstantBuffer.GetAddressOf());
 }
 
 void FRenderer::SwapBuffer()
