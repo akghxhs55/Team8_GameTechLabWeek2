@@ -70,10 +70,10 @@ bool FRenderResourceLibrary::CreateCubeMesh(FRenderer& Renderer)
 }
 
 // TODO: 컬러는 테스트용
-bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,float Height,uint32 SliceCount,float TopRadius,float BottomRadius)
+bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottomRadius)
 {
 	constexpr float TAU = std::numbers::pi_v<float> * 2.0f;
-	const float DTheta = TAU / SliceCount;
+	const float DTheta = TAU / static_cast<float>(SliceCount);
 
 	FVector Color;
 	if (Axis == 0){Color = FVector(1.0f, 0.0f, 0.0f);}
@@ -99,7 +99,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,fl
 	}
 
 	TArray<uint32> Indices;
-	Indices.reserve(SliceCount * 6);
+	Indices.reserve(static_cast<uint64>(SliceCount * 6u));
 
 	for (uint32 i = 0u; i < SliceCount; ++i)
 	{
@@ -119,7 +119,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,fl
 		Vertices.push_back({ FVector(0.0f, 0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
-		for (int i = 0; i <= SliceCount; ++i)
+		for (uint32 i = 0u; i <= SliceCount; ++i)
 		{
 			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
@@ -128,7 +128,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,fl
 				Color });
 		}
 
-		for (int i = 0; i < SliceCount; ++i)
+		for (uint32 i = 0u; i < SliceCount; ++i)
 		{
 			Indices.push_back(Center);
 			Indices.push_back(First + i + 1);
@@ -142,7 +142,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,fl
 		Vertices.push_back({ FVector(0.0f, -0.5f * Height, 0.0f), Color });
 
 		const uint32 First = static_cast<uint32>(Vertices.size());
-		for (int i = 0; i <= SliceCount; ++i)
+		for (uint32 i = 0u; i <= SliceCount; ++i)
 		{
 			const float Theta = DTheta * static_cast<float>(i);
 			Vertices.push_back({
@@ -151,7 +151,7 @@ bool FRenderResourceLibrary::CreateCylinderMesh(FRenderer& Renderer, int Axis,fl
 				Color });
 		}
 
-		for (int i = 0; i < SliceCount; ++i)
+		for (uint32 i = 0u; i < SliceCount; ++i)
 		{
 			Indices.push_back(Center);
 			Indices.push_back(First + i);
@@ -179,7 +179,7 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 	constexpr float BottomRadius = 0.5f;
 	constexpr float Height = 1.0f;
 	constexpr uint32 SliceCount = 24;
-	constexpr float TAU = std::numbers::pi_v<float> *2.0f;
+	constexpr float TAU = std::numbers::pi_v<float> * 2.0f;
 	constexpr float DTheta = TAU / static_cast<float>(SliceCount);
 
 	FVector Color;

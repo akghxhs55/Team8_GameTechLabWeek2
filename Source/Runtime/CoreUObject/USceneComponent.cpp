@@ -1,7 +1,9 @@
-#include "USceneComponent.h"
-#include "ThirdParty/Json/json.hpp"
-
 ﻿#include "USceneComponent.h"
+
+void USceneComponent::Serialize()
+{
+	UObject::Serialize();
+}
 
 FTransform USceneComponent::GetRelativeTransform()
 {

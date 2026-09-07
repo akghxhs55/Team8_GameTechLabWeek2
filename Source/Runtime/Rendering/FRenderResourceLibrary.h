@@ -22,14 +22,13 @@ public:
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
-	bool CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottonRadius);
+	bool CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
+
 private:
 	TSharedPtr<FMesh> CubeMesh;
 	TSharedPtr<FMesh> CylinderMesh[3];
 	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
-	
-
 };
