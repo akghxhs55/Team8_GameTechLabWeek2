@@ -157,6 +157,9 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\Rendering\FRendereResourceLibrary.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
@@ -314,6 +317,9 @@
     </ClInclude>
     <ClInclude Include="Source\ThirdParty\Json\json.hpp">
       <Filter>Source\ThirdParty\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Math\FVector4.h">
+      <Filter>Source\Runtime\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
