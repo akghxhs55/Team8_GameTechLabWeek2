@@ -146,7 +146,7 @@ int WINAPI wWinMain(
 			OutputDebugStringA("[Scene] 새 씬\n");
 		}
 
-		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().BeginFrame();
 		CameraController.UpdateMouseInput(Camera);
 		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
@@ -300,7 +300,14 @@ namespace
 		case WM_KILLFOCUS:
 			ReleaseCapture();
 			break;
-
+		case WM_KEYDOWN:
+			switch (WParam)
+			{
+			case VK_F5: bRequestSaveScene = true; break;
+			case VK_F6: bRequestLoadScene = true; break;
+			case VK_F7: bRequestNewScene = true; break;
+			}
+			break;
 		default:
 			return DefWindowProc(Window, Message, WParam, LParam);
 		}

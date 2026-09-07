@@ -3,12 +3,8 @@
 #include "ThirdParty/Json/json.hpp"
 #include "UObjectGlobals.h" 
 
-IMPLEMENT_UCLASS(USceneComponent, UObject)
 
-void USceneComponent::Serialize()
-{
-	UObject::Serialize();
-}
+IMPLEMENT_UCLASS(USceneComponent, UObject)
 
 FTransform USceneComponent::GetRelativeTransform()
 {
