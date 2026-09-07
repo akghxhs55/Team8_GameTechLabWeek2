@@ -35,7 +35,7 @@ private:
 	[[nodiscard]] uint32 AcquireUUID() { return NextUUID++; }
 
 	TArray<UObject*> Objects;
-	uint32 NextUUID = 1u;
+	uint32 NextUUID = 0u;
 
 	template <typename TObject, typename ... TArgs>
 		requires std::derived_from<TObject, UObject>

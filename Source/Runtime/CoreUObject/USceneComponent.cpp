@@ -5,6 +5,11 @@
 
 IMPLEMENT_UCLASS(USceneComponent, UObject)
 
+void USceneComponent::Serialize()
+{
+	UObject::Serialize();
+}
+
 FTransform USceneComponent::GetRelativeTransform()
 {
     return RelativeTransform;

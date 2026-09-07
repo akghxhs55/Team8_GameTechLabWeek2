@@ -10,11 +10,11 @@ public:
 		return Instance;
 	}
 
-	void Resume() { bisRunning = true; }
-	void Pause() { bisRunning = false; }
-	[[nodiscard]] float GetDeltaTime() const { return deltaTime; }
+	void Resume() { bIsRunning = true; }
+	void Pause() { bIsRunning = false; }
+	[[nodiscard]] float GetDeltaTime() const { return DeltaTime; }
 	void Update();
-	void SetTargetFPS(float _targetFPS) { targetFPS = _targetFPS; }
+	void SetTargetFPS(float InTargetFPS) { TargetFPS = InTargetFPS; }
 
 	FTimeManager(const FTimeManager&) = delete;
 	FTimeManager& operator=(const FTimeManager&) = delete;
@@ -26,12 +26,12 @@ private:
 	FTimeManager();
 	~FTimeManager() = default;
 
-	LARGE_INTEGER prevTime;
-	LARGE_INTEGER  frequency;
+	LARGE_INTEGER PrevTime;
+	LARGE_INTEGER  Frequency;
 	
-	float targetFPS = 60.0f;
-	float targetFrameTime;
-	float deltaTime = 0.0f;
+	float TargetFPS = 60.0f;
+	float TargetFrameTime;
+	float DeltaTime = 0.0f;
 
-	bool bisRunning = false;
+	bool bIsRunning = false;
 };

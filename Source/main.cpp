@@ -33,6 +33,8 @@ namespace
 
 	HWND CreateWindowHandle(HINSTANCE Instance);
 	bool ProcessWindowMessage();
+
+	LRESULT CALLBACK WindowCallback(HWND Window, UINT Message, WPARAM WParam, LPARAM LParam);
 }
 
 int WINAPI wWinMain(
@@ -86,19 +88,19 @@ int WINAPI wWinMain(
 	tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
 	tmp.currentScene->RegisterComponent(*CubeComp);
 
-	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
+	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>();
 	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
 	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
 	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
 	tmp.currentScene->RegisterComponent(*CylinderCompX);
 
-	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
+	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>();
 	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
 	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
 	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
 	tmp.currentScene->RegisterComponent(*CylinderCompY);
 
-	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
+	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>();
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
@@ -110,12 +112,8 @@ int WINAPI wWinMain(
 	Camera.Yaw = -45.0f;
 	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
 
-	// TODO: 추상화
 	static FCameraInputController CameraController;
 
-	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
-
-	// TODO: DeltaTime 계산
 	bool bQuit = false;
     while (!bQuit)
     {
@@ -149,8 +147,9 @@ int WINAPI wWinMain(
 		}
 
 		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		FInputManager::Get().BeginFrame();
+		CameraController.UpdateMouseInput(Camera);
 		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
-		FInputManager::Get().Update();
 
 		FTimeManager::Get().Update();
 		FTimeManager::Get().Resume();
@@ -193,71 +192,8 @@ namespace
 	// TODO: 마우스가 화면 밖에 나갈 때 처리가 잘 안 됨
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
-		static FVector2 PrevMousePos{ 0.0f, 0.0f };
-		static bool bMousePressed = false;
-
 		WNDCLASS WindowClass{};
-		WindowClass.lpfnWndProc =
-			[](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-			{
-				LRESULT imguiResult{};
-				if (imguiResult = ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) // imgui의 프레임 스냅샷 상태를 갱신
-					return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
-
-				switch (uMsg)
-				{
-				case WM_DESTROY:
-					PostQuitMessage(0);
-					break;
-
-				case WM_RBUTTONDOWN:
-					bMousePressed = true;
-					break;
-
-				case WM_RBUTTONUP:
-					bMousePressed = false;
-					break;
-
-				case WM_MOUSEMOVE:
-					if (bMousePressed)
-					{
-						const FVector2 MousePos{
-							static_cast<float>(GET_X_LPARAM(lParam)),
-							static_cast<float>(GET_Y_LPARAM(lParam))
-						};
-						const FVector2 MouseDelta = MousePos - PrevMousePos;
-						FInputManager::Get().AddMouseInput(MouseDelta);
-					}
-					PrevMousePos = FVector2{
-						static_cast<float>(GET_X_LPARAM(lParam)),
-						static_cast<float>(GET_Y_LPARAM(lParam))
-					};
-					break;
-				case WM_SIZE:
-				{
-					if (wParam != SIZE_MINIMIZED)
-					{
-						UINT Width = LOWORD(lParam);
-						UINT Height = HIWORD(lParam);
-
-						//Renderer.Resize(Width, Height);
-					}
-
-					return 0;
-				}
-				case WM_KEYDOWN:
-					switch (wParam)
-					{
-					case VK_F5: bRequestSaveScene = true; break;
-					case VK_F6: bRequestLoadScene = true; break;
-					case VK_F7: bRequestNewScene = true; break;
-					}
-					break;
-				default:
-					return DefWindowProc(hWnd, uMsg, wParam, lParam);
-				}
-				return 0;
-			};
+		WindowClass.lpfnWndProc = WindowCallback;
 		WindowClass.hInstance = Instance;
 		WindowClass.lpszClassName = L"MyEngine";
 
@@ -293,5 +229,82 @@ namespace
 		}
 
 		return true;
+	}
+
+	LRESULT CALLBACK WindowCallback(HWND Window, UINT Message, WPARAM WParam, LPARAM LParam)
+	{
+		LRESULT imguiResult{};
+		if (imguiResult = ImGui_ImplWin32_WndProcHandler(Window, Message, WParam, LParam)) // imgui의 프레임 스냅샷 상태를 갱신
+			return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
+
+		const FVector2 MousePos{
+			static_cast<float>(GET_X_LPARAM(LParam)),
+			static_cast<float>(GET_Y_LPARAM(LParam))
+		};
+
+		switch (Message)
+		{
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+
+		case WM_SIZE:
+		{
+			if (WParam != SIZE_MINIMIZED)
+			{
+				UINT Width = LOWORD(LParam);
+				UINT Height = HIWORD(LParam);
+
+				//Renderer.Resize(Width, Height);
+			}
+
+			break;
+		}
+
+		case WM_LBUTTONDOWN:
+			FInputManager::Get().OnMouseButtonDown(EMouseButton::Left, MousePos);
+			SetCapture(Window);
+			break;
+
+		case WM_RBUTTONDOWN:
+			FInputManager::Get().OnMouseButtonDown(EMouseButton::Right, MousePos);
+			SetCapture(Window);
+			break;
+
+		case WM_MBUTTONDOWN:
+			FInputManager::Get().OnMouseButtonDown(EMouseButton::Middle, MousePos);
+			SetCapture(Window);
+			break;
+
+		case WM_LBUTTONUP:
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Left, MousePos);
+			ReleaseCapture();
+			break;
+
+		case WM_RBUTTONUP:
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Right, MousePos);
+			ReleaseCapture();
+			break;
+
+		case WM_MBUTTONUP:
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Middle, MousePos);
+			ReleaseCapture();
+			break;
+
+		case WM_MOUSEMOVE:
+			FInputManager::Get().OnMouseMove(MousePos);
+			break;
+
+		case WM_CAPTURECHANGED:
+		case WM_CANCELMODE:
+		case WM_KILLFOCUS:
+			ReleaseCapture();
+			break;
+
+		default:
+			return DefWindowProc(Window, Message, WParam, LParam);
+		}
+
+		return 0;
 	}
 }
