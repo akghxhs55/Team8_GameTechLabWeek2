@@ -8,4 +8,11 @@ FTransform USceneComponent::GetRelativeTransform()
 void USceneComponent::SetRelativeTransform(FTransform RelativeTransform)
 {
     this->RelativeTransform = RelativeTransform;
+#include "USceneComponent.h"
+
+void USceneComponent::Serialize() const
+{
+
+
+
 }
