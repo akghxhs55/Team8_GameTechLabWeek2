@@ -13,9 +13,7 @@ struct FTransform
 	FMatrix ToMatrix() const;
 };
 
-// TODO: 구현
 inline FMatrix FTransform::ToMatrix() const
 {
-	// 또는 Rotation.ToMatrix() ?
 	return FMatrix::MakeScale(Scale3D) * Rotation.ToMatrixRow() * FMatrix::MakeTranslation(Location);
 }

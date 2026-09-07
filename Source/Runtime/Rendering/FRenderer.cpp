@@ -356,7 +356,6 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 		return nullptr;
 	}
 
-	// TODO: 정리되면 CullMode 설정하기
 	D3D11_RASTERIZER_DESC RasterizerDesc{
 		.FillMode = D3D11_FILL_SOLID,
 		.CullMode = D3D11_CULL_BACK,

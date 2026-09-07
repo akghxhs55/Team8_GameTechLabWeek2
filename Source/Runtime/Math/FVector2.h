@@ -4,7 +4,6 @@
 #include <concepts>
 #include <cmath>
 
-// TODO: 구현
 struct FVector2
 {
 	float X;

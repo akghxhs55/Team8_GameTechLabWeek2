@@ -15,11 +15,11 @@ public:
 	}
 	
 	void Update();
-	// TODO: 없애야 함
 	[[nodiscard]] bool IsKeyDown(uint32 Key) const;
 	[[nodiscard]] bool IsKeyJustPressed(uint32 Key) const;
 	[[nodiscard]] bool IsKeyJustReleased(uint32 Key) const;
 
+	// TODO: 없애야 함
 	void AddMouseInput(const FVector2& Delta);
 	[[nodiscard]] FVector2 GetMouseDelta() const;
 
