@@ -16,7 +16,6 @@ public:
 	void Shutdown();
 	void BeginFrame();
 	void Draw(const FMesh& Mesh, const FMaterial& Material);
-	void UpdateFrameConstants(const FFrameConstants& Constants);
 	void UpdateObjectConstants(const FObjectConstants& Constants);
 	void SwapBuffer();
 	

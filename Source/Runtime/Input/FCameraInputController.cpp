@@ -43,9 +43,12 @@ void FCameraInputController::UpdateKeyInput(FCamera& Camera, float DeltaTime) co
 	Camera.Position += Direction * CameraMoveSpeed * DeltaTime;
 }
 
-void FCameraInputController::HandleMouseInput(FCamera& Camera, float DeltaTime, FVector2 MouseDelta) const
+void FCameraInputController::UpdateMouseInput(FCamera& Camera) const
 {
-	FVector2 Delta = MouseDelta.Normalized() * CameraRotateSpeed * DeltaTime;
-	Camera.Yaw += Delta.X;
-	Camera.Pitch -= Delta.Y;
+	if (FInputManager::Get().IsMouseDown(EMouseButton::Right))
+	{
+		FVector2 Delta = FInputManager::Get().GetMouseDelta() * CameraRotateSpeed;
+		Camera.Yaw += Delta.X;
+		Camera.Pitch -= Delta.Y;
+	}
 }

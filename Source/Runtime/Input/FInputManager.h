@@ -3,6 +3,8 @@
 #include "Runtime/Core/IntTypes.h"
 #include "Runtime/Math/FVector2.h"
 
+enum class EMouseButton : uint8;
+
 class FInputManager final
 {
 public:
@@ -14,14 +16,18 @@ public:
 		return Instance;
 	}
 	
-	void Update();
+	void BeginFrame();
+
 	[[nodiscard]] bool IsKeyDown(uint32 Key) const;
 	[[nodiscard]] bool IsKeyJustPressed(uint32 Key) const;
 	[[nodiscard]] bool IsKeyJustReleased(uint32 Key) const;
 
-	// TODO: 없애야 함
-	void AddMouseInput(const FVector2& Delta);
+	[[nodiscard]] bool IsMouseDown(EMouseButton Button) const;
+	[[nodiscard]] FVector2 GetMousePosition() const;
 	[[nodiscard]] FVector2 GetMouseDelta() const;
+	void OnMouseMove(FVector2 Position);
+	void OnMouseButtonDown(EMouseButton Button, FVector2 Position);
+	void OnMouseButtonUp(EMouseButton Button, FVector2 Position);
 
 	FInputManager(const FInputManager&) = delete;
 	FInputManager& operator=(const FInputManager&) = delete;
@@ -37,5 +43,18 @@ private:
 
 	bool CurrentKeyStates[MAX_KEYS] = {};
 	bool PreviousKeyStates[MAX_KEYS] = {};
-	FVector2 MouseDelta{};
+
+	FVector2 CurrentMousePosition{};
+	FVector2 PreviousMousePosition{};
+	bool bMouseLeftPressed = false;
+	bool bMouseRightPressed = false;
+	bool bMouseMiddlePressed = false;
+	FVector2 MouseDelta{ 0.0f, 0.0f };
+};
+
+enum class EMouseButton : uint8
+{
+	Left,
+	Right,
+	Middle,
 };

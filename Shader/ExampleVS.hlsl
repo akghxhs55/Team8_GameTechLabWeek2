@@ -1,4 +1,4 @@
-#include "Constants.hlsli"
+ #include "Constants.hlsli"
 
 struct VS_INPUT
 {
@@ -16,9 +16,7 @@ PS_INPUT MainVS(VS_INPUT Input)
 {
     PS_INPUT Output;
 
-    Output.Position = float4(Input.Position, 1.0f);
-    Output.Position = mul(Output.Position, MVP);
-
+    Output.Position = mul(float4(Input.Position, 1.0f), MVP);
     Output.Color = float4(Input.Color, 1.0f);
 
     return Output;

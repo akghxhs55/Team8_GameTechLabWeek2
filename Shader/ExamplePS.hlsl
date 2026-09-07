@@ -1,3 +1,5 @@
+#include "Constants.hlsli"
+
 struct PS_INPUT
 {
     float4 Position : SV_Position;
@@ -6,5 +8,12 @@ struct PS_INPUT
 
 float4 MainPS(PS_INPUT Input) : SV_Target
 {
-    return Input.Color;
+	if (length(Color) < 0.0001f)
+	{
+        return Input.Color;
+    }
+    else
+    {
+        return float4(Color, 1.0f);
+    }
 }
