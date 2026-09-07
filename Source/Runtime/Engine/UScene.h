@@ -37,5 +37,5 @@ private:
 	uint32 NextUUID = 1u;
 	TArray<USceneComponent*> Components{};
 
-	FRenderResourceLibrary& RenderResourceLibrary;
+	FRenderResourceLibrary& RenderResourceLibrary; // TODO: 추후 엔진으로부터 렌더러 추상화 시 제거
 };

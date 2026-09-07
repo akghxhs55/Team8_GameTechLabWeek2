@@ -259,6 +259,13 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Editor\Application\FEditorApplication.cpp" />
+    <ClCompile Include="Source\Editor\Core\FEditor.cpp" />
+    <ClCompile Include="Source\Editor\EditorViewport\FEditorViewport.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UClass.cpp" />
@@ -270,6 +277,7 @@
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
     <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />
@@ -337,6 +345,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Editor\Application\FEditorApplication.h" />
+    <ClInclude Include="Source\Editor\Core\FEditor.h" />
+    <ClInclude Include="Source\Editor\EditorViewport\FEditorViewport.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UClass.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h" />
@@ -350,6 +365,9 @@
     <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
+    <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
+    <ClInclude Include="Source\Runtime\Engine\FRenderView.h" />
+    <ClInclude Include="Source\Runtime\Engine\FTimeManager.h" />
     <ClInclude Include="Source\Runtime\Core\TFunction.h" />
     <ClInclude Include="Source\Runtime\Core\TMap.h" />
     <ClInclude Include="Source\Runtime\Engine\FCamera.h" />

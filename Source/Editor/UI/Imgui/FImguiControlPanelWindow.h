@@ -1,7 +1,7 @@
 #pragma once
 #include "Editor/Core/FEditor.h"
 
-class FImguiPropertyWindow final {
+class FImguiControlPanelWindow final {
 public:
 	void Process(FEditor& Editor);
 };

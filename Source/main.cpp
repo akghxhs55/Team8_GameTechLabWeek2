@@ -1,15 +1,12 @@
-﻿#include "Runtime/Engine/UScene.h"
-#include "Runtime/Engine/FCamera.h"
+﻿#include "Editor/Application/FEditorApplication.h"
+#include "Runtime/Engine/UScene.h"
+#include "Runtime/Engine/FRenderView.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
-#include "Runtime/CoreUObject/UCubeComp.h"
-#include "Runtime/CoreUObject/UCylinderComp.h"
-#include "Runtime/CoreUObject/UConeComp.h"
-#include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Engine/FTimeManager.h"
+#include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
-#include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FVector2.h"
 #include "Runtime/Math/FMatrix.h"
 #include "Runtime/CoreUObject/UClass.h"
@@ -17,8 +14,6 @@
 #include "ThirdParty/Imgui/imgui_internal.h"
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
-#include "Editor/UI/Imgui/FImguiManager.h"
-#include "Runtime/Engine/USceneManager.h"
 #include <Windows.h>
 #include <windowsx.h>
 
@@ -58,6 +53,7 @@ int WINAPI wWinMain(
 	{
 		return -1;
 	}
+	FRenderView RenderView(Renderer);
 
 	FRenderResourceLibrary RenderResources;
 	if (!RenderResources.Initialize(Renderer))
@@ -65,6 +61,17 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
+	UScene* Scene = NewObject<UScene>(RenderResources);
+	USceneManager tmp;
+	tmp.currentScene = Scene;
+
+	FEditorApplication& EditorApp = FEditorApplication::Get();
+	{
+		ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
+		Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
+		EditorApp.Initialize_ImguiWin32DX11(Window, Device, Context);
+	}
+	EditorApp.Initialize_Runtime(&RenderResources, &tmp, &RenderView);
 	//FImguiManager& UIManager = FImguiManager::Get();
 	//{
 	//	ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
@@ -117,6 +124,9 @@ int WINAPI wWinMain(
 	bool bQuit = false;
     while (!bQuit)
     {
+		FTimeManager::Get().Update();
+		FTimeManager::Get().Resume();
+
 		if (!ProcessWindowMessage())
 		{
 			bQuit = true;
@@ -148,21 +158,12 @@ int WINAPI wWinMain(
 
 		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().BeginFrame();
-		CameraController.UpdateMouseInput(Camera);
-		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 
-		FTimeManager::Get().Update();
-		FTimeManager::Get().Resume();
-
-		const FMatrix VP = Camera.CreateViewProjectionMatrix();
+		EditorApp.Update(FTimeManager::Get().GetDeltaTime());
 
 		Renderer.BeginFrame();
-		
-		for (const auto& Component : tmp.currentScene->GetPrimitiveComponents())
-		{
-			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
-			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
-		}
+
+		EditorApp.Render();
 
 		//ImGui_ImplDX11_NewFrame();
 		//ImGui_ImplWin32_NewFrame();
@@ -188,8 +189,6 @@ int WINAPI wWinMain(
 namespace
 {
 	// TODO: Resizing 처리
-	// TODO: 마우스 입력 추상화. FInputManager에 합칠 수 있을까?
-	// TODO: 마우스가 화면 밖에 나갈 때 처리가 잘 안 됨
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
 		WNDCLASS WindowClass{};
@@ -276,9 +275,8 @@ namespace
 
 	LRESULT CALLBACK WindowCallback(HWND Window, UINT Message, WPARAM WParam, LPARAM LParam)
 	{
-		LRESULT imguiResult{};
-		if (imguiResult = ImGui_ImplWin32_WndProcHandler(Window, Message, WParam, LParam)) // imgui의 프레임 스냅샷 상태를 갱신
-			return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
+		if (LRESULT ImGuiResult = ImGui_ImplWin32_WndProcHandler(Window, Message, WParam, LParam)) // imgui의 프레임 스냅샷 상태를 갱신
+			return ImGuiResult; // ImGuiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
 
 		const FVector2 MousePos{
 			static_cast<float>(GET_X_LPARAM(LParam)),

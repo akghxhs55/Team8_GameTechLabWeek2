@@ -53,6 +53,9 @@
     <Filter Include="Source\ThirdParty\Imgui">
       <UniqueIdentifier>{00e6312a-ad83-4745-8747-939a4f5be73a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Editor\EditorViewport">
+      <UniqueIdentifier>{8c6ff7f2-40a8-46c0-9297-bbd1a85b75ec}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\ThirdParty\Json">
       <UniqueIdentifier>{4c9c9a29-5249-4fa5-bd20-4f27df236bb4}</UniqueIdentifier>
     </Filter>
@@ -82,7 +85,7 @@
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp">
       <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\Rendering\FRendererLibrary.cpp">
+    <ClCompile Include="Source\Runtime\Rendering\FRendereResourceLibrary.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp">
@@ -125,6 +128,18 @@
       <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Application\FEditorApplication.cpp">
+      <Filter>Source\Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\EditorViewport\FEditorViewport.cpp">
+      <Filter>Source\Editor\EditorViewport</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp">
       <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp">
@@ -260,6 +275,15 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.h">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\EditorViewport\FEditorViewport.h">
+      <Filter>Source\Editor\EditorViewport</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\FRenderView.h">
+      <Filter>Source\Runtime\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\ThirdParty\Json\json.hpp">
       <Filter>Source\ThirdParty\Json</Filter>
