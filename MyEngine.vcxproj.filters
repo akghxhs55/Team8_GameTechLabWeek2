@@ -59,6 +59,9 @@
     <Filter Include="Source\ThirdParty\Json">
       <UniqueIdentifier>{4c9c9a29-5249-4fa5-bd20-4f27df236bb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Editor\Gizmo">
+      <UniqueIdentifier>{1f658ce1-7a1a-4ece-a31a-c6fa20d35a10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -320,6 +323,9 @@
     </ClInclude>
     <ClInclude Include="Source\Runtime\Math\FVector4.h">
       <Filter>Source\Runtime\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\Gizmo\FGizmo.h">
+      <Filter>Source\Editor\Gizmo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

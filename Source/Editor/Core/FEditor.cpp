@@ -66,6 +66,7 @@ bool FEditor::SelectObject(UObject* Object)
     if (Object == nullptr)
         return false;
     SelectedObject = Object;
+    Gizmo.SetTarget()
     return true;
 }
 

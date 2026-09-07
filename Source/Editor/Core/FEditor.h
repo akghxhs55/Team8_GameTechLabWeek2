@@ -3,6 +3,7 @@
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Core/TArray.h"
 #include "Editor/EditorViewport/FEditorViewport.h"
+#include "Editor/Gizmo/FGizmo.h"
 
 enum class EEditorPrimitiveType
 {
@@ -18,6 +19,7 @@ private:
 	USceneManager* SceneManager; // 씬을 다중으로 가질 수 있도록 구조개선 가능-이경우 에디터쪽에 클래스를 추가해 씬과 FEditorViewport들을 연관
 	TArray<FEditorViewport> EditorViewports;
 	UObject* SelectedObject = nullptr;
+	FGizmo Gizmo;
 public:
 	void Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager);
 	

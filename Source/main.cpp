@@ -34,10 +34,10 @@ namespace
 }
 
 int WINAPI wWinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPWSTR lpCmdLine,
-    _In_ int nShowCmd) 
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPWSTR lpCmdLine,
+	_In_ int nShowCmd) 
 {
 	HWND Window = CreateWindowHandle(hInstance);
 	if (!Window)
@@ -124,8 +124,8 @@ int WINAPI wWinMain(
 	static FCameraInputController CameraController;
 
 	bool bQuit = false;
-    while (!bQuit)
-    {
+	while (!bQuit)
+	{
 		FTimeManager::Get().Update();
 		FTimeManager::Get().Resume();
 
@@ -145,25 +145,8 @@ int WINAPI wWinMain(
 
 		EditorApp.Render();
 
-		//ImGui_ImplDX11_NewFrame();
-		//ImGui_ImplWin32_NewFrame();
-		//ImGui::NewFrame();
-
-		//// 여기
-		//ImGui::ShowDemoWindow();
-
-		//ImGui::Render();
-
-		//ImGui_ImplDX11_RenderDrawData(
-		//	ImGui::GetDrawData()
-		//);// 마우스를 누른 첫 프레임만 피킹
-
-
-
-			
-
 		Renderer.SwapBuffer();
-    }
+	}
 
 	Renderer.Shutdown();
 
