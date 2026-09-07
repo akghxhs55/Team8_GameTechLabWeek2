@@ -2,11 +2,11 @@
 #include "UScene.h"
 class USceneManager final
 {
-	TUniquePtr<UScene> CurrentScene;
 
-	void SaveScene();
+public:
+	void SaveScene(const FString& path) const;
 	void LoadScene();
 
-
+	UScene* currentScene;
 
 };

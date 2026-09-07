@@ -6,6 +6,8 @@
 #include "Runtime/Core/TArray.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 
+#include "ThirdParty/Json/json.hpp"
+
 class UScene final : public UObject
 {
 	GENERATED_BODY()
@@ -17,6 +19,9 @@ public:
 	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;
 	// TODO: PrimitiveComponent가 Register할 때 얻으려고 필요한데 다른 방법은 없을까?
 	[[nodiscard]] FRenderResourceLibrary& GetRenderResourceLibrary() const { return RenderResourceLibrary; }
+
+	json::JSON Serialize() const;
+
 
 private:
 	explicit UScene(FRenderResourceLibrary& RenderResources)

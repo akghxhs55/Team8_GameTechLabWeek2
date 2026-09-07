@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source">
@@ -113,10 +113,16 @@
       <Filter>Source\Editor\UI\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Editor\Core\FEditor.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Editor\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp">
+      <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +248,12 @@
     </ClInclude>
     <ClInclude Include="Source\ThirdParty\Imgui\imstb_truetype.h">
       <Filter>Source\ThirdParty\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Engine\FTimeManager.h">
+      <Filter>Source\Runtime\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

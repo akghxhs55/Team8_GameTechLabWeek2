@@ -3,8 +3,10 @@
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
+#include "Runtime/CoreUObject/UConeComp.h"
 #include "Runtime/Input/FCameraInputController.h"
 #include "Runtime/Input/FInputManager.h"
+#include "Runtime/Engine/FTimeManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector.h"
@@ -15,6 +17,7 @@
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
 #include "Editor/UI/Imgui/FImguiManager.h"
+#include "Runtime/Engine/USceneManager.h"
 #include <Windows.h>
 #include <windowsx.h>
 
@@ -71,6 +74,11 @@ int WINAPI wWinMain(
 	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 	Scene->RegisterComponent(*CubeComp);
 
+	//해당 경로에 UUID 기록 성공
+	USceneManager tmp;
+	tmp.currentScene = Scene;
+	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
+
 	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
 	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
 	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
@@ -108,9 +116,12 @@ int WINAPI wWinMain(
 			break;
 		}
 
+		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 		FInputManager::Get().Update();
-		CameraController.HandleMouseInput(Camera, FInputManager::Get().GetMouseDelta());
-		CameraController.UpdateKeyInput(Camera, 1.0f / 60.0f);
+
+		FTimeManager::Get().Update();
+		FTimeManager::Get().Resume();
 
 		const FMatrix VP = Camera.CreateViewProjectionMatrix();
 
