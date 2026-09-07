@@ -115,11 +115,13 @@ int WINAPI wWinMain(
 			bQuit = true;
 			break;
 		}
-
-		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		if(FInputManager::Get().IsRightMouseButtonDown())
+		{
+			CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
+		}
+		
 		CameraController.UpdateKeyInput(Camera, FTimeManager::Get().GetDeltaTime());
 		FInputManager::Get().Update();
-
 		FTimeManager::Get().Update();
 		FTimeManager::Get().Resume();
 
@@ -179,27 +181,18 @@ namespace
 					break;
 
 				case WM_RBUTTONDOWN:
-					bMousePressed = true;
+					FInputManager::Get().SetMouseRightButtonDown(true);
 					break;
 
 				case WM_RBUTTONUP:
-					bMousePressed = false;
+					FInputManager::Get().SetMouseRightButtonDown(false);
 					break;
 
 				case WM_MOUSEMOVE:
-					if (bMousePressed)
-					{
-						const FVector2 MousePos{
-							static_cast<float>(GET_X_LPARAM(lParam)),
-							static_cast<float>(GET_Y_LPARAM(lParam))
-						};
-						const FVector2 MouseDelta = MousePos - PrevMousePos;
-						FInputManager::Get().AddMouseInput(MouseDelta);
-					}
-					PrevMousePos = FVector2{
+					FInputManager::Get().SetMousePos({
 						static_cast<float>(GET_X_LPARAM(lParam)),
 						static_cast<float>(GET_Y_LPARAM(lParam))
-					};
+						});
 					break;
 				case WM_SIZE:
 				{

@@ -11,7 +11,8 @@ void FInputManager::Update()
 	{
 		CurrentKeyStates[i] = GetAsyncKeyState(i) & 0x8000 ? true : false;
 	}
-	MouseDelta = {};
+	MouseDelta = CurrentMousePos - PrevMousePos;
+	PrevMousePos = CurrentMousePos;
 }
 
 bool FInputManager::IsKeyDown(uint32 Key) const
@@ -21,6 +22,11 @@ bool FInputManager::IsKeyDown(uint32 Key) const
 		return false;
 	}
 	return CurrentKeyStates[Key];
+}
+
+void FInputManager::SetMousePos(FVector2 pos)
+{
+	CurrentMousePos = pos;
 }
 
 bool FInputManager::IsPrevKeyDown(uint32 Key) const

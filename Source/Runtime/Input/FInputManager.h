@@ -29,13 +29,21 @@ public:
 	FInputManager(FInputManager&&) = delete;
 	FInputManager& operator=(FInputManager&&) = delete;
 
+	void SetMousePos(FVector2 pos);
+	void SetMouseRightButtonDown(bool b) { bIsRightButtonDown = b; };
+	[[nodiscard]] bool IsRightMouseButtonDown() { return bIsRightButtonDown; }
+
 private:
 	FInputManager() = default;
 	~FInputManager() = default;
 
 	[[nodiscard]] bool IsPrevKeyDown(uint32 Key) const;
-
+	
+	bool bIsRightButtonDown = false;
 	bool CurrentKeyStates[MAX_KEYS] = {};
 	bool PreviousKeyStates[MAX_KEYS] = {};
 	FVector2 MouseDelta{};
+	FVector2 CurrentMousePos;
+	FVector2 PrevMousePos;
+
 };
