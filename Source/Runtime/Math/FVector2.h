@@ -73,6 +73,8 @@ struct FVector2
 
 	[[nodiscard]] float Size() const;
 	[[nodiscard]] float SizeSquared() const;
+
+	[[nodiscard]] FVector2 Normalized() const;
 };
 
 inline const FVector2 FVector2::ZeroVector{ 0.0f, 0.0f };
@@ -211,4 +213,14 @@ inline float FVector2::Size() const
 inline float FVector2::SizeSquared() const
 {
 	return X * X + Y * Y;
+}
+
+inline FVector2 FVector2::Normalized() const
+{
+	const float Length = Size();
+	if (Length == 0.0f)
+	{
+		return ZeroVector;
+	}
+	return *this / Length;
 }

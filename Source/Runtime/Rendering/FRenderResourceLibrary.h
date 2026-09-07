@@ -17,15 +17,19 @@ public:
 	//  UPrimitive가 비const FMesh를 소유하도록 되어 있어서 이렇게 둠
 	[[nodiscard]] TSharedPtr<FMesh> GetCubeMesh() { return CubeMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh(int Axis) { return CylinderMesh[Axis]; }
+	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
-	bool CreateCylinderMesh(FRenderer& Renderer, int Axis);
+	bool CreateCylinderMesh(FRenderer& Renderer, int Axis, float Height, uint32 SliceCount, float TopRadius, float BottonRadius);
+	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
-
 private:
 	TSharedPtr<FMesh> CubeMesh;
 	TSharedPtr<FMesh> CylinderMesh[3];
+	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
+	
+
 };

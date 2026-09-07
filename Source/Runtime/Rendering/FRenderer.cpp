@@ -173,6 +173,11 @@ TSharedPtr<FMaterial> FRenderer::CreateMaterial(const FMaterialDesc& Desc)
 	return Material;
 }
 
+void FRenderer::GetDeviceAndContext_ImplDX11(ID3D11Device*& DeviceOut, ID3D11DeviceContext*& ContextOut) {
+	DeviceOut = Device.Get();
+	ContextOut = Context.Get();
+}
+
 bool FRenderer::InitializeDeviceAndSwapChain(HWND Window)
 {
 	constexpr D3D_FEATURE_LEVEL FeatureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
@@ -354,6 +359,7 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	D3D11_RASTERIZER_DESC RasterizerDesc{
 		.FillMode = D3D11_FILL_SOLID,
 		.CullMode = D3D11_CULL_BACK,
+		.FrontCounterClockwise = false,
 	};
 
 	Result = Device->CreateRasterizerState(&RasterizerDesc, &Pipeline->RasterizerState);

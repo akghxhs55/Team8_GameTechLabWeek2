@@ -32,7 +32,7 @@ bool FInputManager::IsPrevKeyDown(uint32 Key) const
 	return PreviousKeyStates[Key];
 }
 
-bool FInputManager::IsKeyPressed(uint32 Key) const
+bool FInputManager::IsKeyJustPressed(uint32 Key) const
 {
 	if (Key >= MAX_KEYS)
 	{
@@ -41,7 +41,7 @@ bool FInputManager::IsKeyPressed(uint32 Key) const
 	return IsKeyDown(Key) && !IsPrevKeyDown(Key);
 }
 
-bool FInputManager::IsKeyReleased(uint32 Key) const
+bool FInputManager::IsKeyJustReleased(uint32 Key) const
 {
 	if (Key >= MAX_KEYS)
 	{
