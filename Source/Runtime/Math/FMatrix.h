@@ -165,6 +165,12 @@ struct FMatrix
 		return Result;
 	}
 
+	FMatrix& operator*=(const FMatrix& Other)
+	{
+		*this = *this * Other;
+		return *this;
+	}
+
 	[[nodiscard]]
 	static FMatrix MakeRotation(const FVector& Deg);
 

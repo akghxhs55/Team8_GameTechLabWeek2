@@ -2,7 +2,6 @@
 
 struct FCamera;
 
-// TODO: 개선 요소 아주 많음
 class FCameraInputController
 {
 public:
