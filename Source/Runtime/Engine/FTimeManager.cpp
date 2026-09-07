@@ -8,26 +8,27 @@ FTimeManager::FTimeManager()
     TargetFrameTime = 1.0f / TargetFPS;
 }
 
+
 void FTimeManager::Update()
 {
     LARGE_INTEGER CurrentTime;
     QueryPerformanceCounter(&CurrentTime);
 
-    float ActualDeltaTime = static_cast<float>(CurrentTime.QuadPart - PrevTime.QuadPart) / static_cast<float>(Frequency.QuadPart);
-    if(ActualDeltaTime < TargetFrameTime)
+    float ActualDeltaTime =
+        static_cast<float>(CurrentTime.QuadPart - PrevTime.QuadPart) /
+        static_cast<float>(Frequency.QuadPart);
+
+    while (ActualDeltaTime < TargetFrameTime)
     {
-        float RemainingTime = TargetFrameTime - ActualDeltaTime;
-
-        Sleep(static_cast<DWORD>(RemainingTime * 1000));
-
         QueryPerformanceCounter(&CurrentTime);
-        DeltaTime = static_cast<float>(CurrentTime.QuadPart - PrevTime.QuadPart) / static_cast<float>(Frequency.QuadPart);
-    }
-    else
-    {
-        DeltaTime = ActualDeltaTime;
+
+        ActualDeltaTime =
+            static_cast<float>(CurrentTime.QuadPart - PrevTime.QuadPart) /
+            static_cast<float>(Frequency.QuadPart);
+
+        _mm_pause();
     }
 
-    DeltaTime = bIsRunning ? DeltaTime : 0.0f;
+    DeltaTime = bIsRunning ? ActualDeltaTime : 0.0f;
     PrevTime = CurrentTime;
 }

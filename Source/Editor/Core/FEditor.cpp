@@ -12,7 +12,7 @@ void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager*
 void FEditor::NewScene()
 {
     SelectedObject = nullptr;
-    SceneManager->currentScene = NewObject<UScene>(*RendererLibrary);
+    SceneManager->SetScene(NewObject<UScene>(*RendererLibrary));
 }
 
 void FEditor::SaveScene(const FString& path)
@@ -22,7 +22,7 @@ void FEditor::SaveScene(const FString& path)
 
 void FEditor::LoadScene(const FString& path) // TODO: 테스트용 임시 코드. 정식 코드로 교체해야 함
 {
-    // 이전 씬과 내부 오브젝트들은 GUObject의 가비지 컬렉션에 의해 삭제됨
+    // TODO: 이전 씬과 내부 오브젝트들은 GUObject의 가비지 컬렉션에 의해 삭제됨(구현 필요-현재 메모리 누수되고있음)
     SceneManager->currentScene = NewObject<UScene>(*RendererLibrary);
     UCubeComp* TestCube = NewObject<UCubeComp>();
     TestCube->RelativeTransform.Location = FVector{ 2.0f, 0.0f, 0.0f };
@@ -30,6 +30,8 @@ void FEditor::LoadScene(const FString& path) // TODO: 테스트용 임시 코드
     TestCube->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
     SceneManager->currentScene->RegisterComponent(*TestCube);
     SelectedObject = TestCube;
+    SceneManager->LoadScene(path);
+    SelectedObject = nullptr;
 }
 
 bool FEditor::CheckSceneExists()

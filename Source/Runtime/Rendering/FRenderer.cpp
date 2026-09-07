@@ -108,6 +108,8 @@ void FRenderer::SwapBuffer()
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
 {
+
+
 	if (!Desc.VertexData ||
 		Desc.VertexCount == 0 ||
 		Desc.VertexDataSize == 0 ||
@@ -160,6 +162,21 @@ TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
 		}
 	}
 	Mesh->IndexCount = Desc.IndexCount;
+
+	const auto* vertices =
+		static_cast<const FVertexPositionColor*>(Desc.VertexData);
+
+	Mesh->Positions.reserve(Desc.VertexCount);
+	for (uint32 i = 0; i < Desc.VertexCount; ++i)
+	{
+		Mesh->Positions.push_back(vertices[i].Position);
+	}
+
+	if (Desc.IndexCount > 0)
+	{
+		const auto* indices = static_cast<const uint32*>(Desc.IndexData);
+		Mesh->Indices.assign(indices, indices + Desc.IndexCount);
+	}
 
 	return Mesh;
 }

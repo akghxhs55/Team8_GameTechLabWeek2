@@ -181,6 +181,9 @@ struct FMatrix
 	// Roll-Pitch-Yaw
 	[[nodiscard]]
 	static FMatrix MakeRotationZYX(const FVector& Deg);
+
+	[[nodiscard]]
+	FVector TransformPointRow(FVector& p, float w = 1.0f);
 };
 
 inline const FMatrix FMatrix::Identity = FMatrix{
@@ -228,4 +231,15 @@ inline FMatrix FMatrix::MakeRotationZYX(const FVector& Deg)
 	return MakeRotationZ(Deg.Z * DegToRad)
 		* MakeRotationY(Deg.Y * DegToRad)
 		* MakeRotationX(Deg.X * DegToRad);
+}
+
+
+inline FVector FMatrix::TransformPointRow (FVector& p, float w)
+{
+	float x = p.X * M[0][0] + p.Y * M[1][0] + p.Z * M[2][0] + w * M[3][0];
+	float y = p.X * M[0][1] + p.Y * M[1][1] + p.Z * M[2][1] + w * M[3][1];
+	float z = p.X * M[0][2] + p.Y * M[1][2] + p.Z * M[2][2] + w * M[3][2];
+	float ww = p.X * M[0][3] + p.Y * M[1][3] + p.Z * M[2][3] + w * M[3][3];
+	if (ww != 0.0f && ww != 1.0f) { x /= ww; y /= ww; z /= ww; }
+	return FVector(x, y, z);
 }

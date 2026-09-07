@@ -274,10 +274,8 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRayCastingManager.cpp" />
+    <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
-    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
-    <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
-    <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp" />
     <ClCompile Include="Source\Runtime\Engine\USceneManager.cpp" />
     <ClCompile Include="Source\Runtime\Input\FCameraInputController.cpp" />
@@ -371,9 +369,7 @@
     <ClInclude Include="Source\Runtime\Core\TFunction.h" />
     <ClInclude Include="Source\Runtime\Core\TMap.h" />
     <ClInclude Include="Source\Runtime\Engine\FCamera.h" />
-    <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
     <ClInclude Include="Source\Runtime\Engine\FRayCastingManager.h" />
-    <ClInclude Include="Source\Runtime\Engine\FTimeManager.h" />
     <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />

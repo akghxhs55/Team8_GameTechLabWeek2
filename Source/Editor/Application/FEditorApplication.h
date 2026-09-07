@@ -3,15 +3,16 @@
 #include "Editor/UI/Imgui/FImguiManager.h"
 #include "Editor/UI/Imgui/FImguiPropertyWindow.h"
 #include "Editor/UI/Imgui/FImguiEditorViewportWindow.h"
+#include "Editor/UI/Imgui/FImguiControlPanelWindow.h"
 #include "Runtime/Engine/FRenderView.h"
 #include "Runtime/Input/FCameraInputController.h"
 
 class FEditorApplication final {
-	FEditor Editor;
 	USceneManager* SceneManager = nullptr;
 
 	FImguiManager ImguiManager;
 
+	FImguiControlPanelWindow ControlPanelWindow;
 	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
 
@@ -19,6 +20,7 @@ class FEditorApplication final {
 
 	FRenderView* RenderView = nullptr;
 public:
+	FEditor Editor;
 	static FEditorApplication& Get()
 	{
 		static FEditorApplication Instance;

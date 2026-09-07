@@ -4,6 +4,7 @@
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Engine/FTimeManager.h"
+#include "Runtime/Engine/FRayCastingManager.h"
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
@@ -61,9 +62,10 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
-	UScene* Scene = NewObject<UScene>(RenderResources);
 	USceneManager tmp;
-	tmp.currentScene = Scene;
+	tmp.resourceLibrary = &RenderResources;
+	tmp.SetScene(NewObject<UScene>(RenderResources));
+
 
 	FEditorApplication& EditorApp = FEditorApplication::Get();
 	{
@@ -83,14 +85,14 @@ int WINAPI wWinMain(
 
 	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
 	//UScene* Scene = NewObject<UScene>(RenderResources);
-	UCubeComp* CubeComp = NewObject<UCubeComp>();
-	CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
-	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
-	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
+	//UCubeComp* CubeComp = NewObject<UCubeComp>();
+	//CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
+	//CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
+	//CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 	
 
 	//해당 경로에 UUID 기록 성공
-	USceneManager tmp;
+	/*USceneManager tmp;
 	tmp.resourceLibrary = &RenderResources;
 	tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
 	tmp.currentScene->RegisterComponent(*CubeComp);
@@ -111,7 +113,7 @@ int WINAPI wWinMain(
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	tmp.currentScene->RegisterComponent(*CylinderCompZ);
+	tmp.currentScene->RegisterComponent(*CylinderCompZ);*/
 
 	FCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
@@ -138,21 +140,21 @@ int WINAPI wWinMain(
 		if (bRequestSaveScene)
 		{
 			bRequestSaveScene = false;
-			tmp.SaveScene(ScenePath);
+			EditorApp.Editor.SaveScene(ScenePath);
 			OutputDebugStringA("[Scene] 저장\n");
 		}
 
 		if (bRequestLoadScene)
 		{
 			bRequestLoadScene = false;
-			tmp.LoadScene(ScenePath);
+			EditorApp.Editor.LoadScene(ScenePath);
 			OutputDebugStringA("[Scene] 로드\n");
 		}
 
 		if (bRequestNewScene)
 		{
 			bRequestNewScene = false;
-			tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
+			EditorApp.Editor.NewScene();
 			OutputDebugStringA("[Scene] 새 씬\n");
 		}
 
@@ -176,7 +178,55 @@ int WINAPI wWinMain(
 
 		//ImGui_ImplDX11_RenderDrawData(
 		//	ImGui::GetDrawData()
-		//);
+		//);// 마우스를 누른 첫 프레임만 피킹
+
+
+		//임시 피킹 로직
+			static bool bWasLeftMouseDown = false;
+			const bool bIsLeftMouseDown =
+				FInputManager::Get().IsMouseDown(EMouseButton::Left);
+
+			if (bIsLeftMouseDown && !bWasLeftMouseDown)
+			{
+				RECT clientRect{};
+				const BOOL bSuccess = GetClientRect(Window, &clientRect);
+
+				FVector2 viewportSize{
+					static_cast<float>(clientRect.right - clientRect.left),
+					static_cast<float>(clientRect.bottom - clientRect.top)
+				};
+
+				UPrimitiveComponent* hitComponent = nullptr;
+				FVector impactPoint;
+				auto primitiveComponents = tmp.currentScene->GetPrimitiveComponents();
+
+				const bool bHit = FRayCastingManager::Get().RayIntersectsMeshes(
+					&Camera,
+					primitiveComponents, // ← 이 변수여야 함
+					hitComponent,
+					impactPoint,
+					viewportSize
+				);
+
+				if (bHit)
+				{
+					OutputDebugStringA("피킹 성공\n");
+
+					// 여기서 hitComponent를 에디터 선택 객체로 지정하면 됨.
+					//Editor.SelectObject(hitComponent);
+				}
+				else
+				{
+					OutputDebugStringA("피킹 실패\n");
+
+					// 빈 공간을 눌렀을 때 선택 해제하려면:
+					// Editor.UnSelectObject();
+				}
+			}
+		
+		
+
+		bWasLeftMouseDown = bIsLeftMouseDown;
 
 		Renderer.SwapBuffer();
     }
@@ -192,50 +242,8 @@ namespace
 	HWND CreateWindowHandle(HINSTANCE Instance)
 	{
 		WNDCLASS WindowClass{};
-		WindowClass.lpfnWndProc =
-			[](HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-			{
-				LRESULT imguiResult{};
-				if (imguiResult = ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam)) // imgui의 프레임 스냅샷 상태를 갱신
-					return imguiResult; // imguiResult != 0인 경우: 상태가 DefWindowProcW() 함수 동작을 오버라이드해야 하는 경우
-
-				switch (uMsg)
-				{
-				case WM_DESTROY:
-					PostQuitMessage(0);
-					break;
-
-				case WM_RBUTTONDOWN:
-					FInputManager::Get().SetMouseRightButtonDown(true);
-					break;
-
-				case WM_RBUTTONUP:
-					FInputManager::Get().SetMouseRightButtonDown(false);
-					break;
-
-				case WM_MOUSEMOVE:
-					FInputManager::Get().SetMousePos({
-						static_cast<float>(GET_X_LPARAM(lParam)),
-						static_cast<float>(GET_Y_LPARAM(lParam))
-						});
-					break;
-				case WM_SIZE:
-				{
-					if (wParam != SIZE_MINIMIZED)
-					{
-						UINT Width = LOWORD(lParam);
-						UINT Height = HIWORD(lParam);
-
-						//Renderer.Resize(Width, Height);
-					}
-
-					return 0;
-				}
-				default:
-					return DefWindowProc(hWnd, uMsg, wParam, lParam);
-				}
-				return 0;
-			};
+		WindowClass.lpfnWndProc = WindowCallback;
+			
 		WindowClass.hInstance = Instance;
 		WindowClass.lpszClassName = L"MyEngine";
 

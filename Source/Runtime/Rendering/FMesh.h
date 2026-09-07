@@ -4,6 +4,7 @@
 #include "Runtime/Core/IntTypes.h"
 #include <d3d11.h>
 #include <wrl/client.h>
+#include "Runtime/Core/TArray.h"
 
 class FRenderer;
 
@@ -16,6 +17,9 @@ public:
 	[[nodiscard]] EVertexLayout GetVertexLayout() const { return VertexLayout; }
 	[[nodiscard]] uint32 GetVertexCount() const { return VertexCount; }
 	[[nodiscard]] uint32 GetIndexCount() const { return IndexCount; }
+	[[nodiscard]] const TArray<FVector>& GetPositions() const { return Positions; }
+	[[nodiscard]] const TArray<uint32>& GetIndices() const { return Indices; }
+
 	
 private:
 	FMesh() = default;
@@ -30,6 +34,9 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> IndexBuffer;
 	uint32 IndexCount = 0u;
+
+	TArray<FVector> Positions;
+	TArray<uint32> Indices;
 };
 
 struct FMeshDesc
