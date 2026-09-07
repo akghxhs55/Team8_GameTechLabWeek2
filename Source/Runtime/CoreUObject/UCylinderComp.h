@@ -5,9 +5,11 @@
 
 class UCylinderComp : public UPrimitiveComponent
 {
+	DECLARE_UCLASS(UCylinderComp, UPrimitiveComponent)
 	GENERATED_BODY()
 
 protected:
+	explicit UCylinderComp() = default;
 	explicit UCylinderComp(int Axis) : Axis(Axis) {}
 
 	void OnRegister(UScene& Scene) override;

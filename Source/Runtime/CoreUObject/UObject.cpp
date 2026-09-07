@@ -1,7 +1,15 @@
 #include "UObject.h"
+#include "UClass.h"
+#include "UObjectGlobals.h"
 
-void UObject::Serialize() const
+IMPLEMENT_ROOT_UCLASS(UObject)
+
+json::JSON UObject::Serialize() const
 {
-	//지금은딱히 없으니 생략
+	return json::JSON();
+}
 
+bool UObject::Deserialize(const json::JSON& data)
+{
+	return false;
 }

@@ -21,13 +21,17 @@ public:
 	[[nodiscard]] FRenderResourceLibrary& GetRenderResourceLibrary() const { return RenderResourceLibrary; }
 
 	json::JSON Serialize() const;
+	virtual bool Deserialize(const json::JSON& data) override;
 
+	void CreateFromJson(json::JSON data);
+	
 
 private:
 	explicit UScene(FRenderResourceLibrary& RenderResources)
 		: RenderResourceLibrary(RenderResources)
 	{}
 
+	
 
 	uint32 Version = 1u;
 	uint32 NextUUID = 1u;

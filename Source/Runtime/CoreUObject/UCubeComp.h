@@ -5,6 +5,7 @@
 
 class UCubeComp : public UPrimitiveComponent
 {
+	DECLARE_UCLASS(UCubeComp, UPrimitiveComponent)
 	GENERATED_BODY()
 
 protected:

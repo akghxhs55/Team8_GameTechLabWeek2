@@ -2,19 +2,20 @@
 
 #include "UObject.h"
 #include "Runtime/Geometry/FTransform.h"
+#include "ThirdParty/Json/json.hpp"
 
 class UScene;
 
 class USceneComponent : public UObject
 {
 	GENERATED_BODY()
-
+	DECLARE_UCLASS(USceneComponent, UObject)
 	friend UScene;
 
 public:
 	FTransform RelativeTransform;
-	void Serialize() const override;
-
+	json::JSON Serialize() const override;
+	bool Deserialize(const json::JSON& data) override;
 protected:
 	USceneComponent() = default;
 

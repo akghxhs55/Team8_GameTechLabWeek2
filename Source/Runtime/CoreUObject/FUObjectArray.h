@@ -5,6 +5,8 @@
 #include "Runtime/Core/IntTypes.h"
 #include <utility>
 
+class UObject;
+
 class FUObjectArray final
 {
 public:

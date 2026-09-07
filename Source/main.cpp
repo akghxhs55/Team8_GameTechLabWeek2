@@ -12,6 +12,7 @@
 #include "Runtime/Math/FVector.h"
 #include "Runtime/Math/FVector2.h"
 #include "Runtime/Math/FMatrix.h"
+#include "Runtime/CoreUObject/UClass.h"
 #include "ThirdParty/Imgui/imgui.h"
 #include "ThirdParty/Imgui/imgui_internal.h"
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
@@ -22,6 +23,9 @@
 #include <windowsx.h>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool bRequestNewScene = false;
+bool bRequestSaveScene = false;
+bool bRequestLoadScene = false;
 
 namespace
 {
@@ -66,36 +70,39 @@ int WINAPI wWinMain(
 	//	UIManager.Initialize_ImplWin32DX11(Window, Device, Context);
 	//}
 
+
+
 	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
-	UScene* Scene = NewObject<UScene>(RenderResources);
+	//UScene* Scene = NewObject<UScene>(RenderResources);
 	UCubeComp* CubeComp = NewObject<UCubeComp>();
 	CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
 	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
 	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	Scene->RegisterComponent(*CubeComp);
+	
 
 	//해당 경로에 UUID 기록 성공
 	USceneManager tmp;
-	tmp.currentScene = Scene;
-	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
+	tmp.resourceLibrary = &RenderResources;
+	tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
+	tmp.currentScene->RegisterComponent(*CubeComp);
 
 	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>(0);
 	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
 	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
 	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompX);
+	tmp.currentScene->RegisterComponent(*CylinderCompX);
 
 	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>(1);
 	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
 	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
 	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompY);
+	tmp.currentScene->RegisterComponent(*CylinderCompY);
 
 	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>(2);
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	Scene->RegisterComponent(*CylinderCompZ);
+	tmp.currentScene->RegisterComponent(*CylinderCompZ);
 
 	FCamera Camera{};
 	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
@@ -106,6 +113,8 @@ int WINAPI wWinMain(
 	// TODO: 추상화
 	static FCameraInputController CameraController;
 
+	tmp.SaveScene(R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)");
+
 	// TODO: DeltaTime 계산
 	bool bQuit = false;
     while (!bQuit)
@@ -114,6 +123,29 @@ int WINAPI wWinMain(
 		{
 			bQuit = true;
 			break;
+		}
+
+		const FString ScenePath = R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)";
+
+		if (bRequestSaveScene)
+		{
+			bRequestSaveScene = false;
+			tmp.SaveScene(ScenePath);
+			OutputDebugStringA("[Scene] 저장\n");
+		}
+
+		if (bRequestLoadScene)
+		{
+			bRequestLoadScene = false;
+			tmp.LoadScene(ScenePath);
+			OutputDebugStringA("[Scene] 로드\n");
+		}
+
+		if (bRequestNewScene)
+		{
+			bRequestNewScene = false;
+			tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
+			OutputDebugStringA("[Scene] 새 씬\n");
 		}
 
 		CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
@@ -127,7 +159,7 @@ int WINAPI wWinMain(
 
 		Renderer.BeginFrame();
 		
-		for (const auto& Component : Scene->GetPrimitiveComponents())
+		for (const auto& Component : tmp.currentScene->GetPrimitiveComponents())
 		{
 			Renderer.UpdateObjectConstants({ Component->RelativeTransform.ToMatrix() * VP });
 			Renderer.Draw(*Component->GetMesh(), *Component->GetMaterial());
@@ -213,6 +245,14 @@ namespace
 
 					return 0;
 				}
+				case WM_KEYDOWN:
+					switch (wParam)
+					{
+					case VK_F5: bRequestSaveScene = true; break;
+					case VK_F6: bRequestLoadScene = true; break;
+					case VK_F7: bRequestNewScene = true; break;
+					}
+					break;
 				default:
 					return DefWindowProc(hWnd, uMsg, wParam, lParam);
 				}

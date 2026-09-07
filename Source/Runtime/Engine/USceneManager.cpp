@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "ThirdParty/Json/json.hpp"
 
+
 void USceneManager::SaveScene(const FString& path) const
 {
 	std::filesystem::path fsPath(path);
@@ -32,4 +33,33 @@ void USceneManager::SaveScene(const FString& path) const
 
 	file << sceneData.dump();
 
+}
+
+void USceneManager::LoadScene(const FString& path)
+{
+	std::ifstream file(path);
+	if(!file)
+	{
+
+		return;
+	}
+
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+
+	json::JSON sceneData = json::JSON::Load(buffer.str());
+	SetScene(NewObject<UScene>(*resourceLibrary));
+	currentScene->CreateFromJson(sceneData);
+
+}
+
+void USceneManager::SetScene(UScene* scene)
+{
+	if(currentScene != nullptr)
+	{
+		delete currentScene;
+	}
+
+	currentScene = scene;
+	
 }
