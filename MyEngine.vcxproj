@@ -262,6 +262,7 @@
     <ClCompile Include="Source\Editor\Application\FEditorApplication.cpp" />
     <ClCompile Include="Source\Editor\Core\FEditor.cpp" />
     <ClCompile Include="Source\Editor\EditorViewport\FEditorViewport.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.cpp" />
@@ -341,6 +342,7 @@
     <ClInclude Include="Source\Editor\Application\FEditorApplication.h" />
     <ClInclude Include="Source\Editor\Core\FEditor.h" />
     <ClInclude Include="Source\Editor\EditorViewport\FEditorViewport.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.h" />

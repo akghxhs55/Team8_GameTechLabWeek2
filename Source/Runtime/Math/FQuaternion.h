@@ -35,9 +35,9 @@ struct FQuaternion
     // 오일러각(도)에서 생성. XYZ 순서
     static FQuaternion FromEulerXYZDeg(const FVector& Deg)
     {
-        return FromAxisAngle(FVector(1, 0, 0), Deg.X)
-            * FromAxisAngle(FVector(0, 1, 0), Deg.Y)
-            * FromAxisAngle(FVector(0, 0, 1), Deg.Z);
+        return FromAxisAngle(FVector(0, 0, 1), Deg.Z)
+            * FromAxisAngle(FVector(0, 1, 0), -Deg.Y)
+            * FromAxisAngle(FVector(1, 0, 0), -Deg.X);
     }
 
     // 회전 합성. 교환법칙 성립 안 함
@@ -136,27 +136,47 @@ struct FQuaternion
 
     FVector GetEulerXYZ() const
     {
-        float rx, ry, rz;
-        FMatrix R = ToMatrixRow();
-        const float sy = std::clamp(R.M[0][2], -1.0f, 1.0f);
-        //ry 복원
-        ry = asinf(sy);
-        const float cy = cosf(ry);
+        // Pitch ±90도 근처의 오차 확대를 줄이기 위해
+        // 필요한 행렬 성분만 double로 계산한다.
+        const double x = X, y = Y, z = Z, w = W;
+        const double normSq = x * x + y * y + z * z + w * w;
 
-        //ry가 0이아니라면
-        if(fabsf(cy) > 1e-6f)
+        if (normSq <= 0.0)
+            return FVector(0.0f, 0.0f, 0.0f);
+
+        // 정규화된 쿼터니언의 ToMatrixRow()와 같은 식
+        const double k = 2.0 / normSq;
+        const double r00 = 1.0 - k * (y * y + z * z);
+        const double r01 = k * (x * y + w * z);
+        const double r02 = k * (x * z - w * y);
+        const double r12 = k * (y * z + w * x);
+        const double r22 = 1.0 - k * (x * x + y * y);
+
+        const double cosPitch = std::hypot(r00, r01);
+        const double pitch = std::atan2(r02, cosPitch);
+
+        double roll, yaw;
+
+        if (cosPitch > 1e-6)
         {
-            rx = atan2f(-R.M[1][2], R.M[2][2]);
-            rz = atan2f(-R.M[0][1], R.M[0][0]);
+            roll = std::atan2(-r12, r22);
+            yaw = std::atan2(r01, r00);
         }
         else
         {
-            rz = 0.0f;
-            rx = (sy > 0.0f) ? atan2f(R.M[2][0], R.M[1][0])
-                : atan2f(-R.M[2][0], -R.M[1][0]);
-        }
-        return FVector(rx, ry, rz);
+            // 짐벌락: Roll/Yaw를 각각 유일하게 복원할 수 없다.
+            // Yaw=0인 대표값을 선택하고 나머지 회전을 Roll에 담는다.
+            const double r21 = k * (y * z - w * x);
+            const double r11 = 1.0 - k * (x * x + z * z);
 
+            roll = std::atan2(r21, r11);
+            yaw = 0.0;
+        }
+
+        return FVector(
+            static_cast<float>(roll),
+            static_cast<float>(pitch),
+            static_cast<float>(yaw));
     }
 
 
