@@ -135,7 +135,7 @@ int WINAPI wWinMain(
 			break;
 		}
 
-		const FString ScenePath = R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2\test.json)";
+		const FString ScenePath = R"(C:\Users\KJW\source\repos\Team8_GameTechLabWeek2\test.json)";
 
 		if (bRequestSaveScene)
 		{
