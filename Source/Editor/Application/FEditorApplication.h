@@ -43,6 +43,7 @@ public:
 	bool CheckSceneExistsAndInitializeIfNotExists(const FString& path = "");
 	void Update(float DeltaTime);
 	void Render();
+	void OnWindowSize(UINT Width, UINT Height);
 
 private:
 	FEditorApplication() = default;

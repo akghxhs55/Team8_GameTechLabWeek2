@@ -24,7 +24,14 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateArrowMesh(Renderer) ||
-		!CreateSimpleMaterial(Renderer))
+		!CreateSimpleMaterial(Renderer) ||
+		!CreateGridMaterial(Renderer) ||
+		!CreateCircleMesh(Renderer) ||
+		!CreateSquareArrowMesh(Renderer) ||
+		!CreateGridMesh(Renderer) ||
+		!CreateSimpleMaterial(Renderer) ||
+		!CreateDrawOverMaterial(Renderer) ||
+		!CreateGridMaterial(Renderer))
 	{
 		return false;
 	}
@@ -336,8 +343,8 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 	for (uint32 i = 0u; i < SliceCount; ++i)
 	{
 		Indices.push_back(HeadBaseCenter);
-		Indices.push_back(HeadBaseRing + i);
 		Indices.push_back(HeadBaseRing + i + 1u);
+		Indices.push_back(HeadBaseRing + i);
 	}
 
 	const FMeshDesc MeshDesc{
@@ -355,6 +362,170 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 	return ArrowMesh != nullptr;
 }
 
+bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
+{
+	constexpr uint32 SliceCount = 32u;
+	constexpr float Radius = 1.0f;
+	constexpr float Width = 0.05f;
+
+	FVector Color{ 0.0f, 0.0f, 0.0f };
+
+	TArray<FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+	Vertices.reserve(SliceCount * 4u);
+	Indices.reserve(SliceCount * 12u);
+
+	float Step = std::numbers::pi_v<float> * 2.0f / static_cast<float>(SliceCount);
+	for (uint32 i = 0; i < SliceCount; ++i)
+	{
+		float Cos = std::cosf(Step * static_cast<float>(i));
+		float Sin = std::sinf(Step * static_cast<float>(i));
+
+		Vertices.push_back({ FVector{ Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
+		Vertices.push_back({ FVector{ -Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i - 1u);
+		Indices.push_back(2u * i + 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i - 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i);
+		Indices.push_back(2u * i + 1u);
+	}
+	Indices[0] = 2u * SliceCount - 2u;
+	Indices[1] = 2u * SliceCount - 1u;
+	Indices[3] = 2u * SliceCount - 2u;
+	Indices[5] = 2u * SliceCount - 1u;
+	Indices[6] = 2u * SliceCount - 2u;
+	Indices[9] = 2u * SliceCount - 2u;
+
+	const FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	CircleMesh = Renderer.CreateMesh(Desc);
+	return CircleMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateSquareArrowMesh(FRenderer& Renderer)
+{
+	constexpr float ShaftLength = 0.85f;
+	constexpr float ShaftRadius = 0.025f;
+	constexpr float ArrowLength = 1.0f;
+	constexpr float TipSize = ArrowLength - ShaftLength;
+
+	const TArray<FVertexPositionColor> CubeVertices = {
+		{ FVector(-0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(-0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(-0.5, -0.5,  0.5), FVector(0.0, 0.0, 1.0) },
+		{ FVector(0.5, -0.5,  0.5), FVector(1.0, 0.0, 1.0) },
+		{ FVector(0.5,  0.5,  0.5), FVector(1.0, 1.0, 1.0) },
+		{ FVector(-0.5,  0.5,  0.5), FVector(0.0, 1.0, 1.0) },
+	};
+	const TArray<uint32> CubeIndices = {
+		0, 2, 1, 0, 3, 2, // -Z
+		4, 5, 6, 4, 6, 7, // +Z
+		0, 1, 5, 0, 5, 4, // -Y
+		3, 7, 6, 3, 6, 2, // +Y
+		0, 4, 7, 0, 7, 3, // -X
+		1, 2, 6, 1, 6, 5, // +X
+	};
+
+	TArray <FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+
+	Vertices.reserve(16u);
+	Indices.reserve(72u);
+
+	for (const auto& [Position, Color] : CubeVertices)
+	{
+		FVector ScaledPosition = Position;
+		ScaledPosition.X *= ShaftLength;
+		ScaledPosition.Y *= ShaftRadius;
+		ScaledPosition.Z *= ShaftRadius;
+		Vertices.push_back({ ScaledPosition + FVector{ ShaftLength * 0.5f, 0.0f, 0.0f }, Color });
+	}
+
+	for (const auto& Index : CubeIndices)
+	{
+		Indices.push_back(Index);
+	}
+
+	for (const auto& [Position, Color] : CubeVertices)
+	{
+		FVector ScaledPosition = Position;
+		ScaledPosition.X *= TipSize;
+		ScaledPosition.Y *= TipSize;
+		ScaledPosition.Z *= TipSize;
+		Vertices.push_back({ ScaledPosition + FVector{ TipSize * 0.5f + ShaftLength, 0.0f, 0.0f }, Color });
+	}
+
+	for (const auto& Index : CubeIndices)
+	{
+		Indices.push_back(Index + 8u);
+	}
+
+	const FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	SquareArrowMesh = Renderer.CreateMesh(Desc);
+	return SquareArrowMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateGridMesh(FRenderer& Renderer)
+{
+	constexpr float HalfW = 50.0f;   // width  100
+	constexpr float HalfH = 50.0f;   // height 100
+
+	// XY 평면 (Z=0), 위(+Z)를 향하는 감김 — 큐브의 +Z 면과 동일
+	const TArray<FVertexPositionColor> Vertices = {
+		{ FVector{ -HalfW, -HalfH, 0.0f }, FVector{} },   // 0
+		{ FVector{  HalfW, -HalfH, 0.0f }, FVector{} },   // 1
+		{ FVector{  HalfW,  HalfH, 0.0f }, FVector{} },   // 2
+		{ FVector{ -HalfW,  HalfH, 0.0f }, FVector{} },   // 3
+	};
+	const TArray<uint32> Indices = { 0, 1, 2, 0, 2, 3 };
+
+	FMeshDesc MeshDesc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = sizeof(FVertexPositionColor),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	GridMesh = Renderer.CreateMesh(MeshDesc);
+	return GridMesh != nullptr;
+}
+
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 {
 	FWString Path = GetExecutableDirectory();
@@ -368,4 +539,35 @@ bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 	SimpleMaterial = Renderer.CreateMaterial(Desc);
 
 	return SimpleMaterial != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateDrawOverMaterial(FRenderer& Renderer)
+{
+	FWString Path = GetExecutableDirectory();
+
+	FMaterialDesc Desc = {
+		.VertexShaderFileName = Path + L"/Shader/ExampleVS.cso",
+		.PixelShaderFileName = Path + L"/Shader/ExamplePS.cso",
+		.VertexLayout = EVertexLayout::PositionColor,
+		.bEnableDepthTest = false,
+	};
+
+	DrawOverMaterial = Renderer.CreateMaterial(Desc);
+
+	return DrawOverMaterial != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateGridMaterial(FRenderer& Renderer)
+{
+	FWString Path = GetExecutableDirectory();
+
+	FMaterialDesc Desc = {
+		.VertexShaderFileName = Path + L"/Shader/GridVS.cso",
+		.PixelShaderFileName = Path + L"/Shader/GridPS.cso",
+		.VertexLayout = EVertexLayout::PositionColor,
+	};
+
+	GridMaterial = Renderer.CreateMaterial(Desc);
+
+	return GridMaterial != nullptr;
 }

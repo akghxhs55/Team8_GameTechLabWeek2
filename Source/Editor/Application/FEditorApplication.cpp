@@ -77,7 +77,6 @@ void FEditorApplication::Update(float DeltaTime)
 {
 	BeginFrame();
 	Tick(DeltaTime);
-	Render();
 }
 
 void FEditorApplication::BeginFrame()
@@ -102,7 +101,9 @@ void FEditorApplication::Render()
 {
 	const TArray<FEditorViewport>& EditorViewports = Editor.GetViewports();
 
-	for (auto& EditorViewport : EditorViewports) {
+	for (auto& EditorViewport : EditorViewports) 
+	{
+		RenderView->RenderGrid(EditorViewport.ViewportCamera, Editor.GetGrid());
 		for (auto& PrimitiveComponent : SceneManager->CurrentScene->GetPrimitiveComponents())
 		{
 			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeft,
@@ -110,64 +111,23 @@ void FEditorApplication::Render()
 		}
 		if (Editor.ObjectSelected())
 		{
-			RenderView->RenderGizmo(Editor.SelectedLocation, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+			RenderView->RenderGizmo(Editor.SelectedTransform, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
 		}
 		// TODO: render HighLight for selected object
+
 	}
 	ImguiManager.RenderUI();
 }
 
-//void FEditorApplication::HandlePicking()
-//{
-//	const bool bLeftMouseDown =
-//		FInputManager::Get().IsMouseDown(EMouseButton::Left);
-//
-//	// 클릭 첫 프레임만 처리
-//	if (!bLeftMouseDown || bWasLeftMouseDown)
-//	{
-//		bWasLeftMouseDown = bLeftMouseDown;
-//		return;
-//	}
-//
-//	bWasLeftMouseDown = true;
-//
-//	// ImGui 창/위젯이 입력을 점유하면 피킹하지 않음
-//	if (ImGui::GetIO().WantCaptureMouse)
-//	{
-//		return;
-//	}
-//
-//	FEditorViewport* activeViewport = Editor.GetActiveViewport();
-//	if (!activeViewport || !SceneManager || !SceneManager->CurrentScene)
-//	{
-//		return;
-//	}
-//
-//	// 현재는 전체 클라이언트 영역이 렌더 뷰포트이므로 ImGui DisplaySize 를 그대로 사용.
-//	// 추후 FImguiEditorViewportWindow 로 별도 뷰포트 창을 만들면
-//	// activeViewport->TopLeft / Length 로 마우스 좌표와 크기를 보정해야 함.
-//	const ImGuiIO& IO = ImGui::GetIO();
-//	FVector2 viewportSize{ IO.DisplaySize.x, IO.DisplaySize.y };
-//
-//	auto components = SceneManager->CurrentScene->GetPrimitiveComponents();
-//
-//	UPrimitiveComponent* hitComponent = nullptr;
-//	FVector impactPoint;
-//
-//	const bool bHit = FRayCastingManager::Get().RayIntersectsMeshes(
-//		&activeViewport->ViewportCamera,
-//		components,
-//		hitComponent,
-//		impactPoint,
-//		viewportSize
-//	);
-//
-//	if (bHit)
-//	{
-//		Editor.SelectObject(hitComponent);
-//	}
-//	else
-//	{
-//		Editor.UnSelectObject();
-//	}
-//}
+void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
+{
+	// TODO: 여기서 할 일은 아니지만 급한대로
+
+	constexpr float InitialFOV = 60.0f * std::numbers::pi_v<float> / 180.0f;
+
+	auto& Camera = Editor.GetActiveViewport()->ViewportCamera;
+	Camera.Projection.Aspect = static_cast<float>(Width) / static_cast<float>(Height);
+
+	float newFOV = 2.0f * std::atan(std::tan(InitialFOV / 2) * Camera.Projection.Aspect);
+	Camera.Projection.FOV = newFOV * 180.0f / std::numbers::pi_v<float>;
+}

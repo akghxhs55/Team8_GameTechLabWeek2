@@ -15,7 +15,8 @@ bool FRenderer::Initialize(HWND Window)
 {
 	if (!InitializeDeviceAndSwapChain(Window) ||
 		!InitializeBackBufferAndDepthStencil() ||
-		!InitializeConstantBuffers())
+		!InitializeConstantBuffers()||
+		!InitializeGridConstantBuffers())
 	{
 		Shutdown();
 		return false;
@@ -32,8 +33,8 @@ void FRenderer::Shutdown()
 		Context->Flush();
 	}
 
-	FrameConstantBuffer.Reset();
 	ObjectConstantBuffer.Reset();
+	GridConstantBuffer.Reset();
 
 	BackBufferRTV.Reset();
 	DepthStencilView.Reset();
@@ -81,9 +82,50 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObject
 	}
 }
 
+void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants)
+{
+	UpdateGridConstants(GridConstants);
+
+	if (Mesh.GetVertexLayout() != Material.GetVertexLayout())
+	{
+		return;
+	}
+
+	const auto& Pipeline = Material.Pipeline;
+
+	Pipeline->Bind(*Context.Get());
+	Material.BindResources(*Context.Get());
+	Mesh.BindResources(*Context.Get());
+
+	Context->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+
+	if (Mesh.HasIndices())
+	{
+		Context->DrawIndexed(Mesh.IndexCount, 0, 0);
+	}
+	else
+	{
+		Context->Draw(Mesh.VertexCount, 0);
+	}
+}
+
+
 void FRenderer::SwapBuffer()
 {
 	SwapChain->Present(1u, 0u);
+}
+
+void FRenderer::OnWindowSize(UINT Width, UINT Height)
+{
+	BackBufferRTV.Reset();
+	DepthStencilView.Reset();
+	DepthStencilBuffer.Reset();
+
+	SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0);
+	Viewport.Width = static_cast<float>(Width);
+	Viewport.Height = static_cast<float>(Height);
+
+	InitializeBackBufferAndDepthStencil();
 }
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
@@ -356,7 +398,7 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	}
 
 	D3D11_DEPTH_STENCIL_DESC DepthStencilDesc{
-		.DepthEnable = true,
+		.DepthEnable = Desc.bEnableDepthTest,
 		.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
 		.DepthFunc = D3D11_COMPARISON_LESS,
 	};
@@ -368,6 +410,24 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	}
 
 	return Pipeline;
+}
+
+bool FRenderer::InitializeGridConstantBuffers()
+{
+	D3D11_BUFFER_DESC GridConstantBufferDesc = {
+		.ByteWidth = sizeof(FGridConstants),
+		.Usage = D3D11_USAGE_DYNAMIC,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+	};
+
+	HRESULT Result = Device->CreateBuffer(&GridConstantBufferDesc, nullptr, &GridConstantBuffer);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
@@ -390,4 +450,26 @@ void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 
 	Context->VSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
 	Context->PSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
+}
+
+void FRenderer::UpdateGridConstants(const FGridConstants& Constants)
+{
+	static const FMatrix UnrealClipToD3DClip{
+	FVector{ 0.0f, 0.0f, 1.0f },
+	FVector{ 1.0f, 0.0f, 0.0f },
+	FVector{ 0.0f, 1.0f, 0.0f },
+	FVector{ 0.0f, 0.0f, 0.0f }
+	};
+
+	// 언리얼 Clip -> D3D Clip 좌표 변환
+	FGridConstants ShaderConstants = Constants;
+	ShaderConstants.MVP *= UnrealClipToD3DClip;
+
+	D3D11_MAPPED_SUBRESOURCE MappedResource{};
+	Context->Map(GridConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
+	memcpy(MappedResource.pData, &ShaderConstants, sizeof(ShaderConstants));
+	Context->Unmap(GridConstantBuffer.Get(), 0);
+
+	Context->VSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
+	Context->PSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
 }

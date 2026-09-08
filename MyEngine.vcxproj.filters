@@ -62,6 +62,9 @@
     <Filter Include="Source\Editor\Gizmo">
       <UniqueIdentifier>{1f658ce1-7a1a-4ece-a31a-c6fa20d35a10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Editor\Grid">
+      <UniqueIdentifier>{8b3d1db5-440e-4645-adba-5c30f97feec1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -165,6 +168,9 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp">
       <Filter>Source\Runtime\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Grid\FGrid.cpp">
+      <Filter>Source\Editor\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,12 +336,21 @@
     <ClInclude Include="Source\Editor\Gizmo\FGizmo.h">
       <Filter>Source\Editor\Gizmo</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Editor\Grid\FGrid.h">
+      <Filter>Source\Editor\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\ExamplePS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ExampleVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GridPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GridVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
