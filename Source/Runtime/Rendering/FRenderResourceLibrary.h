@@ -20,6 +20,7 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetArrowMesh() { return ArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
+	[[nodiscard]] TSharedPtr<FMaterial> GetDrawOverMaterial() { return DrawOverMaterial; }
 
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
@@ -27,6 +28,7 @@ private:
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateArrowMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
+	bool CreateDrawOverMaterial(FRenderer& Renderer);
 
 private:
 	TSharedPtr<FMesh> CubeMesh;
@@ -34,4 +36,5 @@ private:
 	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
+	TSharedPtr<FMaterial> DrawOverMaterial;
 };

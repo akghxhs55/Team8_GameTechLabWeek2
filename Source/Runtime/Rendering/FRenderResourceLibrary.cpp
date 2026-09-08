@@ -24,7 +24,8 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateArrowMesh(Renderer) ||
-		!CreateSimpleMaterial(Renderer))
+		!CreateSimpleMaterial(Renderer) ||
+		!CreateDrawOverMaterial(Renderer))
 	{
 		return false;
 	}
@@ -336,8 +337,8 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 	for (uint32 i = 0u; i < SliceCount; ++i)
 	{
 		Indices.push_back(HeadBaseCenter);
-		Indices.push_back(HeadBaseRing + i);
 		Indices.push_back(HeadBaseRing + i + 1u);
+		Indices.push_back(HeadBaseRing + i);
 	}
 
 	const FMeshDesc MeshDesc{
@@ -368,4 +369,20 @@ bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 	SimpleMaterial = Renderer.CreateMaterial(Desc);
 
 	return SimpleMaterial != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateDrawOverMaterial(FRenderer& Renderer)
+{
+	FWString Path = GetExecutableDirectory();
+
+	FMaterialDesc Desc = {
+		.VertexShaderFileName = Path + L"/Shader/ExampleVS.cso",
+		.PixelShaderFileName = Path + L"/Shader/ExamplePS.cso",
+		.VertexLayout = EVertexLayout::PositionColor,
+		.bEnableDepthTest = false,
+	};
+
+	DrawOverMaterial = Renderer.CreateMaterial(Desc);
+
+	return DrawOverMaterial != nullptr;
 }

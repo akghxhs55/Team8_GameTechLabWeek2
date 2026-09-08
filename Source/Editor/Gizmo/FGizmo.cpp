@@ -15,7 +15,7 @@
 void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 {
 	ArrowMesh = RenderResources.GetArrowMesh();
-	ArrowMaterial = RenderResources.GetSimpleMaterial();
+	ArrowMaterial = RenderResources.GetDrawOverMaterial();
 }
 
 void FGizmo::Draw(const FVector& Location, FRenderer& Renderer, const FCamera& Camera) const
