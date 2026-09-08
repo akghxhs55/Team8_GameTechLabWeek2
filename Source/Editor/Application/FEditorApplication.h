@@ -23,6 +23,7 @@ class FEditorApplication final {
 	FImguiConsoleWindow ConsoleWindow;
 
 	FRenderView* RenderView = nullptr;
+
 public:
 	
 	static FEditorApplication& Get()
@@ -31,11 +32,9 @@ public:
 		return Instance;
 	}
 
-	//복사 연산자와 복사 대입 연산자 삭제
 	FEditorApplication(const FEditorApplication&) = delete;
 	FEditorApplication& operator=(const FEditorApplication&) = delete;
 
-	//이동 연산자와 이동 대입연산자 삭제
 	FEditorApplication(FEditorApplication&&) = delete;
 	FEditorApplication& operator=(FEditorApplication&&) = delete;
 
@@ -44,6 +43,7 @@ public:
 	bool CheckSceneExistsAndInitializeIfNotExists(const FString& path = "");
 	void Update(float DeltaTime);
 	void Render();
+
 private:
 	FEditorApplication() = default;
 	~FEditorApplication() = default;

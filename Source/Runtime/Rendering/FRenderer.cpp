@@ -54,8 +54,10 @@ void FRenderer::BeginFrame()
 	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
+void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants)
 {
+	UpdateObjectConstants(ObjectConstants);
+
 	if (Mesh.GetVertexLayout() != Material.GetVertexLayout())
 	{
 		return;
@@ -79,28 +81,6 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material)
 	}
 }
 
-void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
-{
-	static const FMatrix CameraToProjectionAxes{
-		FVector{ 0.0f, 0.0f, 1.0f },
-		FVector{ 1.0f, 0.0f, 0.0f },
-		FVector{ 0.0f, 1.0f, 0.0f },
-		FVector{ 0.0f, 0.0f, 0.0f }
-	};
-
-	// 언리얼 -> HLSL 좌표 변환
-	FObjectConstants ShaderConstants = Constants;
-	ShaderConstants.MVP *= CameraToProjectionAxes;
-
-	D3D11_MAPPED_SUBRESOURCE MappedResource{};
-	Context->Map(ObjectConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
-	memcpy(MappedResource.pData, &ShaderConstants, sizeof(ShaderConstants));
-	Context->Unmap(ObjectConstantBuffer.Get(), 0);
-
-	Context->VSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
-	Context->PSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
-}
-
 void FRenderer::SwapBuffer()
 {
 	SwapChain->Present(1u, 0u);
@@ -108,8 +88,6 @@ void FRenderer::SwapBuffer()
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
 {
-
-
 	if (!Desc.VertexData ||
 		Desc.VertexCount == 0 ||
 		Desc.VertexDataSize == 0 ||
@@ -390,4 +368,26 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	}
 
 	return Pipeline;
+}
+
+void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
+{
+	static const FMatrix UnrealClipToD3DClip{
+		FVector{ 0.0f, 0.0f, 1.0f },
+		FVector{ 1.0f, 0.0f, 0.0f },
+		FVector{ 0.0f, 1.0f, 0.0f },
+		FVector{ 0.0f, 0.0f, 0.0f }
+	};
+
+	// 언리얼 Clip -> D3D Clip 좌표 변환
+	FObjectConstants ShaderConstants = Constants;
+	ShaderConstants.MVP *= UnrealClipToD3DClip;
+
+	D3D11_MAPPED_SUBRESOURCE MappedResource{};
+	Context->Map(ObjectConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
+	memcpy(MappedResource.pData, &ShaderConstants, sizeof(ShaderConstants));
+	Context->Unmap(ObjectConstantBuffer.Get(), 0);
+
+	Context->VSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
+	Context->PSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
 }

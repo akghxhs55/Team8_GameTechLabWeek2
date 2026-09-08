@@ -1,139 +1,183 @@
-#include "FRayCastingManager.h"
+﻿#include "FRayCastingManager.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Math/FMatrix.h"
 #include "Runtime/Rendering/FMesh.h"
 #include <limits>
 #include "Runtime/CoreUObject/UPrimitiveComponent.h"
 
-FRay FRayCastingManager::CreateRayFromScreenPosition(FCamera* camera, FVector2& viewportSize)
+FRay FRayCastingManager::CreateRayFromScreenPosition(const FCamera& Camera, const FVector2& MousePosition, const FVector2& ViewportSize)
 {
+	float ViewportWidth = ViewportSize.X;
+	float ViewportHeight = ViewportSize.Y;
 
-    int32 viewportWidth = viewportSize.X, viewportHeight = viewportSize.Y;
+	FMatrix InvVP;
+	Camera.CreateViewProjectionMatrix().Inverse(InvVP);
 
-    FMatrix invVP;
-    camera->CreateViewProjectionMatrix().Inverse(invVP);
+	
+	const float screenNdcX = (MousePosition.X / ViewportWidth) * 2.0f - 1.0f;
+	const float screenNdcY = 1.0f - (MousePosition.Y / ViewportHeight) * 2.0f;
 
-    
-    const float screenNdcX = (MouseX / viewportWidth) * 2.0f - 1.0f;
-    const float screenNdcY = 1.0f - (MouseY / viewportHeight) * 2.0f;
+	// 이 엔진의 투영 행렬:
+	// X = depth, Y = screen horizontal, Z = screen vertical
+	FVector NearClip{ 0.0f, screenNdcX, screenNdcY };
+	FVector FarClip{ 1.0f, screenNdcX, screenNdcY };
 
-    // 이 엔진의 투영 행렬:
-    // X = depth, Y = screen horizontal, Z = screen vertical
-    FVector nearClip{ 0.0f, screenNdcX, screenNdcY };
-    FVector farClip{ 1.0f, screenNdcX, screenNdcY };
+	const FVector NearWorld = InvVP.TransformPointRow(NearClip);
+	const FVector FarWorld = InvVP.TransformPointRow(FarClip);
 
-    const FVector nearWorld = invVP.TransformPointRow(nearClip);
-    const FVector farWorld = invVP.TransformPointRow(farClip);
-
-    FRay ray;
-    ray.Origin = nearWorld;
-    FVector dir = farWorld - nearWorld;
-    ray.Direction = dir / dir.Size();
-    return ray;
+	FRay Ray;
+	Ray.Origin = NearWorld;
+	FVector dir = FarWorld - NearWorld;
+	Ray.Direction = dir / dir.Size();
+	return Ray;
 }
 
 
-template<typename T>
-inline bool FRayCastingManager::RayIntersectsMeshes(
-    FCamera* camera,
-    TArray<T*>& components,
-    T*& hitComponent,
-    FVector& outImpactPoint,
-    FVector2& viewportSize)
+bool FRayCastingManager::RayIntersectsMeshes(
+	const FRay& Ray,
+	const TArray<UPrimitiveComponent*>& Components,
+	UPrimitiveComponent*& HitComponent,
+	FVector& OutImpactPoint)
 {
-    hitComponent = nullptr;
+	HitComponent = nullptr;
 
-    MouseX = FInputManager::Get().GetMousePosition().X;
-    MouseY = FInputManager::Get().GetMousePosition().Y;
+	float ClosestHit = (std::numeric_limits<float>::max)();
+	UPrimitiveComponent* ClosestComponent = nullptr;
+	FVector ClosestImpactPoint;
 
-    const FRay ray = CreateRayFromScreenPosition(camera, viewportSize);
+	for (UPrimitiveComponent* Component : Components)
+	{
+		if (!Component)
+		{
+			continue;
+		}
 
-    float closestHit = (std::numeric_limits<float>::max)();
-    T* closestComponent = nullptr;
-    FVector closestImpactPoint;
+		auto Mesh = Component->GetMesh();
+		if (!Mesh)
+		{
+			continue;
+		}
 
-    for (T* component : components)
-    {
-        if (!component)
-        {
-            continue;
-        }
+		FMatrix World = Component->GetModelMatrix();
 
-        auto mesh = component->GetMesh();
-        if (!mesh)
-        {
-            continue;
-        }
+		float HitDistance;
+		FVector ImpactPoint;
+		if (RayIntersectsMesh(Ray, *Mesh, World, HitDistance, ImpactPoint) &&
+			HitDistance < ClosestHit)
+		{
+			ClosestHit = HitDistance;
+			ClosestComponent = Component;
+			ClosestImpactPoint = ImpactPoint;
+		}
+	}
+	
+	HitComponent = ClosestComponent;
+	OutImpactPoint = ClosestImpactPoint;
 
-        const auto& positions = mesh->GetPositions();
-        const auto& indices = mesh->GetIndices();
-
-        if (positions.size() < 3)
-        {
-            continue;
-        }
-
-        // GetRelativeTransform()은 FTransform이므로 이 줄은 제거
-        // FMatrix worldTransform = component->GetRelativeTransform();
-
-        // TransformPointRow가 현재 const 함수가 아니므로 const를 붙이지 않음
-        FMatrix world = component->GetModelMatrix();
-
-        const uint32 elementCount = mesh->HasIndices()
-            ? static_cast<uint32>(indices.size())
-            : static_cast<uint32>(positions.size());
-
-        for (uint32 i = 0; i + 2 < elementCount; i += 3)
-        {
-            const uint32 i0 = mesh->HasIndices() ? indices[i] : i;
-            const uint32 i1 = mesh->HasIndices() ? indices[i + 1] : i + 1;
-            const uint32 i2 = mesh->HasIndices() ? indices[i + 2] : i + 2;
-
-            // 잘못된 인덱스 방어
-            if (i0 >= positions.size() ||
-                i1 >= positions.size() ||
-                i2 >= positions.size())
-            {
-                continue;
-            }
-
-            FVector a = positions[i0];
-            FVector b = positions[i1];
-            FVector c = positions[i2];
-
-            // Local space → World space
-            a = world.TransformPointRow(a);
-            b = world.TransformPointRow(b);
-            c = world.TransformPointRow(c);
-
-            float hitT = 0.0f;
-
-            if (RayIntersectsTriangle(ray, a, b, c, hitT) &&
-                hitT < closestHit)
-            {
-                closestHit = hitT;
-                closestComponent = component;
-                closestImpactPoint = ray.Origin + ray.Direction * hitT;
-            }
-        }
-    }
-
-
-    if (!closestComponent)
-    {
-        return false;
-    }
-
-    hitComponent = closestComponent;
-    outImpactPoint = closestImpactPoint;
-    return true;
+	return ClosestComponent != nullptr;
 }
 
+bool FRayCastingManager::RayIntersectsMesh(const FRay& Ray, const FMesh& Mesh, const FMatrix& ModelMatrix, float& OutDistance, FVector& OutImpactPoint)
+{
+	const auto& Positions = Mesh.GetPositions();
+	const auto& Indices = Mesh.GetIndices();
 
-template bool FRayCastingManager::RayIntersectsMeshes<UPrimitiveComponent>(
-    FCamera* camera,
-    TArray<UPrimitiveComponent*>& components,
-    UPrimitiveComponent*& hitComponent,
-    FVector& outImpactPoint,
-    FVector2& viewportSize
-);
+	if (Positions.size() < 3)
+	{
+		return false;
+	}
+
+	const uint32 elementCount = Mesh.HasIndices()
+		? static_cast<uint32>(Indices.size())
+		: static_cast<uint32>(Positions.size());
+
+	float ClosestHit = (std::numeric_limits<float>::max)();
+	FVector ClosestImpactPoint;
+	bool bHit = false;
+	for (uint32 i = 0; i + 2 < elementCount; i += 3)
+	{
+		const uint32 i0 = Mesh.HasIndices() ? Indices[i] : i;
+		const uint32 i1 = Mesh.HasIndices() ? Indices[i + 1] : i + 1;
+		const uint32 i2 = Mesh.HasIndices() ? Indices[i + 2] : i + 2;
+
+		// 잘못된 인덱스 방어
+		if (i0 >= Positions.size() ||
+			i1 >= Positions.size() ||
+			i2 >= Positions.size())
+		{
+			continue;
+		}
+
+		FVector A = Positions[i0];
+		FVector B = Positions[i1];
+		FVector C = Positions[i2];
+
+		// Local space → World space
+		A = ModelMatrix.TransformPointRow(A);
+		B = ModelMatrix.TransformPointRow(B);
+		C = ModelMatrix.TransformPointRow(C);
+
+		float HitT = 0.0f;
+		if (RayIntersectsTriangle(Ray, A, B, C, HitT) &&
+			HitT < ClosestHit)
+		{
+			ClosestHit = HitT;
+			ClosestImpactPoint = Ray.Origin + Ray.Direction * HitT;
+			bHit = true;
+		}
+	}
+
+	OutDistance = ClosestHit;
+	OutImpactPoint = ClosestImpactPoint;
+	
+	return bHit;
+}
+
+bool FRayCastingManager::RayIntersectsTriangle(
+	const FRay& Ray,
+	const FVector& A,
+	const FVector& B,
+	const FVector& C,
+	float& OutT)
+{
+	constexpr float Epsilon = 0.000001f;
+
+	const FVector edge1 = B - A;
+	const FVector edge2 = C - A;
+
+	// Ray direction × triangle edge
+	const FVector pVector = Ray.Direction.Cross(edge2);
+	const float determinant = edge1.Dot(pVector);
+
+	// 레이와 삼각형 평면이 평행함
+	if (std::fabs(determinant) < Epsilon)
+	{
+		return false;
+	}
+
+	const float inverseDeterminant = 1.0f / determinant;
+
+	// Barycentric u 계산
+	const FVector tVector = Ray.Origin - A;
+	const float u = tVector.Dot(pVector) * inverseDeterminant;
+
+	if (u < 0.0f || u > 1.0f)
+	{
+		return false;
+	}
+
+	// Barycentric v 계산
+	const FVector qVector = tVector.Cross(edge1);
+	const float v = Ray.Direction.Dot(qVector) * inverseDeterminant;
+
+	if (v < 0.0f || u + v > 1.0f)
+	{
+		return false;
+	}
+
+	// 레이 시작점으로부터 교점까지의 거리
+	OutT = edge2.Dot(qVector) * inverseDeterminant;
+
+	// t가 음수면 카메라/레이 시작점 뒤에 있는 삼각형
+	return OutT > Epsilon;
+}

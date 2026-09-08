@@ -147,11 +147,11 @@ struct FQuaternion
         if (fabsf(cy) > 1e-6f)
         {
             rx = atan2f(-R.M[1][2], R.M[2][2]);
-            rz = atan2f(-R.M[0][1], R.M[0][0]);
+			rz = atan2f(R.M[0][1], R.M[0][0]);
         }
         else
         {
-            rz = 0.0f;
+            rz = 0.0f; 
             rx = (sy > 0.0f) ? atan2f(R.M[2][0], R.M[1][0])
                 : atan2f(-R.M[2][0], -R.M[1][0]);
         }

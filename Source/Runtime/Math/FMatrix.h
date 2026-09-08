@@ -183,7 +183,7 @@ struct FMatrix
 	static FMatrix MakeRotationZYX(const FVector& Deg);
 
 	[[nodiscard]]
-	FVector TransformPointRow(FVector& p, float w = 1.0f);
+	FVector TransformPointRow(const FVector& p, float w = 1.0f) const;
 };
 
 inline const FMatrix FMatrix::Identity = FMatrix{
@@ -234,7 +234,7 @@ inline FMatrix FMatrix::MakeRotationZYX(const FVector& Deg)
 }
 
 
-inline FVector FMatrix::TransformPointRow (FVector& p, float w)
+inline FVector FMatrix::TransformPointRow (const FVector& p, float w) const
 {
 	float x = p.X * M[0][0] + p.Y * M[1][0] + p.Z * M[2][0] + w * M[3][0];
 	float y = p.X * M[0][1] + p.Y * M[1][1] + p.Z * M[2][1] + w * M[3][1];

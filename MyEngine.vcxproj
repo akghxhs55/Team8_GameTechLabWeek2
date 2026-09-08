@@ -262,6 +262,7 @@
     <ClCompile Include="Source\Editor\Application\FEditorApplication.cpp" />
     <ClCompile Include="Source\Editor\Core\FEditor.cpp" />
     <ClCompile Include="Source\Editor\EditorViewport\FEditorViewport.cpp" />
+    <ClCompile Include="Source\Editor\Gizmo\FGizmo.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.cpp" />
@@ -285,7 +286,7 @@
     <ClCompile Include="Source\Runtime\Rendering\FRenderer.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FMaterial.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FMesh.cpp" />
-    <ClCompile Include="Source\Runtime\Rendering\FRendereResourceLibrary.cpp" />
+    <ClCompile Include="Source\Runtime\Rendering\FRenderResourceLibrary.cpp" />
     <ClCompile Include="Source\Runtime\Rendering\FRenderPipeline.cpp" />
     <ClCompile Include="Source\ThirdParty\Imgui\imgui.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
@@ -347,6 +348,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Editor\Application\FEditorApplication.h" />
     <ClInclude Include="Source\Editor\Core\FEditor.h" />
+    <ClInclude Include="Source\Editor\Gizmo\FGizmo.h" />
     <ClInclude Include="Source\Editor\EditorViewport\FEditorViewport.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.h" />
@@ -375,7 +377,6 @@
     <ClInclude Include="Source\Runtime\Core\TMap.h" />
     <ClInclude Include="Source\Runtime\Engine\FCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\FRayCastingManager.h" />
-    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
     <ClInclude Include="Source\Runtime\Input\FCameraInputController.h" />
@@ -384,6 +385,7 @@
     <ClInclude Include="Source\Runtime\Math\FQuaternion.h" />
     <ClInclude Include="Source\Runtime\Math\FVector.h" />
     <ClInclude Include="Source\Runtime\Math\FVector2.h" />
+    <ClInclude Include="Source\Runtime\Math\FVector4.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderResourceLibrary.h" />
     <ClInclude Include="Source\Runtime\Rendering\ShaderConstants.h" />
     <ClInclude Include="Source\Runtime\Rendering\FRenderPipeline.h" />
@@ -392,7 +394,6 @@
     <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
     <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
-    <ClInclude Include="Source\Runtime\UI\UIManager.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imconfig.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imgui.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_dx11.h" />

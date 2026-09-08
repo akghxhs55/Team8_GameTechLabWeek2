@@ -7,8 +7,7 @@
 struct FObjectConstants
 {
 	FMatrix MVP;
-	FVector Color{ 0.0f, 0.0f, 0.0f };
-
-	float Padding = 0.0f;
+	FVector ColorOverride{ 0.0f, 0.0f, 0.0f };
+	float ColorOverrideAmount = 0.0f;
 };
 static_assert(sizeof(FObjectConstants) % 16 == 0);

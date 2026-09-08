@@ -8,12 +8,6 @@ struct PS_INPUT
 
 float4 MainPS(PS_INPUT Input) : SV_Target
 {
-	if (length(Color) < 0.0001f)
-	{
-        return Input.Color;
-    }
-    else
-    {
-        return float4(Color, 1.0f);
-    }
+    float3 FinalColor = lerp(Input.Color.rgb, ColorOverride, ColorOverrideAmount);
+    return float4(FinalColor, Input.Color.a);
 }

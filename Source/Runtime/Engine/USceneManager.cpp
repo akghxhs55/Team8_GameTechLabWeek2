@@ -21,7 +21,7 @@ void USceneManager::SaveScene(const FString& path) const
 		}
 	}
 
-	json::JSON sceneData = currentScene->Serialize();
+	json::JSON sceneData = CurrentScene->Serialize();
 
 	std::ofstream file(path);
 
@@ -48,18 +48,18 @@ void USceneManager::LoadScene(const FString& path)
 	buffer << file.rdbuf();
 
 	json::JSON sceneData = json::JSON::Load(buffer.str());
-	SetScene(NewObject<UScene>(*resourceLibrary));
-	currentScene->CreateFromJson(sceneData);
+	SetScene(NewObject<UScene>(*ResourceLibrary));
+	CurrentScene->CreateFromJson(sceneData);
 
 }
 
 void USceneManager::SetScene(UScene* scene)
 {
-	if(currentScene != nullptr)
+	if(CurrentScene != nullptr)
 	{
-		delete currentScene;
+		delete CurrentScene;
 	}
 
-	currentScene = scene;
+	CurrentScene = scene;
 	
 }

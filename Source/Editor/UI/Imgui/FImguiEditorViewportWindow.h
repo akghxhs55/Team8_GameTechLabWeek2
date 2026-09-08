@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Editor/Core/FEditor.h"
 #include "Runtime/Math/FVector2.h"
 #include "Runtime/Input/FCameraInputController.h"
@@ -15,7 +15,8 @@ public:
 	void Process(FEditor& Editor, float DeltaTime);
 
 private:
-	void HandlePicking(FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize);
+	void HandlePicking(FEditor& Editor, FEditorViewport& Viewport);
+	void UpdateGizmoHover(FEditor& Editor, const FEditorViewport& Viewport);
 
 	FCameraInputController CameraController;
 };
