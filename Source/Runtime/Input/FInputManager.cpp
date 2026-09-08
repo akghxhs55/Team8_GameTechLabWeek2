@@ -102,12 +102,6 @@ void FInputManager::OnMouseButtonUp(EMouseButton Button, FVector2 Position)
 	PreviousMousePosition = Position;
 }
 
-void FInputManager::SetMousePos(FVector2 pos)
-{
-
-
-}
-
 FVector2 FInputManager::GetMousePosition() const
 {
 	return CurrentMousePosition;
