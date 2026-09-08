@@ -86,21 +86,9 @@ void FEditorApplication::BeginFrame()
 
 void FEditorApplication::Tick(float DeltaTime)
 {
-	EditorViewportWindow.Process(Editor);
+	EditorViewportWindow.Process(Editor, DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
-
-	if (FEditorViewport* ActiveViewport = Editor.GetActiveViewport())
-	{
-		if (ActiveViewport->IsFocused())
-		{
-			FCamera& Camera = ActiveViewport->ViewportCamera;
-			CameraController.UpdateMouseInput(Camera);
-			CameraController.UpdateKeyInput(Camera, DeltaTime);
-		}
-	}
-
-
 }
 
 void FEditorApplication::Render()

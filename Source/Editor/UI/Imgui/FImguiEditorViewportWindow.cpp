@@ -8,7 +8,7 @@
 #include "ThirdParty/Imgui/imgui_internal.h"
 
 // 뷰포트를 덮는 투명한 창
-void FImguiEditorViewportWindow::Process(FEditor& Editor)
+void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 {
 	const ImGuiViewport* MainViewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(MainViewport->WorkPos);
@@ -56,6 +56,13 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor)
 		{
 			HandlePicking(Editor, *ActiveViewport,
 				FVector2{ ViewportSize.x, ViewportSize.y });
+		}
+
+		if (bFocused)
+		{
+			FCamera& Camera = ActiveViewport->ViewportCamera;
+			CameraController.UpdateMouseInput(Camera);
+			CameraController.UpdateKeyInput(Camera, DeltaTime);
 		}
 	}
 
