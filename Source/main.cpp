@@ -1,4 +1,5 @@
 ﻿#include "Editor/Application/FEditorApplication.h"
+#include "Runtime/Core/Log.h"
 #include "Runtime/Engine/UScene.h"
 #include "Runtime/Engine/FRenderView.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"

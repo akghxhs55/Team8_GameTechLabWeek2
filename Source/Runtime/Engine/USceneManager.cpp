@@ -9,17 +9,10 @@
 void USceneManager::SaveScene(const FString& path) const
 {
 	std::filesystem::path fsPath(path);
+	std::filesystem::path directory = fsPath.parent_path();
 
-	if (std::filesystem::exists(fsPath))
-	{
-		std::ifstream file(path);
-		if (file)
-		{
-			std::stringstream buffer;
-			buffer << file.rdbuf();
-			json::JSON sceneData = json::JSON::Load(buffer.str());
-		}
-	}
+	if (!directory.empty() && !std::filesystem::exists(directory))
+		std::filesystem::create_directories(directory);
 
 	json::JSON sceneData = CurrentScene->Serialize();
 
@@ -27,12 +20,11 @@ void USceneManager::SaveScene(const FString& path) const
 
 	if (!file)
 	{
-		// Log error: failed to open file
+		// TODO: Log error: failed to open file
 		return;
 	}
 
 	file << sceneData.dump();
-
 }
 
 void USceneManager::LoadScene(const FString& path)

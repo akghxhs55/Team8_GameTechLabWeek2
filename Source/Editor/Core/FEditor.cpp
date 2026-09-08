@@ -42,10 +42,10 @@ void FEditor::SaveScene(const FString& Path)
 	SceneManager->SaveScene(Path);
 }
 
-void FEditor::LoadScene(const FString& Path) // TODO: 테스트용 임시 코드. 정식 코드로 교체해야 함
+void FEditor::LoadScene(const FString& Path)
 {
 	// TODO: 이전 씬과 내부 오브젝트들은 GUObject의 가비지 컬렉션에 의해 삭제됨(구현 필요-현재 메모리 누수되고있음)
-	SceneManager->CurrentScene = NewObject<UScene>(*RendererLibrary);
+	//SceneManager->CurrentScene = NewObject<UScene>(*RendererLibrary);
 	SceneManager->LoadScene(Path);
 	SelectedObject = nullptr;
 }

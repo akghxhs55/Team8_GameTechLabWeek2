@@ -2,8 +2,10 @@
 #include "FString.h"
 #include "TArray.h"
 #include <cstdarg>
-
-# define UE_LOG(...) FLogManager::Get().AddLog(__FILE__, __LINE__, __VA_ARGS__);
+#include <cstdio>
+# define UE_LOG(...) FLogManager::Get().AddLog(0, __FILE__, __LINE__, __VA_ARGS__);
+# define UE_LOG_WARN(...) FLogManager::Get().AddLog(1, __FILE__, __LINE__, __VA_ARGS__);
+# define UE_LOG_ERROR(...) FLogManager::Get().AddLog(2, __FILE__, __LINE__, __VA_ARGS__);
 //# define UE_LOG(...) FLogManager::Get().AddLog(__VA_ARGS__)
 
 class FLogManager {
@@ -25,10 +27,25 @@ public:
 		Logs.push_back(buf);
 	}
 
-	void AddLog(const char* File, int Line, const char* fmt, ...) {
+	void AddLog(int msgType, const char* File, int Line, const char* fmt, ...) {
 		char buf[1024];
 		
-		int written = std::snprintf(buf, sizeof(buf), "%s, Line %d: ", File, Line);
+		const char* FileName = std::strrchr(File, '\\');
+
+		if (FileName)
+			++FileName;
+		else
+			FileName = File;
+
+		const char* Slash = std::strrchr(FileName, '/');
+
+		if (Slash)
+			FileName = Slash + 1;
+
+		int written = -1;
+		if (msgType == 0) written = std::snprintf(buf, sizeof(buf), "%s, Line %d: ", FileName, Line);
+		else if (msgType == 1) written = std::snprintf(buf, sizeof(buf), "[Warning] %s, Line %d: ", FileName, Line);
+		else if (msgType == 2) written = std::snprintf(buf, sizeof(buf), "[ERROR] %s, Line %d: ", FileName, Line);
 
 		if (written < 0)
 			return;

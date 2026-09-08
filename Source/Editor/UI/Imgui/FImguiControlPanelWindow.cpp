@@ -5,16 +5,28 @@
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
 
 #include "Runtime/Core/FString.h"
+#include <Windows.h>
+#include <ShlObj.h>
+#include <filesystem>
 
 namespace
 {
     // <디렉토리>/<이름>.Scene 형식으로 씬 경로 생성
     FString MakeScenePath(const char* SceneName)
     {
-        // 폴더가 없으면 ofstream 저장이 조용히 실패하므로, 존재하는 디렉토리를 쓸 것.
-        static const FString SceneDirectory =
-            R"(C:\Users\JUNGLE\source\repos\Team8_GameTechLabWeek2)";
-        return SceneDirectory + "\\" + SceneName + ".Scene";
+        PWSTR UserPath = nullptr;
+
+        if (FAILED(SHGetKnownFolderPath(FOLDERID_Profile, 0, nullptr, &UserPath)))
+            return "";
+
+        std::filesystem::path Path = UserPath;
+        CoTaskMemFree(UserPath);
+
+        Path /= "GameTechLabWeek2";
+        Path /= "SceneData";
+        Path /= FString(SceneName) + ".Scene";
+
+        return Path.string();
     }
 }
 
