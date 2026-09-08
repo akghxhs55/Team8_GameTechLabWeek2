@@ -33,7 +33,6 @@ void FRenderer::Shutdown()
 		Context->Flush();
 	}
 
-	FrameConstantBuffer.Reset();
 	ObjectConstantBuffer.Reset();
 	GridConstantBuffer.Reset();
 
@@ -114,6 +113,19 @@ void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGr
 void FRenderer::SwapBuffer()
 {
 	SwapChain->Present(1u, 0u);
+}
+
+void FRenderer::OnWindowSize(UINT Width, UINT Height)
+{
+	BackBufferRTV.Reset();
+	DepthStencilView.Reset();
+	DepthStencilBuffer.Reset();
+
+	SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0);
+	Viewport.Width = static_cast<float>(Width);
+	Viewport.Height = static_cast<float>(Height);
+
+	InitializeBackBufferAndDepthStencil();
 }
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)

@@ -18,6 +18,7 @@ public:
 	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
 	void DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants);
 	void SwapBuffer();
+	void OnWindowSize(UINT Width, UINT Height);
 	
 	[[nodiscard]]
 	TSharedPtr<FMesh> CreateMesh(const FMeshDesc& Desc);
@@ -50,7 +51,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> ObjectConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> GridConstantBuffer;
 };
