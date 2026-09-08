@@ -18,9 +18,9 @@ void FRenderView::Render(const FCamera& Camera, FVector2 TopLeft, FVector2 Lengt
 	Renderer.Draw(*Rendered->GetMesh(), *Rendered->GetMaterial(), { Rendered->RelativeTransform.ToMatrix() * VP });
 }
 
-void FRenderView::RenderGizmo(const FVector& Location, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo)
+void FRenderView::RenderGizmo(const FTransform& Transform, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo)
 {
-	Gizmo.Draw(Location, Renderer, Camera);
+	Gizmo.Draw(Transform, Renderer, Camera);
 }
 
 void FRenderView::RenderGrid(const FCamera& Camera, FGrid& Grid)

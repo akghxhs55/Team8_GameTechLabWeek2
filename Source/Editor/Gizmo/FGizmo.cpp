@@ -15,22 +15,25 @@
 void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 {
 	ArrowMesh = RenderResources.GetArrowMesh();
-	ArrowMaterial = RenderResources.GetSimpleMaterial();
+	CircleMesh = RenderResources.GetCircleMesh();
+	SquareArrowMesh = RenderResources.GetSquareArrowMesh();
+	GizmoMaterial = RenderResources.GetDrawOverMaterial();
 }
 
-void FGizmo::Draw(const FVector& Location, FRenderer& Renderer, const FCamera& Camera) const
+void FGizmo::Draw(const FTransform& Transform, FRenderer& Renderer, const FCamera& Camera) const
 {
 	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
 	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
 
-	float GizmoScale = CalculateGizmoScale(Location, Camera);
-	FMatrix Translation = FMatrix::MakeTranslation(Location);
+	float GizmoScale = CalculateGizmoScale(Transform.Location, Camera);
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
+	FMatrix ObjectRotation = GetSpace() == EGizmoSpace::World ? FMatrix::GetIdentity() : Transform.Rotation.ToMatrixRow();
+	FMatrix Translation = FMatrix::MakeTranslation(Transform.Location);
 	FMatrix VP = Camera.CreateViewProjectionMatrix();
 
-	DrawAxis(Renderer, EGizmoHandle::XAxis, Scale * Translation * VP);
-	DrawAxis(Renderer, EGizmoHandle::YAxis, Scale * YAxisRotation * Translation * VP);
-	DrawAxis(Renderer, EGizmoHandle::ZAxis, Scale * ZAxisRotation * Translation * VP);
+	DrawAxis(Renderer, EGizmoHandle::XAxis, Scale * ObjectRotation * Translation * VP);
+	DrawAxis(Renderer, EGizmoHandle::YAxis, Scale * YAxisRotation * ObjectRotation * Translation * VP);
+	DrawAxis(Renderer, EGizmoHandle::ZAxis, Scale * ZAxisRotation * ObjectRotation * Translation * VP);
 }
 
 EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Camera) const
@@ -40,23 +43,43 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 		return EGizmoHandle::None;
 	}
 	
-	float GizmoScale = CalculateGizmoScale(Editor.SelectedLocation, Camera);
+	float GizmoScale = CalculateGizmoScale(Editor.SelectedTransform.Location, Camera);
 
-	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> *0.5f);
-	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> *0.5f);
+	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
+	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
 
-	FMatrix Translation = FMatrix::MakeTranslation(Editor.SelectedLocation);
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
+	FMatrix ObjectRotation = GetSpace() == EGizmoSpace::World ? FMatrix::GetIdentity() : Editor.SelectedTransform.Rotation.ToMatrixRow();
+	FMatrix Translation = FMatrix::MakeTranslation(Editor.SelectedTransform.Location);
 
 	float ClosestDistance = (std::numeric_limits<float>::max)();
 	EGizmoHandle ClosestHandle = EGizmoHandle::None;
+
+	TSharedPtr<FMesh> GizmoMesh;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		GizmoMesh = ArrowMesh;
+		break;
+
+	case EGizmoMode::Rotate:
+		GizmoMesh = CircleMesh;
+		break;
+
+	case EGizmoMode::Scale:
+		GizmoMesh = SquareArrowMesh;
+		break;
+
+	case EGizmoMode::None:
+		return EGizmoHandle::None;
+	}
 
 	float HitDistance;
 	FVector ImpactPoint;
 	if (FRayCastingManager::RayIntersectsMesh(
 			Ray,
-			*ArrowMesh,
-			Scale * Translation,
+			*GizmoMesh,
+			Scale * ObjectRotation * Translation,
 			HitDistance,
 			ImpactPoint) &&
 		HitDistance < ClosestDistance)
@@ -66,8 +89,8 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	}
 	if (FRayCastingManager::RayIntersectsMesh(
 		Ray,
-		*ArrowMesh,
-		Scale * YAxisRotation * Translation,
+		*GizmoMesh,
+		Scale * YAxisRotation * ObjectRotation * Translation,
 		HitDistance,
 		ImpactPoint) &&
 		HitDistance < ClosestDistance)
@@ -77,8 +100,8 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	}
 	if (FRayCastingManager::RayIntersectsMesh(
 		Ray,
-		*ArrowMesh,
-		Scale * ZAxisRotation * Translation,
+		*GizmoMesh,
+		Scale * ZAxisRotation * ObjectRotation * Translation,
 		HitDistance,
 		ImpactPoint) &&
 		HitDistance < ClosestDistance)
@@ -97,31 +120,29 @@ void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVecto
 		return;
 	}
 
-	FVector AxisWorld;
 	switch (Handle)
 	{
 	case EGizmoHandle::XAxis:
-		AxisWorld = FVector{ 1.0f, 0.0f, 0.0f };
+		InteractionAxisLocal = FVector{ 1.0f, 0.0f, 0.0f };
 		break;
 	case EGizmoHandle::YAxis:
-		AxisWorld = FVector{ 0.0f, 1.0f, 0.0f };
+		InteractionAxisLocal = FVector{ 0.0f, 1.0f, 0.0f };
 		break;
 	case EGizmoHandle::ZAxis:
-		AxisWorld = FVector{ 0.0f, 0.0f, 1.0f };
+		InteractionAxisLocal = FVector{ 0.0f, 0.0f, 1.0f };
 		break;
 	case EGizmoHandle::None:
 		return;
 	}
+	InteractionAxisWorld = GetSpace() == EGizmoSpace::World ? InteractionAxisLocal : Editor.SelectedTransform.Rotation.RotateVector(InteractionAxisLocal);
 
-	InteractionStartTransform = {};
-	InteractionStartTransform.Location = Editor.SelectedLocation;
+	InteractionStartTransform = Editor.SelectedTransform;
 	InteractionStartMouse = MousePosition;
-	InteractionAxisWorld = AxisWorld;
 
-	float GizmoScale = CalculateGizmoScale(Editor.SelectedLocation, Camera);
+	float GizmoScale = CalculateGizmoScale(Editor.SelectedTransform.Location, Camera);
 
-	FVector OriginWorld = Editor.SelectedLocation;
-	FVector AxisEndWorld = OriginWorld + AxisWorld * GizmoScale;
+	FVector OriginWorld = Editor.SelectedTransform.Location;
+	FVector AxisEndWorld = OriginWorld + InteractionAxisWorld * GizmoScale;
 
 	FVector2 OriginScreen = WorldToViewport(OriginWorld, Camera, ViewportSize);
 	FVector2 AxisEndScreen = WorldToViewport(AxisEndWorld, Camera, ViewportSize);
@@ -129,9 +150,14 @@ void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVecto
 	FVector2 AxisScreen = AxisEndScreen - OriginScreen;
 	float AxisScreenLength = AxisScreen.Size();
 
+	InteractionOriginViewport = OriginScreen;
+
+	FVector CenterToCamera = Camera.Position - OriginWorld;
+	InteractionRotationSign = (CenterToCamera.Dot(InteractionAxisWorld) <= 0.0f) ? 1.0f : -1.0f;
+
 	if (AxisScreenLength > 1e-5f)
 	{
-		InteractionAxisScreen = AxisScreen / AxisScreenLength;
+		InteractionAxisViewport = AxisScreen / AxisScreenLength;
 		InteractionWorldUnitsPerPixel = GizmoScale / AxisScreenLength;
 		ActiveHandle = Handle;
 	}
@@ -145,10 +171,41 @@ void FGizmo::UpdateInteraction(FEditor& Editor, const FVector2& MousePosition)
 	}
 
 	FVector2 MouseDelta = MousePosition - InteractionStartMouse;
-	float ScreenDistance = MouseDelta.Dot(InteractionAxisScreen);
+	float ScreenDistance = MouseDelta.Dot(InteractionAxisViewport);
 	float WorldDistance = ScreenDistance * InteractionWorldUnitsPerPixel;
 
-	Editor.SelectedLocation = InteractionStartTransform.Location + InteractionAxisWorld * WorldDistance;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		Editor.SelectedTransform.Location = InteractionStartTransform.Location + InteractionAxisWorld * WorldDistance;
+		break;
+		
+	case EGizmoMode::Rotate:
+	{
+		FVector2 BA = InteractionStartMouse - InteractionOriginViewport;
+		FVector2 BC = MousePosition - InteractionOriginViewport;
+		float Theta = (std::atan2f(BA.Y, BA.X) - std::atan2f(BC.Y, BC.X)) * InteractionRotationSign * 180.0f / std::numbers::pi_v<float>;
+		if (GetSpace() == EGizmoSpace::World)
+		{
+			FQuaternion Delta = FQuaternion::FromAxisAngle(InteractionAxisWorld, Theta);
+			Editor.SelectedTransform.Rotation = Delta * InteractionStartTransform.Rotation;
+		}
+		else
+		{
+			FQuaternion Delta = FQuaternion::FromAxisAngle(InteractionAxisLocal, Theta);
+			Editor.SelectedTransform.Rotation = InteractionStartTransform.Rotation * Delta;
+		}
+		Editor.SelectedEulerDegDisplay = Editor.SelectedTransform.Rotation.GetEulerXYZ() * 180.0f / std::numbers::pi_v<float>;
+		break;
+	}
+
+	case EGizmoMode::Scale:
+		Editor.SelectedTransform.Scale3D = InteractionStartTransform.Scale3D + InteractionAxisLocal * WorldDistance;
+		break;
+
+	case EGizmoMode::None:
+		return;
+	}
 }
 
 void FGizmo::EndInteraction()
@@ -167,17 +224,33 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 	constexpr FVector ActiveColor = FVector{ 1.0f, 1.0f, 0.1f };
 	constexpr FVector HoverColor = FVector{ 0.7f, 0.7f, 0.0f };
 
+	TSharedPtr<FMesh> GizmoMesh;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		GizmoMesh = ArrowMesh;
+		break;
+	case EGizmoMode::Rotate:
+		GizmoMesh = CircleMesh;
+		break;
+	case EGizmoMode::Scale:
+		GizmoMesh = SquareArrowMesh;
+		break;
+	case EGizmoMode::None:
+		return;
+	}
+
 	if (ActiveHandle == Handle)
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, ActiveColor, 1.0f });
+		Renderer.Draw(*GizmoMesh, *GizmoMaterial, { MVP, ActiveColor, 1.0f });
 	}
 	else if (HoveredHandle == Handle)
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, HoverColor, 1.0f });
+		Renderer.Draw(*GizmoMesh, *GizmoMaterial, { MVP, HoverColor, 1.0f });
 	}
 	else
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, Color[static_cast<uint8>(Handle) - 1], 1.0f });
+		Renderer.Draw(*GizmoMesh, *GizmoMaterial, { MVP, Color[static_cast<uint8>(Handle) - 1], 1.0f });
 	}
 }
 

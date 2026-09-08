@@ -17,9 +17,8 @@ enum class EEditorPrimitiveType : uint8
 
 class FEditor final {
 public:
-	FVector SelectedLocation;
-	FVector SelectedRotationDeg;
-	FVector SelectedScale3D;
+	FTransform SelectedTransform;
+	FVector SelectedEulerDegDisplay;
 
 public:
 	void Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager);

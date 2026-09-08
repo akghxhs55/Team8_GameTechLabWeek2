@@ -57,6 +57,11 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 	
 		FGizmo& Gizmo = Editor.GetGizmo();
 
+		if (bPickRequested)
+		{
+			HandlePicking(Editor, *ActiveViewport);
+		}
+
 		if (bLeftDown)
 		{
 			Gizmo.UpdateInteraction(Editor, LocalMouse);
@@ -76,16 +81,45 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 			Gizmo.HoveredHandle = EGizmoHandle::None;
 		}
 
-		if (bPickRequested)
-		{
-			HandlePicking(Editor, *ActiveViewport);
-		}
-
 		if (bFocused)
 		{
 			FCamera& Camera = ActiveViewport->ViewportCamera;
 			CameraController.UpdateMouseInput(Camera);
-			CameraController.UpdateKeyInput(Camera, DeltaTime);
+			if (FInputManager::Get().IsMouseDown(EMouseButton::Right))
+			{
+				CameraController.UpdateKeyInput(Camera, DeltaTime);
+			}
+
+			if (!Gizmo.IsInteracting())
+			{
+				if (FInputManager::Get().IsKeyJustPressed(VK_OEM_3)) // 백틱 (`)
+				{
+					if (Gizmo.Mode != EGizmoMode::None && Gizmo.Mode != EGizmoMode::Scale)
+					{
+						Gizmo.SetGizmoSpace(static_cast<EGizmoSpace>((static_cast<uint8>(Gizmo.GetSpace()) + 1) % 2));
+					}
+				}
+				if (FInputManager::Get().IsKeyJustPressed('Q'))
+				{
+					Gizmo.Mode = EGizmoMode::None;
+				}
+				else if (FInputManager::Get().IsKeyJustPressed('W'))
+				{
+					Gizmo.Mode = EGizmoMode::Translate;
+				}
+				else if (FInputManager::Get().IsKeyJustPressed('E'))
+				{
+					Gizmo.Mode = EGizmoMode::Rotate;
+				}
+				else if (FInputManager::Get().IsKeyJustPressed('R'))
+				{
+					Gizmo.Mode = EGizmoMode::Scale;
+				}
+				else if (FInputManager::Get().IsKeyJustPressed(VK_SPACE))
+				{
+					Gizmo.Mode = static_cast<EGizmoMode>((static_cast<uint8>(Gizmo.Mode) + 1) % 4);
+				}
+			}
 		}
 	}
 

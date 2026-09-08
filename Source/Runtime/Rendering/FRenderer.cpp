@@ -386,7 +386,7 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	}
 
 	D3D11_DEPTH_STENCIL_DESC DepthStencilDesc{
-		.DepthEnable = true,
+		.DepthEnable = Desc.bEnableDepthTest,
 		.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
 		.DepthFunc = D3D11_COMPARISON_LESS,
 	};
