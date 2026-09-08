@@ -15,7 +15,7 @@ class FRenderView final {
 
 public:
 	FRenderView(FRenderer& Renderer);
-	void Render(const FCamera& Camera, FVector2 TopLeft, FVector2 Length, UPrimitiveComponent* Rendered);
-	void RenderGizmo(const FTransform& Transform, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo);
-	void RenderGrid(const FCamera& Camera, FGrid& Grid);
+	void Render(const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, UPrimitiveComponent* Rendered);
+	void RenderGizmo(const FTransform& Transform, const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, const FGizmo& Gizmo);
+	void RenderGrid(const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, FGrid& Grid);
 };

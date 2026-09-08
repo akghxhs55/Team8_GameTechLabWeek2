@@ -172,6 +172,12 @@
     <ClCompile Include="Source\Editor\Grid\FGrid.cpp">
       <Filter>Source\Editor\Grid</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiToolBar.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
@@ -338,6 +344,15 @@
     </ClInclude>
     <ClInclude Include="Source\Editor\Grid\FGrid.h">
       <Filter>Source\Editor\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.h">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiToolBar.h">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Core\Log.h">
+      <Filter>Source\Runtime\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

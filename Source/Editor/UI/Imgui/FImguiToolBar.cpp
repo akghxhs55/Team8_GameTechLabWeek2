@@ -6,8 +6,6 @@ void FImguiToolbar::Process(FImguiConsoleWindow& ConsoleWindow, FImguiControlPan
 	if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("View"))
         {
-            if (ImGui::MenuItem("Control Panel")) {}
-            if (ImGui::MenuItem("Object Property")) {}
             if (ImGui::MenuItem("Console")) { ConsoleWindow.bIsOpened = true; }
             ImGui::EndMenu();
         }

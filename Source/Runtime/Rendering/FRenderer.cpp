@@ -55,6 +55,17 @@ void FRenderer::BeginFrame()
 	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
+void FRenderer::SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV)
+{
+	// Viewport는 전체 백버퍼 크기를 유지하고, UV는 그리기 직전에 픽셀로 변환한다.
+	D3D11_VIEWPORT RenderViewport = Viewport;
+	RenderViewport.TopLeftX = TopLeftUV.X * Viewport.Width;
+	RenderViewport.TopLeftY = TopLeftUV.Y * Viewport.Height;
+	RenderViewport.Width = LengthUV.X * Viewport.Width;
+	RenderViewport.Height = LengthUV.Y * Viewport.Height;
+	Context->RSSetViewports(1, &RenderViewport);
+}
+
 void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants)
 {
 	UpdateObjectConstants(ObjectConstants);
@@ -117,6 +128,7 @@ void FRenderer::SwapBuffer()
 
 void FRenderer::OnWindowSize(UINT Width, UINT Height)
 {
+	Context->OMSetRenderTargets(0, nullptr, nullptr);
 	BackBufferRTV.Reset();
 	DepthStencilView.Reset();
 	DepthStencilBuffer.Reset();

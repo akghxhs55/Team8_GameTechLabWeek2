@@ -27,7 +27,7 @@ public:
 
 	void NewScene();
 	void SaveScene(const FString& Path);
-	void LoadScene(const FString& Path); // TODO: 실제 동작을 하는 코드로 갱신
+	void LoadScene(const FString& Path);
 	bool CheckSceneExists();
 	
 	void AddViewport(FEditorViewport Viewport);
@@ -39,7 +39,7 @@ public:
 	UObject* GetSelectedObject();
 	[[nodiscard]] bool ObjectSelected() const { return SelectedObject != nullptr; }
 
-	[[nodiscard]] const TArray<FEditorViewport>& GetViewports() const;
+	[[nodiscard]] TArray<FEditorViewport>& GetViewports() { return EditorViewports; }
 	UPrimitiveComponent* SpawnPrimitive(EEditorPrimitiveType Type);
 	// 피킹 등에서 현재 씬의 렌더링 대상 컴포넌트가 필요할 때 사용
 	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;

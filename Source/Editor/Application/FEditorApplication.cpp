@@ -6,8 +6,6 @@
 #include "Runtime/Engine/FRayCastingManager.h"
 #include <Windows.h>
 
-#include "ThirdParty/Imgui/imgui.h"
-
 void FEditorApplication::Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context)
 {
 	ImguiManager.Initialize_ImplWin32DX11(Window, Device, Context);
@@ -50,6 +48,8 @@ void FEditorApplication::Initialize_Runtime(FRenderResourceLibrary* RendererLibr
 	Viewport.ViewportCamera.Position = FVector{ -3.0f, 3.0f, 2.0f };
 	Viewport.ViewportCamera.Pitch = -25.0f;
 	Viewport.ViewportCamera.Yaw = -45.0f;
+	Viewport.TopLeftUV = { 0.3f, 0.0f };
+	Viewport.LengthUV = { 0.7f, 0.7f };
 	Editor.AddViewport(Viewport);
 	//Editor.LoadScene("");
 }
@@ -86,15 +86,13 @@ void FEditorApplication::BeginFrame()
 
 void FEditorApplication::Tick(float DeltaTime)
 {
+	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
 	EditorViewportWindow.Process(Editor, DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
 	ConsoleWindow.Process(Editor);
-	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
 
 	Editor.Process();
-
-	ImGui::ShowDemoWindow();
 }
 
 void FEditorApplication::Render()
@@ -103,7 +101,8 @@ void FEditorApplication::Render()
 
 	for (auto& EditorViewport : EditorViewports) 
 	{
-		RenderView->RenderGrid(EditorViewport.ViewportCamera, Editor.GetGrid());
+		RenderView->RenderGrid(EditorViewport.ViewportCamera, EditorViewport.TopLeftUV,
+			EditorViewport.LengthUV, Editor.GetGrid());
 		for (auto& PrimitiveComponent : SceneManager->CurrentScene->GetPrimitiveComponents())
 		{
 			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeftUV,
@@ -125,9 +124,13 @@ void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
 
 	constexpr float InitialFOV = 60.0f * std::numbers::pi_v<float> / 180.0f;
 
-	auto& Camera = Editor.GetActiveViewport()->ViewportCamera;
-	Camera.Projection.Aspect = static_cast<float>(Width) / static_cast<float>(Height);
+	for (auto& Viewport : Editor.GetViewports())
+	{
+		const FVector2 SizePixels = Viewport.LengthUV * FVector2{ static_cast<float>(Width), static_cast<float>(Height) };
 
-	float newFOV = 2.0f * std::atan(std::tan(InitialFOV / 2) * Camera.Projection.Aspect);
-	Camera.Projection.FOV = newFOV * 180.0f / std::numbers::pi_v<float>;
+		auto& Camera = Viewport.ViewportCamera;
+		Camera.Projection.Aspect = SizePixels.X / SizePixels.Y;
+		float newFOV = 2.0f * std::atan(std::tan(InitialFOV / 2) * Camera.Projection.Aspect);
+		Camera.Projection.FOV = newFOV * 180.0f / std::numbers::pi_v<float>;
+	}
 }

@@ -244,7 +244,7 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 	{
 		Renderer.Draw(*GizmoMesh, *GizmoMaterial, { MVP, ActiveColor, 1.0f });
 	}
-	else if (HoveredHandle == Handle)
+	else if (HoveredHandle == Handle && ActiveHandle == EGizmoHandle::None)
 	{
 		Renderer.Draw(*GizmoMesh, *GizmoMaterial, { MVP, HoverColor, 1.0f });
 	}

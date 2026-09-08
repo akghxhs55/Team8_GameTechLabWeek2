@@ -372,40 +372,43 @@ bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
 
 	TArray<FVertexPositionColor> Vertices;
 	TArray<uint32> Indices;
-	Vertices.reserve(SliceCount * 4u);
-	Indices.reserve(SliceCount * 12u);
 
-	float Step = std::numbers::pi_v<float> * 2.0f / static_cast<float>(SliceCount);
+	constexpr uint32 TubeSliceCount = 8u;
+	constexpr uint32 RingVertexCount = TubeSliceCount + 1u;
+	constexpr float TubeRadius = Width * 0.5f;
+	constexpr float HalfPi = std::numbers::pi_v<float> * 0.5f;
+	Vertices.reserve(SliceCount * RingVertexCount);
+	Indices.reserve(SliceCount * TubeSliceCount * 6u);
+
+	const float Step = std::numbers::pi_v<float> * 2.0f / static_cast<float>(SliceCount);
 	for (uint32 i = 0; i < SliceCount; ++i)
 	{
-		float Cos = std::cosf(Step * static_cast<float>(i));
-		float Sin = std::sinf(Step * static_cast<float>(i));
-
-		Vertices.push_back({ FVector{ Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
-		Vertices.push_back({ FVector{ -Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
-
-		Indices.push_back(2u * i - 2u);
-		Indices.push_back(2u * i - 1u);
-		Indices.push_back(2u * i + 1u);
-
-		Indices.push_back(2u * i - 2u);
-		Indices.push_back(2u * i + 1u);
-		Indices.push_back(2u * i - 1u);
-
-		Indices.push_back(2u * i - 2u);
-		Indices.push_back(2u * i + 1u);
-		Indices.push_back(2u * i);
-
-		Indices.push_back(2u * i - 2u);
-		Indices.push_back(2u * i);
-		Indices.push_back(2u * i + 1u);
+		const float Cos = std::cosf(Step * static_cast<float>(i));
+		const float Sin = std::sinf(Step * static_cast<float>(i));
+		for (uint32 j = 0; j <= TubeSliceCount; ++j)
+		{
+			const float Angle = -HalfPi + std::numbers::pi_v<float> * static_cast<float>(j) / static_cast<float>(TubeSliceCount);
+			const float RingRadius = (j == 0u || j == TubeSliceCount) ? Radius : Radius + TubeRadius * std::cosf(Angle);
+			Vertices.push_back({ FVector{ TubeRadius * std::sinf(Angle), Cos * RingRadius, Sin * RingRadius }, Color });
+		}
 	}
-	Indices[0] = 2u * SliceCount - 2u;
-	Indices[1] = 2u * SliceCount - 1u;
-	Indices[3] = 2u * SliceCount - 2u;
-	Indices[5] = 2u * SliceCount - 1u;
-	Indices[6] = 2u * SliceCount - 2u;
-	Indices[9] = 2u * SliceCount - 2u;
+
+	for (uint32 i = 0; i < SliceCount; ++i)
+	{
+		const uint32 Next = (i + 1u) % SliceCount;
+		for (uint32 j = 0; j < TubeSliceCount; ++j)
+		{
+			const uint32 A = i * RingVertexCount + j;
+			const uint32 B = Next * RingVertexCount + j;
+			
+			Indices.push_back(A);
+			Indices.push_back(B);
+			Indices.push_back(B + 1u);
+			Indices.push_back(A);
+			Indices.push_back(B + 1u);
+			Indices.push_back(A + 1u);
+		}
+	}
 
 	const FMeshDesc Desc{
 		.VertexLayout = EVertexLayout::PositionColor,

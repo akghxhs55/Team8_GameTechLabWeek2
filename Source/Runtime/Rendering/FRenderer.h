@@ -5,6 +5,7 @@
 #include "FRenderPipeline.h"
 #include "ShaderConstants.h"
 #include "Runtime/Core/PointerTypes.h"
+#include "Runtime/Math/FVector2.h"
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -15,6 +16,7 @@ public:
 	bool Initialize(HWND Window);
 	void Shutdown();
 	void BeginFrame();
+	void SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV);
 	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
 	void DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants);
 	void SwapBuffer();

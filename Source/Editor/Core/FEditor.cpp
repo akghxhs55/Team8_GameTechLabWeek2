@@ -102,11 +102,6 @@ UObject* FEditor::GetSelectedObject()
 	return SelectedObject;
 }
 
-const TArray<FEditorViewport>& FEditor::GetViewports() const
-{
-	return EditorViewports;
-}
-
 TArray<UPrimitiveComponent*> FEditor::GetPrimitiveComponents() const
 {
 	if (!SceneManager || !SceneManager->CurrentScene)

@@ -17,7 +17,6 @@ struct FCamera
 	// Move(), Rotate(), Zoom() 등 추가 가능
 };
 
-// TODO: 실제 화면비에 따른 처리(FCameraProjection이 ratio를 들고 있는것이 의미없는것은 아닐 수 있으나, 실화면비와의 관계 정립이 필요)
 inline FMatrix FCamera::CreateViewProjectionMatrix() const
 {
 	const FMatrix InverseRotationMatrix = FMatrix::MakeRotation(FVector(0.0f, Pitch, Yaw)).Transpose();
