@@ -19,6 +19,7 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh() { return CylinderMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetArrowMesh() { return ArrowMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetCircleMesh() { return CircleMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetSquareArrowMesh() { return SquareArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetDrawOverMaterial() { return DrawOverMaterial; }
@@ -28,6 +29,7 @@ private:
 	bool CreateCylinderMesh(FRenderer& Renderer, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateArrowMesh(FRenderer& Renderer);
+	bool CreateCircleMesh(FRenderer& Renderer);
 	bool CreateSquareArrowMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
 	bool CreateDrawOverMaterial(FRenderer& Renderer);
@@ -37,6 +39,7 @@ private:
 	TSharedPtr<FMesh> CylinderMesh;
 	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMesh> ArrowMesh;
+	TSharedPtr<FMesh> CircleMesh;
 	TSharedPtr<FMesh> SquareArrowMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
 	TSharedPtr<FMaterial> DrawOverMaterial;

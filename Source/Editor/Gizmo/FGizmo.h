@@ -44,7 +44,7 @@ public:
 	void EndInteraction();
 	[[nodiscard]] bool IsInteracting() const { return ActiveHandle != EGizmoHandle::None; }
 
-	EGizmoMode Mode = EGizmoMode::Scale;
+	EGizmoMode Mode = EGizmoMode::Rotate;
 
 	EGizmoHandle HoveredHandle = EGizmoHandle::None;
 	EGizmoHandle ActiveHandle = EGizmoHandle::None;
@@ -56,13 +56,15 @@ private:
 
 private:
 	TSharedPtr<FMesh> ArrowMesh;
-	TSharedPtr<FMaterial> ArrowMaterial;
+	TSharedPtr<FMesh> CircleMesh;
 	TSharedPtr<FMesh> SquareArrowMesh;
-	TSharedPtr<FMaterial> SquareArrowMaterial;
+	TSharedPtr<FMaterial> GizmoMaterial;
 
 	FTransform InteractionStartTransform;
 	FVector InteractionAxisWorld;
-	FVector2 InteractionAxisScreen;
+	FVector2 InteractionAxisViewport;
 	FVector2 InteractionStartMouse;
+	FVector2 InteractionOriginViewport;
+	float InteractionRotationSign = 1.0f;
 	float InteractionWorldUnitsPerPixel = 0.0f;
 };

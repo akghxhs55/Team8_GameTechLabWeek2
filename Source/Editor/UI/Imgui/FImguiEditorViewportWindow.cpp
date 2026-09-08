@@ -57,6 +57,11 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 	
 		FGizmo& Gizmo = Editor.GetGizmo();
 
+		if (bPickRequested)
+		{
+			HandlePicking(Editor, *ActiveViewport);
+		}
+
 		if (bLeftDown)
 		{
 			Gizmo.UpdateInteraction(Editor, LocalMouse);
@@ -74,11 +79,6 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 		else
 		{
 			Gizmo.HoveredHandle = EGizmoHandle::None;
-		}
-
-		if (bPickRequested)
-		{
-			HandlePicking(Editor, *ActiveViewport);
 		}
 
 		if (bFocused)

@@ -14,29 +14,20 @@ void FImguiPropertyWindow::Process(FEditor& Editor)
 
 	if (SceneComponent)
 	{
-		float Location[3] = { Editor.SelectedLocation.X, Editor.SelectedLocation.Y, Editor.SelectedLocation.Z };
-		float RotationDeg[3] = { Editor.SelectedRotationDeg.X, Editor.SelectedRotationDeg.Y, Editor.SelectedRotationDeg.Z };
-		float Scale[3] = { Editor.SelectedScale3D.X, Editor.SelectedScale3D.Y, Editor.SelectedScale3D.Z };
-
-
-		bool bChanged = false;
-		bChanged |= ImGui::DragFloat3("Translation", Location, 0.01f);
-		bChanged |= ImGui::DragFloat3("Rotation (deg)", RotationDeg, 0.5f);
-		bChanged |= ImGui::DragFloat3("Scale", Scale, 0.01f);
-
-		if (bChanged)
+		ImGui::DragFloat3("Translation", &Editor.SelectedTransform.Location.X, 0.01f);
+		if (ImGui::DragFloat3("Rotation (deg)", &Editor.SelectedEulerDegDisplay.X, 0.5f))
 		{
-			Editor.SelectedLocation = FVector{ Location[0], Location[1], Location[2] };
-			Editor.SelectedRotationDeg = FVector{ RotationDeg[0], RotationDeg[1], RotationDeg[2] };
-			Editor.SelectedScale3D = FVector{ Scale[0], Scale[1], Scale[2] };
+			constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
+			Editor.SelectedTransform.Rotation = FQuaternion::FromEulerXYZDeg(Editor.SelectedEulerDegDisplay);
 		}
+		ImGui::DragFloat3("Scale", &Editor.SelectedTransform.Scale3D.X, 0.01f);
 	}
 	else
 	{
 		ImGui::TextDisabled("No selection");
 	}
 
-	static const char* GizmoModes[4] = { "None", "Location", "Rotation", "Scale" };
+	static const char* GizmoModes[4] = { "None", "Translation", "Rotation", "Scale" };
 	int SelectedItem = static_cast<int>(Editor.GetGizmo().Mode);
 
 	if (ImGui::Combo("Gizmo Mode", &SelectedItem, GizmoModes, 4))

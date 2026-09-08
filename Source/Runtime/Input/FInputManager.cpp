@@ -79,6 +79,7 @@ void FInputManager::OnMouseButtonDown(EMouseButton Button, FVector2 Position)
 		break;
 	}
 
+	CurrentMousePosition = Position;
 	PreviousMousePosition = Position;
 }
 
@@ -97,6 +98,7 @@ void FInputManager::OnMouseButtonUp(EMouseButton Button, FVector2 Position)
 		break;
 	}
 
+	CurrentMousePosition = Position;
 	PreviousMousePosition = Position;
 }
 

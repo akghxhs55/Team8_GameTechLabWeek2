@@ -86,8 +86,6 @@ int WINAPI wWinMain(
 			break;
 		}
 
-
-		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().BeginFrame();
 
 		EditorApp.Update(FTimeManager::Get().GetDeltaTime());

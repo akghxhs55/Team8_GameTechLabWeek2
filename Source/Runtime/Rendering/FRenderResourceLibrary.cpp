@@ -24,6 +24,7 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateArrowMesh(Renderer) ||
+		!CreateCircleMesh(Renderer) ||
 		!CreateSquareArrowMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer) ||
 		!CreateDrawOverMaterial(Renderer))
@@ -355,6 +356,66 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 
 	ArrowMesh = Renderer.CreateMesh(MeshDesc);
 	return ArrowMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
+{
+	constexpr uint32 SliceCount = 32u;
+	constexpr float Radius = 1.0f;
+	constexpr float Width = 0.05f;
+
+	FVector Color{ 0.0f, 0.0f, 0.0f };
+
+	TArray<FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+	Vertices.reserve(SliceCount * 4u);
+	Indices.reserve(SliceCount * 12u);
+
+	float Step = std::numbers::pi_v<float> * 2.0f / static_cast<float>(SliceCount);
+	for (uint32 i = 0; i < SliceCount; ++i)
+	{
+		float Cos = std::cosf(Step * static_cast<float>(i));
+		float Sin = std::sinf(Step * static_cast<float>(i));
+
+		Vertices.push_back({ FVector{ Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
+		Vertices.push_back({ FVector{ -Width * 0.5f, Cos * Radius, Sin * Radius }, Color });
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i - 1u);
+		Indices.push_back(2u * i + 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i - 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i);
+		Indices.push_back(2u * i + 1u);
+	}
+	Indices[0] = 2u * SliceCount - 2u;
+	Indices[1] = 2u * SliceCount - 1u;
+	Indices[3] = 2u * SliceCount - 2u;
+	Indices[5] = 2u * SliceCount - 1u;
+	Indices[6] = 2u * SliceCount - 2u;
+	Indices[9] = 2u * SliceCount - 2u;
+
+	const FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	CircleMesh = Renderer.CreateMesh(Desc);
+	return CircleMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSquareArrowMesh(FRenderer& Renderer)

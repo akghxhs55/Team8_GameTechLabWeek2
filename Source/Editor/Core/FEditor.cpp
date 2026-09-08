@@ -19,9 +19,7 @@ void FEditor::Process()
 		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 		if (SceneComp)
 		{
-			SceneComp->RelativeTransform.Location = SelectedLocation;
-			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
-			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+			SceneComp->RelativeTransform = SelectedTransform;
 		}
 	}
 }
@@ -79,11 +77,7 @@ bool FEditor::SelectObject(UObject* Object)
 	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 	if (SceneComp)
 	{
-		constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
-
-		SelectedLocation = SceneComp->RelativeTransform.Location;
-		SelectedRotationDeg = SceneComp->RelativeTransform.Rotation.GetEulerXYZ() * RadToDeg;
-		SelectedScale3D = SceneComp->RelativeTransform.Scale3D;
+		SelectedTransform = SceneComp->RelativeTransform;
 	}
 
 	return true;
@@ -96,9 +90,7 @@ void FEditor::UnSelectObject()
 		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 		if (SceneComp)
 		{
-			SceneComp->RelativeTransform.Location = SelectedLocation;
-			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
-			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+			SceneComp->RelativeTransform = SelectedTransform;
 		}
 	}
 	SelectedObject = nullptr;
