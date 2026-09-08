@@ -17,10 +17,10 @@ class FEditorApplication final {
 	FImguiPropertyWindow PropertyWindow;
 
 	FCameraInputController CameraController;
-
+	FEditor Editor;
 	FRenderView* RenderView = nullptr;
 public:
-	FEditor Editor;
+	
 	static FEditorApplication& Get()
 	{
 		static FEditorApplication Instance;

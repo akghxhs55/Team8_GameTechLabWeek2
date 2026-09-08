@@ -3,6 +3,9 @@
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
+#include "Runtime/Engine/FRayCastingManager.h"
+#include "Runtime/Input/FInputManager.h"
+#include <Windows.h>
 
 void FEditorApplication::Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context)
 {
@@ -83,16 +86,21 @@ void FEditorApplication::BeginFrame()
 
 void FEditorApplication::Tick(float DeltaTime)
 {
-	ControlPanelWindow.Process(Editor);
 	EditorViewportWindow.Process(Editor);
+	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
 
 	if (FEditorViewport* ActiveViewport = Editor.GetActiveViewport())
 	{
-		FCamera& Camera = ActiveViewport->ViewportCamera;
-		CameraController.UpdateMouseInput(Camera);
-		CameraController.UpdateKeyInput(Camera, DeltaTime);
+		if (ActiveViewport->IsFocused())
+		{
+			FCamera& Camera = ActiveViewport->ViewportCamera;
+			CameraController.UpdateMouseInput(Camera);
+			CameraController.UpdateKeyInput(Camera, DeltaTime);
+		}
 	}
+
+
 }
 
 void FEditorApplication::Render()
@@ -108,3 +116,58 @@ void FEditorApplication::Render()
 	// TODO: render Gizmo
 	ImguiManager.RenderUI();
 }
+
+//void FEditorApplication::HandlePicking()
+//{
+//	const bool bLeftMouseDown =
+//		FInputManager::Get().IsMouseDown(EMouseButton::Left);
+//
+//	// 클릭 첫 프레임만 처리
+//	if (!bLeftMouseDown || bWasLeftMouseDown)
+//	{
+//		bWasLeftMouseDown = bLeftMouseDown;
+//		return;
+//	}
+//
+//	bWasLeftMouseDown = true;
+//
+//	// ImGui 창/위젯이 입력을 점유하면 피킹하지 않음
+//	if (ImGui::GetIO().WantCaptureMouse)
+//	{
+//		return;
+//	}
+//
+//	FEditorViewport* activeViewport = Editor.GetActiveViewport();
+//	if (!activeViewport || !SceneManager || !SceneManager->currentScene)
+//	{
+//		return;
+//	}
+//
+//	// 현재는 전체 클라이언트 영역이 렌더 뷰포트이므로 ImGui DisplaySize 를 그대로 사용.
+//	// 추후 FImguiEditorViewportWindow 로 별도 뷰포트 창을 만들면
+//	// activeViewport->TopLeft / Length 로 마우스 좌표와 크기를 보정해야 함.
+//	const ImGuiIO& IO = ImGui::GetIO();
+//	FVector2 viewportSize{ IO.DisplaySize.x, IO.DisplaySize.y };
+//
+//	auto components = SceneManager->currentScene->GetPrimitiveComponents();
+//
+//	UPrimitiveComponent* hitComponent = nullptr;
+//	FVector impactPoint;
+//
+//	const bool bHit = FRayCastingManager::Get().RayIntersectsMeshes(
+//		&activeViewport->ViewportCamera,
+//		components,
+//		hitComponent,
+//		impactPoint,
+//		viewportSize
+//	);
+//
+//	if (bHit)
+//	{
+//		Editor.SelectObject(hitComponent);
+//	}
+//	else
+//	{
+//		Editor.UnSelectObject();
+//	}
+//}

@@ -4,6 +4,13 @@
 #include "Runtime/Core/TArray.h"
 #include "Editor/EditorViewport/FEditorViewport.h"
 
+enum class EEditorPrimitiveType
+{
+	Cube,
+	Cylinder,
+	Sphere,   // TODO: USphereComp / 스피어 메시 미구현 - 현재 스폰 불가
+};
+
 class FEditor final {
 private:
 	FRenderResourceLibrary* RendererLibrary; // TODO: 없어도 되게(렌더러 구현 숨김)
@@ -28,4 +35,9 @@ public:
 	UObject* GetSelectedObject();
 
 	const TArray<FEditorViewport>& GetViewports() const;
+	UPrimitiveComponent* SpawnPrimitive(EEditorPrimitiveType Type);
+	// 피킹 등에서 현재 씬의 렌더링 대상 컴포넌트가 필요할 때 사용
+	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;
+
+
 };

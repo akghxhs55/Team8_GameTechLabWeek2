@@ -2,6 +2,7 @@
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
+#include "Runtime/CoreUObject/UCylinderComp.h"
 
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
 {
@@ -81,4 +82,50 @@ UObject* FEditor::GetSelectedObject()
 const TArray<FEditorViewport>& FEditor::GetViewports() const
 {
     return EditorViewports;
+}
+
+TArray<UPrimitiveComponent*> FEditor::GetPrimitiveComponents() const
+{
+    if (!SceneManager || !SceneManager->currentScene)
+    {
+        return {};
+    }
+    return SceneManager->currentScene->GetPrimitiveComponents();
+}
+
+UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
+{
+    if (!SceneManager || !SceneManager->currentScene)
+    {
+        return nullptr;
+    }
+
+    UPrimitiveComponent* Component = nullptr;
+    switch (Type)
+    {
+    case EEditorPrimitiveType::Cube:
+        Component = NewObject<UCubeComp>();
+        break;
+    case EEditorPrimitiveType::Cylinder:
+        Component = NewObject<UCylinderComp>();
+        break;
+    case EEditorPrimitiveType::Sphere:
+        // TODO: USphereComp + 스피어 메시가 없어 아직 생성 불가
+        return nullptr;
+    }
+
+    if (!Component)
+    {
+        return nullptr;
+    }
+
+    // 완전히 겹치지 않게 살짝 오프셋 (임시)
+    static int SpawnSerial = 0;
+    const float Offset = 0.25f * static_cast<float>(SpawnSerial++);
+    Component->RelativeTransform.Location = FVector{ Offset, 0.0f, 0.0f };
+    Component->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
+
+    SceneManager->currentScene->RegisterComponent(*Component);
+    SelectedObject = Component;
+    return Component;
 }

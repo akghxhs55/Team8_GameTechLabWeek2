@@ -135,28 +135,6 @@ int WINAPI wWinMain(
 			break;
 		}
 
-		const FString ScenePath = R"(C:\Users\KJW\source\repos\Team8_GameTechLabWeek2\test.json)";
-
-		if (bRequestSaveScene)
-		{
-			bRequestSaveScene = false;
-			EditorApp.Editor.SaveScene(ScenePath);
-			OutputDebugStringA("[Scene] 저장\n");
-		}
-
-		if (bRequestLoadScene)
-		{
-			bRequestLoadScene = false;
-			EditorApp.Editor.LoadScene(ScenePath);
-			OutputDebugStringA("[Scene] 로드\n");
-		}
-
-		if (bRequestNewScene)
-		{
-			bRequestNewScene = false;
-			EditorApp.Editor.NewScene();
-			OutputDebugStringA("[Scene] 새 씬\n");
-		}
 
 		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().BeginFrame();
@@ -181,52 +159,8 @@ int WINAPI wWinMain(
 		//);// 마우스를 누른 첫 프레임만 피킹
 
 
-		//임시 피킹 로직
-			static bool bWasLeftMouseDown = false;
-			const bool bIsLeftMouseDown =
-				FInputManager::Get().IsMouseDown(EMouseButton::Left);
 
-			if (bIsLeftMouseDown && !bWasLeftMouseDown)
-			{
-				RECT clientRect{};
-				const BOOL bSuccess = GetClientRect(Window, &clientRect);
-
-				FVector2 viewportSize{
-					static_cast<float>(clientRect.right - clientRect.left),
-					static_cast<float>(clientRect.bottom - clientRect.top)
-				};
-
-				UPrimitiveComponent* hitComponent = nullptr;
-				FVector impactPoint;
-				auto primitiveComponents = tmp.currentScene->GetPrimitiveComponents();
-
-				const bool bHit = FRayCastingManager::Get().RayIntersectsMeshes(
-					&Camera,
-					primitiveComponents, // ← 이 변수여야 함
-					hitComponent,
-					impactPoint,
-					viewportSize
-				);
-
-				if (bHit)
-				{
-					OutputDebugStringA("피킹 성공\n");
-
-					// 여기서 hitComponent를 에디터 선택 객체로 지정하면 됨.
-					//Editor.SelectObject(hitComponent);
-				}
-				else
-				{
-					OutputDebugStringA("피킹 실패\n");
-
-					// 빈 공간을 눌렀을 때 선택 해제하려면:
-					// Editor.UnSelectObject();
-				}
-			}
-		
-		
-
-		bWasLeftMouseDown = bIsLeftMouseDown;
+			
 
 		Renderer.SwapBuffer();
     }

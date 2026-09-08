@@ -10,4 +10,8 @@ public:
 	FVector2 TopLeft = { 0.0f, 0.0f };
 	FVector2 Length = { 1.0f, 1.0f };
 	void UpdateFocusedAndHovered(bool bFocused, bool bHovered);
+	
+
+	[[nodiscard]] bool IsFocused() const { return bFocused; }
+	[[nodiscard]] bool IsHovered() const { return bHovered; }
 };
