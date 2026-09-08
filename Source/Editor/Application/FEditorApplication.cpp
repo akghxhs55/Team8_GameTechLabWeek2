@@ -102,7 +102,7 @@ void FEditorApplication::Render()
 		}
 		if (Editor.ObjectSelected())
 		{
-			RenderView->RenderGizmo(Editor.SelectedTransform.Location, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+			RenderView->RenderGizmo(Editor.SelectedTransform, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
 		}
 		// TODO: render HighLight for selected object
 	}
