@@ -78,8 +78,7 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 
 		if (bPickRequested)
 		{
-			HandlePicking(Editor, *ActiveViewport,
-				FVector2{ ViewportSize.x, ViewportSize.y });
+			HandlePicking(Editor, *ActiveViewport);
 		}
 
 		if (bFocused)
@@ -94,7 +93,7 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 }
 
 void FImguiEditorViewportWindow::HandlePicking(
-	FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize)
+	FEditor& Editor, FEditorViewport& Viewport)
 {
 	FVector2 MousePosition = FInputManager::Get().GetMousePosition() - Viewport.TopLeft;
 

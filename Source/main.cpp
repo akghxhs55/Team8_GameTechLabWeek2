@@ -215,7 +215,14 @@ namespace
 		//case WM_CAPTURECHANGED:
 		case WM_CANCELMODE:
 		case WM_KILLFOCUS:
-			ReleaseCapture();
+		{
+			const FVector2 Last = FInputManager::Get().GetMousePosition();
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Left, Last);
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Right, Last);
+			FInputManager::Get().OnMouseButtonUp(EMouseButton::Middle, Last);
+			break;
+		}
+		// WM_CA
 			break;
 		case WM_KEYDOWN:
 			switch (WParam)
