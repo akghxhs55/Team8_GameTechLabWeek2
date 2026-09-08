@@ -19,7 +19,6 @@ public:
 	[[nodiscard]] uint32 GetIndexCount() const { return IndexCount; }
 	[[nodiscard]] const TArray<FVector>& GetPositions() const { return Positions; }
 	[[nodiscard]] const TArray<uint32>& GetIndices() const { return Indices; }
-
 	
 private:
 	FMesh() = default;

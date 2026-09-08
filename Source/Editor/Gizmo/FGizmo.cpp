@@ -16,6 +16,8 @@ void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 {
 	ArrowMesh = RenderResources.GetArrowMesh();
 	ArrowMaterial = RenderResources.GetDrawOverMaterial();
+	SquareArrowMesh = RenderResources.GetSquareArrowMesh();
+	SquareArrowMaterial = RenderResources.GetDrawOverMaterial();
 }
 
 void FGizmo::Draw(const FVector& Location, FRenderer& Renderer, const FCamera& Camera) const
@@ -42,8 +44,8 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	
 	float GizmoScale = CalculateGizmoScale(Editor.SelectedLocation, Camera);
 
-	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> *0.5f);
-	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> *0.5f);
+	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
+	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
 
 	FMatrix Translation = FMatrix::MakeTranslation(Editor.SelectedLocation);
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
@@ -51,11 +53,27 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	float ClosestDistance = (std::numeric_limits<float>::max)();
 	EGizmoHandle ClosestHandle = EGizmoHandle::None;
 
+	TSharedPtr<FMesh> GizmoMesh;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		GizmoMesh = ArrowMesh;
+		break;
+	case EGizmoMode::Rotate:
+		GizmoMesh = SquareArrowMesh;
+		break;
+	case EGizmoMode::Scale:
+		GizmoMesh = SquareArrowMesh;
+		break;
+	case EGizmoMode::None:
+		return EGizmoHandle::None;
+	}
+
 	float HitDistance;
 	FVector ImpactPoint;
 	if (FRayCastingManager::RayIntersectsMesh(
 			Ray,
-			*ArrowMesh,
+			*GizmoMesh,
 			Scale * Translation,
 			HitDistance,
 			ImpactPoint) &&
@@ -66,7 +84,7 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	}
 	if (FRayCastingManager::RayIntersectsMesh(
 		Ray,
-		*ArrowMesh,
+		*GizmoMesh,
 		Scale * YAxisRotation * Translation,
 		HitDistance,
 		ImpactPoint) &&
@@ -77,7 +95,7 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	}
 	if (FRayCastingManager::RayIntersectsMesh(
 		Ray,
-		*ArrowMesh,
+		*GizmoMesh,
 		Scale * ZAxisRotation * Translation,
 		HitDistance,
 		ImpactPoint) &&
@@ -115,6 +133,7 @@ void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVecto
 
 	InteractionStartTransform = {};
 	InteractionStartTransform.Location = Editor.SelectedLocation;
+	InteractionStartTransform.Scale3D = Editor.SelectedScale3D;
 	InteractionStartMouse = MousePosition;
 	InteractionAxisWorld = AxisWorld;
 
@@ -148,7 +167,22 @@ void FGizmo::UpdateInteraction(FEditor& Editor, const FVector2& MousePosition)
 	float ScreenDistance = MouseDelta.Dot(InteractionAxisScreen);
 	float WorldDistance = ScreenDistance * InteractionWorldUnitsPerPixel;
 
-	Editor.SelectedLocation = InteractionStartTransform.Location + InteractionAxisWorld * WorldDistance;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		Editor.SelectedLocation = InteractionStartTransform.Location + InteractionAxisWorld * WorldDistance;
+		break;
+		
+	case EGizmoMode::Rotate:
+		break;
+
+	case EGizmoMode::Scale:
+		Editor.SelectedScale3D = InteractionStartTransform.Scale3D + InteractionAxisWorld * WorldDistance;
+		break;
+
+	case EGizmoMode::None:
+		return;
+	}
 }
 
 void FGizmo::EndInteraction()
@@ -167,17 +201,33 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 	constexpr FVector ActiveColor = FVector{ 1.0f, 1.0f, 0.1f };
 	constexpr FVector HoverColor = FVector{ 0.7f, 0.7f, 0.0f };
 
+	TSharedPtr<FMesh> GizmoMesh;
+	switch (Mode)
+	{
+	case EGizmoMode::Translate:
+		GizmoMesh = ArrowMesh;
+		break;
+	case EGizmoMode::Rotate:
+		GizmoMesh = SquareArrowMesh;
+		break;
+	case EGizmoMode::Scale:
+		GizmoMesh = SquareArrowMesh;
+		break;
+	case EGizmoMode::None:
+		return;
+	}
+
 	if (ActiveHandle == Handle)
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, ActiveColor, 1.0f });
+		Renderer.Draw(*GizmoMesh, *ArrowMaterial, { MVP, ActiveColor, 1.0f });
 	}
 	else if (HoveredHandle == Handle)
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, HoverColor, 1.0f });
+		Renderer.Draw(*GizmoMesh, *ArrowMaterial, { MVP, HoverColor, 1.0f });
 	}
 	else
 	{
-		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, Color[static_cast<uint8>(Handle) - 1], 1.0f });
+		Renderer.Draw(*GizmoMesh, *ArrowMaterial, { MVP, Color[static_cast<uint8>(Handle) - 1], 1.0f });
 	}
 }
 

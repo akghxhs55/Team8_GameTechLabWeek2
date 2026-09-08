@@ -24,6 +24,7 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateArrowMesh(Renderer) ||
+		!CreateSquareArrowMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer) ||
 		!CreateDrawOverMaterial(Renderer))
 	{
@@ -354,6 +355,81 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 
 	ArrowMesh = Renderer.CreateMesh(MeshDesc);
 	return ArrowMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateSquareArrowMesh(FRenderer& Renderer)
+{
+	constexpr float ShaftLength = 0.85f;
+	constexpr float ShaftRadius = 0.025f;
+	constexpr float ArrowLength = 1.0f;
+	constexpr float TipSize = ArrowLength - ShaftLength;
+
+	const TArray<FVertexPositionColor> CubeVertices = {
+		{ FVector(-0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(-0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(-0.5, -0.5,  0.5), FVector(0.0, 0.0, 1.0) },
+		{ FVector(0.5, -0.5,  0.5), FVector(1.0, 0.0, 1.0) },
+		{ FVector(0.5,  0.5,  0.5), FVector(1.0, 1.0, 1.0) },
+		{ FVector(-0.5,  0.5,  0.5), FVector(0.0, 1.0, 1.0) },
+	};
+	const TArray<uint32> CubeIndices = {
+		0, 2, 1, 0, 3, 2, // -Z
+		4, 5, 6, 4, 6, 7, // +Z
+		0, 1, 5, 0, 5, 4, // -Y
+		3, 7, 6, 3, 6, 2, // +Y
+		0, 4, 7, 0, 7, 3, // -X
+		1, 2, 6, 1, 6, 5, // +X
+	};
+
+	TArray <FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+
+	Vertices.reserve(16u);
+	Indices.reserve(72u);
+
+	for (const auto& [Position, Color] : CubeVertices)
+	{
+		FVector ScaledPosition = Position;
+		ScaledPosition.X *= ShaftLength;
+		ScaledPosition.Y *= ShaftRadius;
+		ScaledPosition.Z *= ShaftRadius;
+		Vertices.push_back({ ScaledPosition + FVector{ ShaftLength * 0.5f, 0.0f, 0.0f }, Color });
+	}
+
+	for (const auto& Index : CubeIndices)
+	{
+		Indices.push_back(Index);
+	}
+
+	for (const auto& [Position, Color] : CubeVertices)
+	{
+		FVector ScaledPosition = Position;
+		ScaledPosition.X *= TipSize;
+		ScaledPosition.Y *= TipSize;
+		ScaledPosition.Z *= TipSize;
+		Vertices.push_back({ ScaledPosition + FVector{ TipSize * 0.5f + ShaftLength, 0.0f, 0.0f }, Color });
+	}
+
+	for (const auto& Index : CubeIndices)
+	{
+		Indices.push_back(Index + 8u);
+	}
+
+	const FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	SquareArrowMesh = Renderer.CreateMesh(Desc);
+	return SquareArrowMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)

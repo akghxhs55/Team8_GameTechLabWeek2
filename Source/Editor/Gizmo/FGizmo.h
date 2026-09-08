@@ -13,6 +13,14 @@ class FRenderer;
 class FRenderResourceLibrary;
 class FEditor;
 
+enum class EGizmoMode : uint8
+{
+	None = 0u,
+	Translate = 1u,
+	Rotate = 2u,
+	Scale = 3u,
+};
+
 enum class EGizmoHandle : uint8
 {
 	None = 0u,
@@ -36,6 +44,8 @@ public:
 	void EndInteraction();
 	[[nodiscard]] bool IsInteracting() const { return ActiveHandle != EGizmoHandle::None; }
 
+	EGizmoMode Mode = EGizmoMode::Scale;
+
 	EGizmoHandle HoveredHandle = EGizmoHandle::None;
 	EGizmoHandle ActiveHandle = EGizmoHandle::None;
 
@@ -47,6 +57,8 @@ private:
 private:
 	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMaterial> ArrowMaterial;
+	TSharedPtr<FMesh> SquareArrowMesh;
+	TSharedPtr<FMaterial> SquareArrowMaterial;
 
 	FTransform InteractionStartTransform;
 	FVector InteractionAxisWorld;

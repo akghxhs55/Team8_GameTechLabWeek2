@@ -5,11 +5,6 @@
 #include "Runtime/CoreUObject/UCylinderComp.h"
 #include <numbers>
 
-namespace
-{
-	constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
-}
-
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
 {
 	Gizmo.Initialize(*RendererLibrary);
@@ -84,6 +79,8 @@ bool FEditor::SelectObject(UObject* Object)
 	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 	if (SceneComp)
 	{
+		constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
+
 		SelectedLocation = SceneComp->RelativeTransform.Location;
 		SelectedRotationDeg = SceneComp->RelativeTransform.Rotation.GetEulerXYZ() * RadToDeg;
 		SelectedScale3D = SceneComp->RelativeTransform.Scale3D;
