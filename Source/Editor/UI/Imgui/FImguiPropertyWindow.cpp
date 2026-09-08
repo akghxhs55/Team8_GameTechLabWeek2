@@ -35,5 +35,14 @@ void FImguiPropertyWindow::Process(FEditor& Editor)
 	{
 		ImGui::TextDisabled("No selection");
 	}
+
+	static const char* GizmoModes[4] = { "None", "Location", "Rotation", "Scale" };
+	int SelectedItem = static_cast<int>(Editor.GetGizmo().Mode);
+
+	if (ImGui::Combo("Gizmo Mode", &SelectedItem, GizmoModes, 4))
+	{
+		Editor.GetGizmo().Mode = static_cast<EGizmoMode>(SelectedItem);
+	}
+
 	ImGui::End();
 }
