@@ -4,7 +4,7 @@
 #include "Runtime/Engine/FCamera.h"
 #include "Runtime/Math/FVector2.h"
 #include "Editor/Gizmo/FGizmo.h"
-
+#include "Editor/Grid/FGrid.h"
 FRenderView::FRenderView(FRenderer& Renderer):
 	Renderer(Renderer)
 {
@@ -21,4 +21,10 @@ void FRenderView::Render(const FCamera& Camera, FVector2 TopLeft, FVector2 Lengt
 void FRenderView::RenderGizmo(const FVector& Location, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo)
 {
 	Gizmo.Draw(Location, Renderer, Camera);
+}
+
+void FRenderView::RenderGrid(const FCamera& Camera, FGrid& Grid)
+{
+	Grid.Draw(Renderer, Camera);
+
 }

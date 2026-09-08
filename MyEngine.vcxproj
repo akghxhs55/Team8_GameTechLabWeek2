@@ -274,6 +274,7 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UCylinderComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
+    <ClCompile Include="Source\Editor\Grid\FGrid.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRayCastingManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
@@ -366,6 +367,7 @@
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />
     <ClInclude Include="Source\Runtime\Engine\FCameraProjection.h" />
+    <ClInclude Include="Source\Editor\Grid\FGrid.h" />
     <ClInclude Include="Source\Runtime\Engine\FRenderView.h" />
     <ClInclude Include="Source\Runtime\Engine\FTimeManager.h" />
     <ClInclude Include="Source\Runtime\Core\TFunction.h" />
@@ -439,6 +441,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Analysis|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\GridPS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainPS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\GridVS.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainVS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

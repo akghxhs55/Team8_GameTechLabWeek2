@@ -15,7 +15,8 @@ bool FRenderer::Initialize(HWND Window)
 {
 	if (!InitializeDeviceAndSwapChain(Window) ||
 		!InitializeBackBufferAndDepthStencil() ||
-		!InitializeConstantBuffers())
+		!InitializeConstantBuffers()||
+		!InitializeGridConstantBuffers())
 	{
 		Shutdown();
 		return false;
@@ -34,6 +35,7 @@ void FRenderer::Shutdown()
 
 	FrameConstantBuffer.Reset();
 	ObjectConstantBuffer.Reset();
+	GridConstantBuffer.Reset();
 
 	BackBufferRTV.Reset();
 	DepthStencilView.Reset();
@@ -80,6 +82,34 @@ void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObject
 		Context->Draw(Mesh.VertexCount, 0);
 	}
 }
+
+void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants)
+{
+	UpdateGridConstants(GridConstants);
+
+	if (Mesh.GetVertexLayout() != Material.GetVertexLayout())
+	{
+		return;
+	}
+
+	const auto& Pipeline = Material.Pipeline;
+
+	Pipeline->Bind(*Context.Get());
+	Material.BindResources(*Context.Get());
+	Mesh.BindResources(*Context.Get());
+
+	Context->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+
+	if (Mesh.HasIndices())
+	{
+		Context->DrawIndexed(Mesh.IndexCount, 0, 0);
+	}
+	else
+	{
+		Context->Draw(Mesh.VertexCount, 0);
+	}
+}
+
 
 void FRenderer::SwapBuffer()
 {
@@ -370,6 +400,24 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	return Pipeline;
 }
 
+bool FRenderer::InitializeGridConstantBuffers()
+{
+	D3D11_BUFFER_DESC GridConstantBufferDesc = {
+		.ByteWidth = sizeof(FGridConstants),
+		.Usage = D3D11_USAGE_DYNAMIC,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+		.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+	};
+
+	HRESULT Result = Device->CreateBuffer(&GridConstantBufferDesc, nullptr, &GridConstantBuffer);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 {
 	static const FMatrix UnrealClipToD3DClip{
@@ -390,4 +438,26 @@ void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 
 	Context->VSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
 	Context->PSSetConstantBuffers(0, 1, ObjectConstantBuffer.GetAddressOf());
+}
+
+void FRenderer::UpdateGridConstants(const FGridConstants& Constants)
+{
+	static const FMatrix UnrealClipToD3DClip{
+	FVector{ 0.0f, 0.0f, 1.0f },
+	FVector{ 1.0f, 0.0f, 0.0f },
+	FVector{ 0.0f, 1.0f, 0.0f },
+	FVector{ 0.0f, 0.0f, 0.0f }
+	};
+
+	// 언리얼 Clip -> D3D Clip 좌표 변환
+	FGridConstants ShaderConstants = Constants;
+	ShaderConstants.MVP *= UnrealClipToD3DClip;
+
+	D3D11_MAPPED_SUBRESOURCE MappedResource{};
+	Context->Map(GridConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
+	memcpy(MappedResource.pData, &ShaderConstants, sizeof(ShaderConstants));
+	Context->Unmap(GridConstantBuffer.Get(), 0);
+
+	Context->VSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
+	Context->PSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
 }

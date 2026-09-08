@@ -11,3 +11,12 @@ struct FObjectConstants
 	float ColorOverrideAmount = 0.0f;
 };
 static_assert(sizeof(FObjectConstants) % 16 == 0);
+
+//b1에 바인딩
+struct FGridConstants
+{
+    FMatrix MVP;
+	FMatrix World;
+    float CellSize;
+	FVector pad;
+};

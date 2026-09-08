@@ -19,19 +19,24 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetCylinderMesh() { return CylinderMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetArrowMesh() { return ArrowMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetGridMesh() { return GridMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
-
+	[[nodiscard]] TSharedPtr<FMaterial> GetGridMaterial() { return GridMaterial; }
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
 	bool CreateCylinderMesh(FRenderer& Renderer, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateArrowMesh(FRenderer& Renderer);
+	bool CreateGridMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
+	bool CreateGridMaterial(FRenderer& Renderer);
 
 private:
 	TSharedPtr<FMesh> CubeMesh;
 	TSharedPtr<FMesh> CylinderMesh;
 	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMesh> ArrowMesh;
+	TSharedPtr<FMesh> GridMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
+	TSharedPtr<FMaterial> GridMaterial;
 };

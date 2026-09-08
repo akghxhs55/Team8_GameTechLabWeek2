@@ -24,7 +24,9 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
 		!CreateArrowMesh(Renderer) ||
-		!CreateSimpleMaterial(Renderer))
+		!CreateSimpleMaterial(Renderer) ||
+		!CreateGridMaterial(Renderer) ||
+		!CreateGridMesh(Renderer))
 	{
 		return false;
 	}
@@ -355,6 +357,35 @@ bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
 	return ArrowMesh != nullptr;
 }
 
+bool FRenderResourceLibrary::CreateGridMesh(FRenderer& Renderer)
+{
+	constexpr float HalfW = 50.0f;   // width  100
+	constexpr float HalfH = 50.0f;   // height 100
+
+	// XY 평면 (Z=0), 위(+Z)를 향하는 감김 — 큐브의 +Z 면과 동일
+	const TArray<FVertexPositionColor> Vertices = {
+		{ FVector{ -HalfW, -HalfH, 0.0f }, FVector{} },   // 0
+		{ FVector{  HalfW, -HalfH, 0.0f }, FVector{} },   // 1
+		{ FVector{  HalfW,  HalfH, 0.0f }, FVector{} },   // 2
+		{ FVector{ -HalfW,  HalfH, 0.0f }, FVector{} },   // 3
+	};
+	const TArray<uint32> Indices = { 0, 1, 2, 0, 2, 3 };
+
+	FMeshDesc MeshDesc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = sizeof(FVertexPositionColor),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	GridMesh = Renderer.CreateMesh(MeshDesc);
+	return GridMesh != nullptr;
+}
+
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 {
 	FWString Path = GetExecutableDirectory();
@@ -368,4 +399,19 @@ bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 	SimpleMaterial = Renderer.CreateMaterial(Desc);
 
 	return SimpleMaterial != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateGridMaterial(FRenderer& Renderer)
+{
+	FWString Path = GetExecutableDirectory();
+
+	FMaterialDesc Desc = {
+		.VertexShaderFileName = Path + L"/Shader/GridVS.cso",
+		.PixelShaderFileName = Path + L"/Shader/GridPS.cso",
+		.VertexLayout = EVertexLayout::PositionColor,
+	};
+
+	GridMaterial = Renderer.CreateMaterial(Desc);
+
+	return GridMaterial != nullptr;
 }

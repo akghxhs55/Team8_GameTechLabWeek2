@@ -95,7 +95,9 @@ void FEditorApplication::Render()
 {
 	const TArray<FEditorViewport>& EditorViewports = Editor.GetViewports();
 
-	for (auto& EditorViewport : EditorViewports) {
+	for (auto& EditorViewport : EditorViewports) 
+	{
+		RenderView->RenderGrid(EditorViewport.ViewportCamera, Editor.GetGrid());
 		for (auto& PrimitiveComponent : SceneManager->CurrentScene->GetPrimitiveComponents())
 		{
 			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeft,
@@ -106,6 +108,7 @@ void FEditorApplication::Render()
 			RenderView->RenderGizmo(Editor.SelectedLocation, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
 		}
 		// TODO: render HighLight for selected object
+
 	}
 	ImguiManager.RenderUI();
 }

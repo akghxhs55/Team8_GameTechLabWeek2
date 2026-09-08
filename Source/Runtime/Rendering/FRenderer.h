@@ -16,6 +16,7 @@ public:
 	void Shutdown();
 	void BeginFrame();
 	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
+	void DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants);
 	void SwapBuffer();
 	
 	[[nodiscard]]
@@ -29,7 +30,12 @@ private:
 	bool InitializeDeviceAndSwapChain(HWND Window);
 	bool InitializeBackBufferAndDepthStencil();
 	bool InitializeConstantBuffers();
+
+	//TODO : Constant 데이터를 T로 받으면 좋을거같은데, 일단 하나 만들었음
+	bool InitializeGridConstantBuffers();
 	void UpdateObjectConstants(const FObjectConstants& Constants);
+	//TODO : Constant 데이터를 T로 받으면 좋을거같은데, 일단 하나 만들었음
+	void UpdateGridConstants(const FGridConstants& Constants);
 
 	[[nodiscard]]
 	TSharedPtr<FRenderPipeline> FindOrCreateRenderPipeline(const FMaterialDesc& Desc);
@@ -47,4 +53,5 @@ private:
 	// TODO: FRenderer가 Constants 형태에 종속되는 상태. 필요하다면 분리할 수 있음
 	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> ObjectConstantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> GridConstantBuffer;
 };
