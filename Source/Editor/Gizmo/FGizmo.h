@@ -11,6 +11,7 @@ struct FVector2;
 struct FCamera;
 class FRenderer;
 class FRenderResourceLibrary;
+class FEditor;
 
 enum class EGizmoHandle : uint8
 {
@@ -26,13 +27,12 @@ class FGizmo final
 public:
 	void Initialize(FRenderResourceLibrary& RenderResources); // TODO: 이거랑 메시 머티리얼 없애야 함...
 
-	void SetTarget(USceneComponent* Target);
-	void Draw(FRenderer& Renderer, const FCamera& Camera) const;
+	void Draw(const FVector& Location, FRenderer& Renderer, const FCamera& Camera) const;
 
-	[[nodiscard]] EGizmoHandle HitTest(const FRay& Ray, const FCamera& Camera) const;
+	[[nodiscard]] EGizmoHandle HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Camera) const;
 
-	void BeginInteraction(EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize);
-	void UpdateInteraction(const FVector2& MousePosition);
+	void BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize);
+	void UpdateInteraction(FEditor& Editor, const FVector2& MousePosition);
 	void EndInteraction();
 	[[nodiscard]] bool IsInteracting() const { return ActiveHandle != EGizmoHandle::None; }
 
@@ -41,12 +41,10 @@ public:
 
 private:
 	void DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& MVP) const;
-	[[nodiscard]] float CalculateGizmoScale(const FCamera& Camera) const;
+	[[nodiscard]] float CalculateGizmoScale(const FVector& GizmoLocation, const FCamera& Camera) const;
 	[[nodiscard]] FVector2 WorldToViewport(const FVector& WorldPosition, const FCamera& Camera, const FVector2& ViewportSize) const;
 
 private:
-	USceneComponent* CurrentTarget = nullptr;
-
 	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMaterial> ArrowMaterial;
 

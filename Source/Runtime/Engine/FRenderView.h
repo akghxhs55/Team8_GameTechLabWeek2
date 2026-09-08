@@ -13,5 +13,5 @@ class FRenderView final {
 public:
 	FRenderView(FRenderer& Renderer);
 	void Render(const FCamera& Camera, FVector2 TopLeft, FVector2 Length, UPrimitiveComponent* Rendered);
-	void RenderGizmo(const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo);
+	void RenderGizmo(const FVector& Location, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo);
 };

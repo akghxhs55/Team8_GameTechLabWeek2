@@ -1,8 +1,14 @@
 ﻿#include "FEditor.h"
+
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
-#include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
+#include <numbers>
+
+namespace
+{
+	constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
+}
 
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
 {
@@ -11,34 +17,42 @@ void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager*
 	this->SceneManager = SceneManager;
 }
 
+void FEditor::Process()
+{
+	if (SelectedObject)
+	{
+		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+		if (SceneComp)
+		{
+			SceneComp->RelativeTransform.Location = SelectedLocation;
+			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
+			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+		}
+	}
+}
+
 void FEditor::NewScene()
 {
 	SelectedObject = nullptr;
 	SceneManager->SetScene(NewObject<UScene>(*RendererLibrary));
 }
 
-void FEditor::SaveScene(const FString& path)
+void FEditor::SaveScene(const FString& Path)
 {
-	SceneManager->SaveScene(path);
+	SceneManager->SaveScene(Path);
 }
 
-void FEditor::LoadScene(const FString& path) // TODO: 테스트용 임시 코드. 정식 코드로 교체해야 함
+void FEditor::LoadScene(const FString& Path) // TODO: 테스트용 임시 코드. 정식 코드로 교체해야 함
 {
 	// TODO: 이전 씬과 내부 오브젝트들은 GUObject의 가비지 컬렉션에 의해 삭제됨(구현 필요-현재 메모리 누수되고있음)
-	SceneManager->currentScene = NewObject<UScene>(*RendererLibrary);
-	UCubeComp* TestCube = NewObject<UCubeComp>();
-	TestCube->RelativeTransform.Location = FVector{ 2.0f, 0.0f, 0.0f };
-	TestCube->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
-	TestCube->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	SceneManager->currentScene->RegisterComponent(*TestCube);
-	SelectedObject = TestCube;
-	SceneManager->LoadScene(path);
+	SceneManager->CurrentScene = NewObject<UScene>(*RendererLibrary);
+	SceneManager->LoadScene(Path);
 	SelectedObject = nullptr;
 }
 
 bool FEditor::CheckSceneExists()
 {
-	if (SceneManager->currentScene == nullptr)
+	if (SceneManager->CurrentScene == nullptr)
 		return false;
 	return true;
 }
@@ -67,16 +81,30 @@ bool FEditor::SelectObject(UObject* Object)
 	if (Object == nullptr)
 		return false;
 	SelectedObject = Object;
-
-	Gizmo.SetTarget(dynamic_cast<USceneComponent*>(SelectedObject));
+	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+	if (SceneComp)
+	{
+		SelectedLocation = SceneComp->RelativeTransform.Location;
+		SelectedRotationDeg = SceneComp->RelativeTransform.Rotation.GetEulerXYZ() * RadToDeg;
+		SelectedScale3D = SceneComp->RelativeTransform.Scale3D;
+	}
 
 	return true;
 }
 
 void FEditor::UnSelectObject()
 {
+	if (SelectedObject)
+	{
+		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+		if (SceneComp)
+		{
+			SceneComp->RelativeTransform.Location = SelectedLocation;
+			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
+			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+		}
+	}
 	SelectedObject = nullptr;
-	Gizmo.SetTarget(nullptr);
 }
 
 UObject* FEditor::GetSelectedObject()
@@ -91,16 +119,16 @@ const TArray<FEditorViewport>& FEditor::GetViewports() const
 
 TArray<UPrimitiveComponent*> FEditor::GetPrimitiveComponents() const
 {
-	if (!SceneManager || !SceneManager->currentScene)
+	if (!SceneManager || !SceneManager->CurrentScene)
 	{
 		return {};
 	}
-	return SceneManager->currentScene->GetPrimitiveComponents();
+	return SceneManager->CurrentScene->GetPrimitiveComponents();
 }
 
 UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 {
-	if (!SceneManager || !SceneManager->currentScene)
+	if (!SceneManager || !SceneManager->CurrentScene)
 	{
 		return nullptr;
 	}
@@ -130,8 +158,7 @@ UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 	Component->RelativeTransform.Location = FVector{ Offset, 0.0f, 0.0f };
 	Component->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 
-	SceneManager->currentScene->RegisterComponent(*Component);
+	SceneManager->CurrentScene->RegisterComponent(*Component);
 	SelectedObject = Component;
-	Gizmo.SetTarget(Component);
 	return Component;
 }

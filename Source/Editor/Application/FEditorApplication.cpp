@@ -22,25 +22,25 @@ void FEditorApplication::Initialize_Runtime(FRenderResourceLibrary* RendererLibr
 	CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
 	CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
 	CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	SceneManager->currentScene->RegisterComponent(*CubeComp);
+	SceneManager->CurrentScene->RegisterComponent(*CubeComp);
 
 	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>();
 	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
 	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
 	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	SceneManager->currentScene->RegisterComponent(*CylinderCompX);
+	SceneManager->CurrentScene->RegisterComponent(*CylinderCompX);
 
 	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>();
 	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
 	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
 	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	SceneManager->currentScene->RegisterComponent(*CylinderCompY);
+	SceneManager->CurrentScene->RegisterComponent(*CylinderCompY);
 
 	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>();
 	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
 	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
 	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	SceneManager->currentScene->RegisterComponent(*CylinderCompZ);
+	SceneManager->CurrentScene->RegisterComponent(*CylinderCompZ);
 
 	Editor.SelectObject(CubeComp);
 
@@ -88,6 +88,7 @@ void FEditorApplication::Tick(float DeltaTime)
 	EditorViewportWindow.Process(Editor, DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
+	Editor.Process();
 }
 
 void FEditorApplication::Render()
@@ -95,12 +96,15 @@ void FEditorApplication::Render()
 	const TArray<FEditorViewport>& EditorViewports = Editor.GetViewports();
 
 	for (auto& EditorViewport : EditorViewports) {
-		for (auto& PrimitiveComponent : SceneManager->currentScene->GetPrimitiveComponents())
+		for (auto& PrimitiveComponent : SceneManager->CurrentScene->GetPrimitiveComponents())
 		{
 			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeft,
 				EditorViewport.Length, PrimitiveComponent);
 		}
-		RenderView->RenderGizmo(EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+		if (Editor.ObjectSelected())
+		{
+			RenderView->RenderGizmo(Editor.SelectedLocation, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+		}
 		// TODO: render HighLight for selected object
 	}
 	ImguiManager.RenderUI();
@@ -127,7 +131,7 @@ void FEditorApplication::Render()
 //	}
 //
 //	FEditorViewport* activeViewport = Editor.GetActiveViewport();
-//	if (!activeViewport || !SceneManager || !SceneManager->currentScene)
+//	if (!activeViewport || !SceneManager || !SceneManager->CurrentScene)
 //	{
 //		return;
 //	}
@@ -138,7 +142,7 @@ void FEditorApplication::Render()
 //	const ImGuiIO& IO = ImGui::GetIO();
 //	FVector2 viewportSize{ IO.DisplaySize.x, IO.DisplaySize.y };
 //
-//	auto components = SceneManager->currentScene->GetPrimitiveComponents();
+//	auto components = SceneManager->CurrentScene->GetPrimitiveComponents();
 //
 //	UPrimitiveComponent* hitComponent = nullptr;
 //	FVector impactPoint;

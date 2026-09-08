@@ -1,11 +1,13 @@
 ﻿#pragma once
+
 #include "Runtime/CoreUObject/UObject.h"
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Core/TArray.h"
+#include "Runtime/Core/IntTypes.h"
 #include "Editor/EditorViewport/FEditorViewport.h"
 #include "Editor/Gizmo/FGizmo.h"
 
-enum class EEditorPrimitiveType
+enum class EEditorPrimitiveType : uint8
 {
 	Cube,
 	Cylinder,
@@ -13,20 +15,19 @@ enum class EEditorPrimitiveType
 };
 
 class FEditor final {
-private:
-	FRenderResourceLibrary* RendererLibrary; // TODO: 없어도 되게(렌더러 구현 숨김)
-
-	USceneManager* SceneManager; // 씬을 다중으로 가질 수 있도록 구조개선 가능-이경우 에디터쪽에 클래스를 추가해 씬과 FEditorViewport들을 연관
-	TArray<FEditorViewport> EditorViewports;
-	UObject* SelectedObject = nullptr;
-	FGizmo Gizmo;
+public:
+	FVector SelectedLocation;
+	FVector SelectedRotationDeg;
+	FVector SelectedScale3D;
 
 public:
 	void Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager);
 	
+	void Process();
+
 	void NewScene();
-	void SaveScene(const FString& path);
-	void LoadScene(const FString& path); // TODO: 실제 동작을 하는 코드로 갱신
+	void SaveScene(const FString& Path);
+	void LoadScene(const FString& Path); // TODO: 실제 동작을 하는 코드로 갱신
 	bool CheckSceneExists();
 	
 	void AddViewport(FEditorViewport Viewport);
@@ -36,12 +37,19 @@ public:
 	bool SelectObject(UObject* Object);
 	void UnSelectObject();
 	UObject* GetSelectedObject();
+	[[nodiscard]] bool ObjectSelected() const { return SelectedObject != nullptr; }
 
-	const TArray<FEditorViewport>& GetViewports() const;
+	[[nodiscard]] const TArray<FEditorViewport>& GetViewports() const;
 	UPrimitiveComponent* SpawnPrimitive(EEditorPrimitiveType Type);
 	// 피킹 등에서 현재 씬의 렌더링 대상 컴포넌트가 필요할 때 사용
 	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;
 	FGizmo& GetGizmo() { return Gizmo; }
 
+private:
+	FRenderResourceLibrary* RendererLibrary = nullptr;
+	USceneManager* SceneManager = nullptr; // 씬을 다중으로 가질 수 있도록 구조개선 가능-이경우 에디터쪽에 클래스를 추가해 씬과 FEditorViewport들을 연관
+	TArray<FEditorViewport> EditorViewports;
 
+	FGizmo Gizmo;
+	UObject* SelectedObject = nullptr;
 };

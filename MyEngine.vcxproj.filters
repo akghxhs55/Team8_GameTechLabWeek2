@@ -97,9 +97,6 @@
     <ClCompile Include="Source\Runtime\Engine\UScene.cpp">
       <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Runtime\Rendering\FRendereResourceLibrary.cpp">
-      <Filter>Source\Runtime\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp">
       <Filter>Source\Editor\UI\Imgui</Filter>
     </ClCompile>
@@ -162,6 +159,12 @@
     </ClCompile>
     <ClCompile Include="Source\Runtime\Rendering\FRenderResourceLibrary.cpp">
       <Filter>Source\Runtime\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Gizmo\FGizmo.cpp">
+      <Filter>Source\Editor\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp">
+      <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

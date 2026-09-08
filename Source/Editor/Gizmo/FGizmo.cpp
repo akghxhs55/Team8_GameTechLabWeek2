@@ -7,6 +7,7 @@
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FMatrix.h"
 #include "Runtime/Math/FVector4.h"
+#include "Editor/Core/FEditor.h"
 #include <numbers>
 
 #include "Runtime/Engine/FRayCastingManager.h"
@@ -17,23 +18,13 @@ void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 	ArrowMaterial = RenderResources.GetSimpleMaterial();
 }
 
-void FGizmo::SetTarget(USceneComponent* Target)
+void FGizmo::Draw(const FVector& Location, FRenderer& Renderer, const FCamera& Camera) const
 {
-	CurrentTarget = Target;
-}
-
-void FGizmo::Draw(FRenderer& Renderer, const FCamera& Camera) const
-{
-	if (!CurrentTarget)
-	{
-		return;
-	}
-	
 	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
 	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
 
-	float GizmoScale = CalculateGizmoScale(Camera);
-	FMatrix Translation = FMatrix::MakeTranslation(CurrentTarget->GetRelativeTransform().Location);
+	float GizmoScale = CalculateGizmoScale(Location, Camera);
+	FMatrix Translation = FMatrix::MakeTranslation(Location);
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
 	FMatrix VP = Camera.CreateViewProjectionMatrix();
 
@@ -42,19 +33,19 @@ void FGizmo::Draw(FRenderer& Renderer, const FCamera& Camera) const
 	DrawAxis(Renderer, EGizmoHandle::ZAxis, Scale * ZAxisRotation * Translation * VP);
 }
 
-EGizmoHandle FGizmo::HitTest(const FRay& Ray, const FCamera& Camera) const
+EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Camera) const
 {
-	if (!CurrentTarget)
+	if (!Editor.ObjectSelected())
 	{
 		return EGizmoHandle::None;
 	}
 	
-	float GizmoScale = CalculateGizmoScale(Camera);
+	float GizmoScale = CalculateGizmoScale(Editor.SelectedLocation, Camera);
 
 	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> *0.5f);
 	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> *0.5f);
 
-	FMatrix Translation = FMatrix::MakeTranslation(CurrentTarget->GetRelativeTransform().Location);
+	FMatrix Translation = FMatrix::MakeTranslation(Editor.SelectedLocation);
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
 
 	float ClosestDistance = (std::numeric_limits<float>::max)();
@@ -99,9 +90,9 @@ EGizmoHandle FGizmo::HitTest(const FRay& Ray, const FCamera& Camera) const
 	return ClosestHandle;
 }
 
-void FGizmo::BeginInteraction(EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize)
+void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize)
 {
-	if (!CurrentTarget)
+	if (!Editor.ObjectSelected())
 	{
 		return;
 	}
@@ -122,13 +113,14 @@ void FGizmo::BeginInteraction(EGizmoHandle Handle, const FVector2& MousePosition
 		return;
 	}
 
-	InteractionStartTransform = CurrentTarget->GetRelativeTransform();
+	InteractionStartTransform = {};
+	InteractionStartTransform.Location = Editor.SelectedLocation;
 	InteractionStartMouse = MousePosition;
 	InteractionAxisWorld = AxisWorld;
 
-	float GizmoScale = CalculateGizmoScale(Camera);
+	float GizmoScale = CalculateGizmoScale(Editor.SelectedLocation, Camera);
 
-	FVector OriginWorld = CurrentTarget->GetRelativeTransform().Location;
+	FVector OriginWorld = Editor.SelectedLocation;
 	FVector AxisEndWorld = OriginWorld + AxisWorld * GizmoScale;
 
 	FVector2 OriginScreen = WorldToViewport(OriginWorld, Camera, ViewportSize);
@@ -141,14 +133,13 @@ void FGizmo::BeginInteraction(EGizmoHandle Handle, const FVector2& MousePosition
 	{
 		InteractionAxisScreen = AxisScreen / AxisScreenLength;
 		InteractionWorldUnitsPerPixel = GizmoScale / AxisScreenLength;
+		ActiveHandle = Handle;
 	}
-
-	ActiveHandle = Handle;
 }
 
-void FGizmo::UpdateInteraction(const FVector2& MousePosition)
+void FGizmo::UpdateInteraction(FEditor& Editor, const FVector2& MousePosition)
 {
-	if (!CurrentTarget || ActiveHandle == EGizmoHandle::None)
+	if (!Editor.ObjectSelected() || ActiveHandle == EGizmoHandle::None)
 	{
 		return;
 	}
@@ -157,9 +148,7 @@ void FGizmo::UpdateInteraction(const FVector2& MousePosition)
 	float ScreenDistance = MouseDelta.Dot(InteractionAxisScreen);
 	float WorldDistance = ScreenDistance * InteractionWorldUnitsPerPixel;
 
-	FTransform Transform = InteractionStartTransform;
-	Transform.Location += InteractionAxisWorld * WorldDistance;
-	CurrentTarget->SetRelativeTransform(Transform);
+	Editor.SelectedLocation = InteractionStartTransform.Location + InteractionAxisWorld * WorldDistance;
 }
 
 void FGizmo::EndInteraction()
@@ -192,11 +181,11 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 	}
 }
 
-float FGizmo::CalculateGizmoScale(const FCamera& Camera) const
+float FGizmo::CalculateGizmoScale(const FVector& GizmoLocation, const FCamera& Camera) const
 {
 	constexpr float ScalePerDistance = 0.15f;
 
-	FVector ToTarget = CurrentTarget->GetRelativeTransform().Location - Camera.Position;
+	FVector ToTarget = GizmoLocation - Camera.Position;
 
 	return ToTarget.Size() * ScalePerDistance;
 }
