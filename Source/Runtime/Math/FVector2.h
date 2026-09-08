@@ -71,6 +71,8 @@ struct FVector2
 	[[nodiscard]] float& operator[](int32 Index);
 	[[nodiscard]] const float& operator[](int32 Index) const;
 
+	[[nodiscard]] float Dot(const FVector2& V) const;
+
 	[[nodiscard]] float Size() const;
 	[[nodiscard]] float SizeSquared() const;
 
@@ -203,6 +205,11 @@ inline float& FVector2::operator[](int32 Index)
 inline const float& FVector2::operator[](int32 Index) const
 {
 	return *(&X + Index);
+}
+
+inline float FVector2::Dot(const FVector2& V) const
+{
+	return X * V.X + Y * V.Y;
 }
 
 inline float FVector2::Size() const

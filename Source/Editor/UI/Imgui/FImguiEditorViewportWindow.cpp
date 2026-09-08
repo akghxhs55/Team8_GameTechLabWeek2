@@ -44,6 +44,8 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 	const bool bFocused = ImGui::IsWindowFocused();
 
 	const bool bPickRequested = ImGui::IsItemClicked(ImGuiMouseButton_Left);
+	const bool bLeftDown = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+	const bool bLeftReleased = ImGui::IsMouseReleased(ImGuiMouseButton_Left);
 
 	if (FEditorViewport* ActiveViewport = Editor.GetActiveViewport())
 	{
@@ -51,13 +53,27 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 		ActiveViewport->Length = { ViewportSize.x, ViewportSize.y };
 		ActiveViewport->UpdateFocusedAndHovered(bFocused, bHovered);
 
+		FVector2 LocalMouse = FInputManager::Get().GetMousePosition() - ActiveViewport->TopLeft;
+	
+		FGizmo& Gizmo = Editor.GetGizmo();
+
+		if (bLeftDown)
+		{
+			Gizmo.UpdateInteraction(LocalMouse);
+		}
+
+		if (bLeftReleased)
+		{
+			Gizmo.EndInteraction();
+		}
+
 		if (bHovered)
 		{
 			UpdateGizmoHover(Editor, *ActiveViewport);
 		}
 		else
 		{
-			Editor.GetGizmo().HoveredHandle = EGizmoHandle::None;
+			Gizmo.HoveredHandle = EGizmoHandle::None;
 		}
 
 		if (bPickRequested)
@@ -80,10 +96,12 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 void FImguiEditorViewportWindow::HandlePicking(
 	FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize)
 {
+	FVector2 MousePosition = FInputManager::Get().GetMousePosition() - Viewport.TopLeft;
+
 	FGizmo& Gizmo = Editor.GetGizmo();
 	if (Gizmo.HoveredHandle != EGizmoHandle::None)
 	{
-		Gizmo.BeginInteraction(Gizmo.HoveredHandle);
+		Gizmo.BeginInteraction(Gizmo.HoveredHandle, MousePosition, Viewport.ViewportCamera, Viewport.Length);
 		return;
 	}
 
@@ -96,11 +114,9 @@ void FImguiEditorViewportWindow::HandlePicking(
 	//       FRayCastingManager 가 뷰포트 로컬 마우스 좌표
 	//       (FInputManager 좌표 - Viewport.TopLeft) 를 인수로 받도록
 	//       시그니처를 바꿔야 한다. 지금은 뷰포트 == 클라이언트 영역이라 그대로 사용.
-	FVector2 MousePosition = FInputManager::Get().GetMousePosition();
-	FVector2 LocalMouse = MousePosition - Viewport.TopLeft;
 
 	const bool bHit = FRayCastingManager::RayIntersectsMeshes(
-		FRayCastingManager::CreateRayFromScreenPosition(Viewport.ViewportCamera, LocalMouse, FVector2{ ViewportSize.X, ViewportSize.Y }),
+		FRayCastingManager::CreateRayFromScreenPosition(Viewport.ViewportCamera, MousePosition, FVector2{ ViewportSize.X, ViewportSize.Y }),
 		Components,
 		HitComponent,
 		ImpactPoint);

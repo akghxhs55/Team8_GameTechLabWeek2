@@ -6,6 +6,7 @@
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FMatrix.h"
+#include "Runtime/Math/FVector4.h"
 #include <numbers>
 
 #include "Runtime/Engine/FRayCastingManager.h"
@@ -98,22 +99,90 @@ EGizmoHandle FGizmo::HitTest(const FRay& Ray, const FCamera& Camera) const
 	return ClosestHandle;
 }
 
-void FGizmo::BeginInteraction(EGizmoHandle Handle)
+void FGizmo::BeginInteraction(EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize)
 {
+	if (!CurrentTarget)
+	{
+		return;
+	}
+
+	FVector AxisWorld;
+	switch (Handle)
+	{
+	case EGizmoHandle::XAxis:
+		AxisWorld = FVector{ 1.0f, 0.0f, 0.0f };
+		break;
+	case EGizmoHandle::YAxis:
+		AxisWorld = FVector{ 0.0f, 1.0f, 0.0f };
+		break;
+	case EGizmoHandle::ZAxis:
+		AxisWorld = FVector{ 0.0f, 0.0f, 1.0f };
+		break;
+	case EGizmoHandle::None:
+		return;
+	}
+
+	InteractionStartTransform = CurrentTarget->GetRelativeTransform();
+	InteractionStartMouse = MousePosition;
+	InteractionAxisWorld = AxisWorld;
+
+	float GizmoScale = CalculateGizmoScale(Camera);
+
+	FVector OriginWorld = CurrentTarget->GetRelativeTransform().Location;
+	FVector AxisEndWorld = OriginWorld + AxisWorld * GizmoScale;
+
+	FVector2 OriginScreen = WorldToViewport(OriginWorld, Camera, ViewportSize);
+	FVector2 AxisEndScreen = WorldToViewport(AxisEndWorld, Camera, ViewportSize);
+
+	FVector2 AxisScreen = AxisEndScreen - OriginScreen;
+	float AxisScreenLength = AxisScreen.Size();
+
+	if (AxisScreenLength > 1e-5f)
+	{
+		InteractionAxisScreen = AxisScreen / AxisScreenLength;
+		InteractionWorldUnitsPerPixel = GizmoScale / AxisScreenLength;
+	}
+
 	ActiveHandle = Handle;
+}
+
+void FGizmo::UpdateInteraction(const FVector2& MousePosition)
+{
+	if (!CurrentTarget || ActiveHandle == EGizmoHandle::None)
+	{
+		return;
+	}
+
+	FVector2 MouseDelta = MousePosition - InteractionStartMouse;
+	float ScreenDistance = MouseDelta.Dot(InteractionAxisScreen);
+	float WorldDistance = ScreenDistance * InteractionWorldUnitsPerPixel;
+
+	FTransform Transform = InteractionStartTransform;
+	Transform.Location += InteractionAxisWorld * WorldDistance;
+	CurrentTarget->SetRelativeTransform(Transform);
+}
+
+void FGizmo::EndInteraction()
+{
+	ActiveHandle = EGizmoHandle::None;
 }
 
 void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& MVP) const
 {
 	constexpr FVector Color[3] = {
-		FVector{ 1.0f, 0.0f, 0.0f },
-		FVector{ 0.0f, 1.0f, 0.0f },
-		FVector{ 0.0f, 0.0f, 1.0f },
+		FVector{ 0.8f, 0.0f, 0.0f },
+		FVector{ 0.0f, 0.8f, 0.0f },
+		FVector{ 0.0f, 0.0f, 0.8f },
 	};
 
-	constexpr FVector HoverColor = FVector{ 1.0f, 1.0f, 0.0f };
+	constexpr FVector ActiveColor = FVector{ 1.0f, 1.0f, 0.1f };
+	constexpr FVector HoverColor = FVector{ 0.7f, 0.7f, 0.0f };
 
-	if (HoveredHandle == Handle)
+	if (ActiveHandle == Handle)
+	{
+		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, ActiveColor, 1.0f });
+	}
+	else if (HoveredHandle == Handle)
 	{
 		Renderer.Draw(*ArrowMesh, *ArrowMaterial, { MVP, HoverColor, 1.0f });
 	}
@@ -130,4 +199,17 @@ float FGizmo::CalculateGizmoScale(const FCamera& Camera) const
 	FVector ToTarget = CurrentTarget->GetRelativeTransform().Location - Camera.Position;
 
 	return ToTarget.Size() * ScalePerDistance;
+}
+
+FVector2 FGizmo::WorldToViewport(const FVector& WorldPosition, const FCamera& Camera,
+	const FVector2& ViewportSize) const
+{
+	FMatrix VP = Camera.CreateViewProjectionMatrix();
+
+	FVector Projected = VP.TransformPointRow(WorldPosition);
+
+	return FVector2{
+		(Projected.Y + 1.0f) * 0.5f * ViewportSize.X,
+		(1.0f - Projected.Z) * 0.5f * ViewportSize.Y
+	};
 }

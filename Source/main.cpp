@@ -212,7 +212,7 @@ namespace
 			FInputManager::Get().OnMouseMove(MousePos);
 			break;
 
-		case WM_CAPTURECHANGED:
+		//case WM_CAPTURECHANGED:
 		case WM_CANCELMODE:
 		case WM_KILLFOCUS:
 			ReleaseCapture();

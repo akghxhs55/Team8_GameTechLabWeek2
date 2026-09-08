@@ -8,6 +8,8 @@
 #include "Runtime/Input/FCameraInputController.h"
 
 class FEditorApplication final {
+	FEditor Editor;
+
 	USceneManager* SceneManager = nullptr;
 
 	FImguiManager ImguiManager;
@@ -15,7 +17,6 @@ class FEditorApplication final {
 	FImguiControlPanelWindow ControlPanelWindow;
 	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
-	FEditor Editor;
 	FRenderView* RenderView = nullptr;
 
 public:
