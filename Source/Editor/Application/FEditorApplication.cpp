@@ -111,3 +111,16 @@ void FEditorApplication::Render()
 	}
 	ImguiManager.RenderUI();
 }
+
+void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
+{
+	// TODO: 여기서 할 일은 아니지만 급한대로
+
+	constexpr float InitialFOV = 60.0f * std::numbers::pi_v<float> / 180.0f;
+
+	auto& Camera = Editor.GetActiveViewport()->ViewportCamera;
+	Camera.Projection.Aspect = static_cast<float>(Width) / static_cast<float>(Height);
+
+	float newFOV = 2.0f * std::atan(std::tan(InitialFOV / 2) * Camera.Projection.Aspect);
+	Camera.Projection.FOV = newFOV * 180.0f / std::numbers::pi_v<float>;
+}
