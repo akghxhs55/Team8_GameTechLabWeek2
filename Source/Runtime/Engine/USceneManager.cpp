@@ -48,7 +48,7 @@ void USceneManager::LoadScene(const FString& path)
 	buffer << file.rdbuf();
 
 	json::JSON sceneData = json::JSON::Load(buffer.str());
-	SetScene(NewObject<UScene>(*resourceLibrary));
+	SetScene(NewObject<UScene>(*ResourceLibrary));
 	currentScene->CreateFromJson(sceneData);
 
 }

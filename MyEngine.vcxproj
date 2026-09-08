@@ -372,7 +372,6 @@
     <ClInclude Include="Source\Runtime\Core\TMap.h" />
     <ClInclude Include="Source\Runtime\Engine\FCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\FRayCastingManager.h" />
-    <ClInclude Include="Source\Runtime\Engine\FViewportCamera.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
     <ClInclude Include="Source\Runtime\Input\FCameraInputController.h" />
@@ -390,7 +389,6 @@
     <ClInclude Include="Source\Runtime\Rendering\FMaterial.h" />
     <ClInclude Include="Source\Runtime\Rendering\FMesh.h" />
     <ClInclude Include="Source\Runtime\Engine\USceneManager.h" />
-    <ClInclude Include="Source\Runtime\UI\UIManager.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imconfig.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imgui.h" />
     <ClInclude Include="Source\ThirdParty\Imgui\imgui_impl_dx11.h" />

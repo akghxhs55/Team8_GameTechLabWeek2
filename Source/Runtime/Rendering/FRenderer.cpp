@@ -88,8 +88,6 @@ void FRenderer::SwapBuffer()
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
 {
-
-
 	if (!Desc.VertexData ||
 		Desc.VertexCount == 0 ||
 		Desc.VertexDataSize == 0 ||

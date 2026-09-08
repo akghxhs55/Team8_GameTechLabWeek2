@@ -12,5 +12,5 @@ public:
 
 
 	UScene* currentScene;
-	FRenderResourceLibrary* resourceLibrary = nullptr;
+	FRenderResourceLibrary* ResourceLibrary = nullptr;
 };

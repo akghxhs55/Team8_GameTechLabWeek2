@@ -62,10 +62,9 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
-	USceneManager tmp;
-	tmp.resourceLibrary = &RenderResources;
-	tmp.SetScene(NewObject<UScene>(RenderResources));
-
+	USceneManager SceneManager;
+	SceneManager.ResourceLibrary = &RenderResources;
+	SceneManager.SetScene(NewObject<UScene>(RenderResources));
 
 	FEditorApplication& EditorApp = FEditorApplication::Get();
 	{
@@ -73,55 +72,7 @@ int WINAPI wWinMain(
 		Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
 		EditorApp.Initialize_ImguiWin32DX11(Window, Device, Context);
 	}
-	EditorApp.Initialize_Runtime(&RenderResources, &tmp, &RenderView);
-	//FImguiManager& UIManager = FImguiManager::Get();
-	//{
-	//	ID3D11Device* Device = nullptr; ID3D11DeviceContext* Context = nullptr;
-	//	Renderer.GetDeviceAndContext_ImplDX11(Device, Context);
-	//	UIManager.Initialize_ImplWin32DX11(Window, Device, Context);
-	//}
-
-
-
-	// TODO: 임시 Scene 생성. 나중에 Scene 불러오고 편집하는 기능 구현
-	//UScene* Scene = NewObject<UScene>(RenderResources);
-	//UCubeComp* CubeComp = NewObject<UCubeComp>();
-	//CubeComp->RelativeTransform.Location = FVector{ 1.0f, 1.0f, 0.0f };
-	//CubeComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.5f, 0.5f, 0.5f });
-	//CubeComp->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
-	
-
-	//해당 경로에 UUID 기록 성공
-	/*USceneManager tmp;
-	tmp.resourceLibrary = &RenderResources;
-	tmp.SetScene(NewObject<UScene>(*tmp.resourceLibrary));
-	tmp.currentScene->RegisterComponent(*CubeComp);
-
-	UCylinderComp* CylinderCompX = NewObject<UCylinderComp>();
-	CylinderCompX->RelativeTransform.Location = FVector{ 0.3f, 0.0f, 0.0f };
-	CylinderCompX->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, -90.0f });
-	CylinderCompX->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	tmp.currentScene->RegisterComponent(*CylinderCompX);
-
-	UCylinderComp* CylinderCompY = NewObject<UCylinderComp>();
-	CylinderCompY->RelativeTransform.Location = FVector{ 0.0f, 0.3f, 0.0f };
-	CylinderCompY->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ 0.0f, 0.0f, 0.0f });
-	CylinderCompY->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	tmp.currentScene->RegisterComponent(*CylinderCompY);
-
-	UCylinderComp* CylinderCompZ = NewObject<UCylinderComp>();
-	CylinderCompZ->RelativeTransform.Location = FVector{ 0.0f, 0.0f, 0.3f };
-	CylinderCompZ->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(FVector{ -90.0f, 0.0f, 0.0f });
-	CylinderCompZ->RelativeTransform.Scale3D = FVector{ 0.2f, 0.5f, 0.2f };
-	tmp.currentScene->RegisterComponent(*CylinderCompZ);*/
-
-	FCamera Camera{};
-	Camera.Position = FVector(-3.0f, 3.0f, 2.0f);
-	Camera.Pitch = -25.0f;
-	Camera.Yaw = -45.0f;
-	//Camera.Projection.ProjectionType = EProjectionType::Orthographic;
-
-	static FCameraInputController CameraController;
+	EditorApp.Initialize_Runtime(&RenderResources, &SceneManager, &RenderView);
 
 	bool bQuit = false;
 	while (!bQuit)

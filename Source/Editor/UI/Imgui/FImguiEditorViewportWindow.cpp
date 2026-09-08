@@ -1,11 +1,10 @@
-#include "FImguiEditorViewportWindow.h"
+﻿#include "FImguiEditorViewportWindow.h"
 
 #include "Runtime/CoreUObject/UPrimitiveComponent.h"
 #include "Runtime/Engine/FRayCastingManager.h"
+#include "Runtime/Input/FInputManager.h"
 #include "Runtime/Math/FVector.h"
-
 #include "ThirdParty/Imgui/imgui.h"
-#include "ThirdParty/Imgui/imgui_internal.h"
 
 // 뷰포트를 덮는 투명한 창
 void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
@@ -52,6 +51,15 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 		ActiveViewport->Length = { ViewportSize.x, ViewportSize.y };
 		ActiveViewport->UpdateFocusedAndHovered(bFocused, bHovered);
 
+		if (bHovered)
+		{
+			UpdateGizmoHover(Editor, *ActiveViewport);
+		}
+		else
+		{
+			Editor.GetGizmo().HoveredHandle = EGizmoHandle::None;
+		}
+
 		if (bPickRequested)
 		{
 			HandlePicking(Editor, *ActiveViewport,
@@ -72,6 +80,13 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor,float DeltaTime)
 void FImguiEditorViewportWindow::HandlePicking(
 	FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize)
 {
+	FGizmo& Gizmo = Editor.GetGizmo();
+	if (Gizmo.HoveredHandle != EGizmoHandle::None)
+	{
+		Gizmo.BeginInteraction(Gizmo.HoveredHandle);
+		return;
+	}
+
 	TArray<UPrimitiveComponent*> Components = Editor.GetPrimitiveComponents();
 
 	UPrimitiveComponent* HitComponent = nullptr;
@@ -81,12 +96,14 @@ void FImguiEditorViewportWindow::HandlePicking(
 	//       FRayCastingManager 가 뷰포트 로컬 마우스 좌표
 	//       (FInputManager 좌표 - Viewport.TopLeft) 를 인수로 받도록
 	//       시그니처를 바꿔야 한다. 지금은 뷰포트 == 클라이언트 영역이라 그대로 사용.
-	const bool bHit = FRayCastingManager::Get().RayIntersectsMeshes(
-		&Viewport.ViewportCamera,
+	FVector2 MousePosition = FInputManager::Get().GetMousePosition();
+	FVector2 LocalMouse = MousePosition - Viewport.TopLeft;
+
+	const bool bHit = FRayCastingManager::RayIntersectsMeshes(
+		FRayCastingManager::CreateRayFromScreenPosition(Viewport.ViewportCamera, LocalMouse, FVector2{ ViewportSize.X, ViewportSize.Y }),
 		Components,
 		HitComponent,
-		ImpactPoint,
-		ViewportSize);
+		ImpactPoint);
 
 	if (bHit)
 	{
@@ -96,4 +113,16 @@ void FImguiEditorViewportWindow::HandlePicking(
 	{
 		Editor.UnSelectObject();
 	}
+}
+
+void FImguiEditorViewportWindow::UpdateGizmoHover(FEditor& Editor, const FEditorViewport& Viewport)
+{
+	FVector2 MousePosition = FInputManager::Get().GetMousePosition();
+	FVector2 LocalMouse = MousePosition - Viewport.TopLeft;
+
+	FRay Ray = FRayCastingManager::CreateRayFromScreenPosition(
+		Viewport.ViewportCamera, LocalMouse, Viewport.Length);
+	
+	FGizmo& Gizmo = Editor.GetGizmo();
+	Gizmo.HoveredHandle = Gizmo.HitTest(Ray, Viewport.ViewportCamera);
 }

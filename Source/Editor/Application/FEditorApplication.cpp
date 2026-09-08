@@ -4,7 +4,6 @@
 #include "Runtime/CoreUObject/UCylinderComp.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/Engine/FRayCastingManager.h"
-#include "Runtime/Input/FInputManager.h"
 #include <Windows.h>
 
 void FEditorApplication::Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context)
@@ -97,11 +96,13 @@ void FEditorApplication::Render()
 
 	for (auto& EditorViewport : EditorViewports) {
 		for (auto& PrimitiveComponent : SceneManager->currentScene->GetPrimitiveComponents())
+		{
 			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeft,
 				EditorViewport.Length, PrimitiveComponent);
+		}
+		RenderView->RenderGizmo(EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+		// TODO: render HighLight for selected object
 	}
-	// TODO: render HighLight for selected object
-	// TODO: render Gizmo
 	ImguiManager.RenderUI();
 }
 

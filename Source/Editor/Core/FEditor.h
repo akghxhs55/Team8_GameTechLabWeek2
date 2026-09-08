@@ -20,6 +20,7 @@ private:
 	TArray<FEditorViewport> EditorViewports;
 	UObject* SelectedObject = nullptr;
 	FGizmo Gizmo;
+
 public:
 	void Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager);
 	
@@ -40,6 +41,7 @@ public:
 	UPrimitiveComponent* SpawnPrimitive(EEditorPrimitiveType Type);
 	// 피킹 등에서 현재 씬의 렌더링 대상 컴포넌트가 필요할 때 사용
 	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;
+	FGizmo& GetGizmo() { return Gizmo; }
 
 
 };

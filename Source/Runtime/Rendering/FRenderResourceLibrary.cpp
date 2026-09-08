@@ -4,7 +4,9 @@
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Math/FVector.h"
 #include <Windows.h>
+#include <cmath>
 #include <filesystem>
+#include <numbers>
 
 namespace
 {
@@ -21,6 +23,7 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 	if (!CreateCubeMesh(Renderer) ||
 		!CreateCylinderMesh(Renderer, 1.0f, 24u, 1.0f ,1.0f) ||
 		!CreateConeMesh(Renderer) ||
+		!CreateArrowMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer))
 	{
 		return false;
@@ -253,6 +256,103 @@ bool FRenderResourceLibrary::CreateConeMesh(FRenderer& Renderer)
 
 	ConeMesh = Renderer.CreateMesh(MeshDesc);
 	return ConeMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateArrowMesh(FRenderer& Renderer)
+{
+	constexpr uint32 SliceCount = 16u;
+	constexpr float ShaftLength = 0.75f;
+	constexpr float ShaftRadius = 0.025f;
+	constexpr float HeadRadius = 0.075f;
+	constexpr float ArrowLength = 1.0f;
+	constexpr float Tau = std::numbers::pi_v<float> * 2.0f;
+	constexpr FVector Color{ 1.0f, 1.0f, 1.0f };
+
+	TArray<FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+
+	Vertices.reserve((SliceCount + 1u) * 3u + 3u);
+	Indices.reserve(SliceCount * 15u);
+
+	const uint32 ShaftStartRing = static_cast<uint32>(Vertices.size());
+	for (uint32 i = 0u; i <= SliceCount; ++i)
+	{
+		const float Theta = Tau * static_cast<float>(i) / static_cast<float>(SliceCount);
+		Vertices.push_back({
+			FVector{ 0.0f, ShaftRadius * cosf(Theta), ShaftRadius * sinf(Theta) },
+			Color });
+	}
+
+	const uint32 ShaftEndRing = static_cast<uint32>(Vertices.size());
+	for (uint32 i = 0u; i <= SliceCount; ++i)
+	{
+		const float Theta = Tau * static_cast<float>(i) / static_cast<float>(SliceCount);
+		Vertices.push_back({
+			FVector{ ShaftLength, ShaftRadius * cosf(Theta), ShaftRadius * sinf(Theta) },
+			Color });
+	}
+
+	for (uint32 i = 0u; i < SliceCount; ++i)
+	{
+		Indices.push_back(ShaftStartRing + i);
+		Indices.push_back(ShaftStartRing + i + 1u);
+		Indices.push_back(ShaftEndRing + i);
+
+		Indices.push_back(ShaftStartRing + i + 1u);
+		Indices.push_back(ShaftEndRing + i + 1u);
+		Indices.push_back(ShaftEndRing + i);
+	}
+
+	const uint32 ShaftStartCenter = static_cast<uint32>(Vertices.size());
+	Vertices.push_back({ FVector{ 0.0f, 0.0f, 0.0f }, Color });
+	for (uint32 i = 0u; i < SliceCount; ++i)
+	{
+		Indices.push_back(ShaftStartCenter);
+		Indices.push_back(ShaftStartRing + i + 1u);
+		Indices.push_back(ShaftStartRing + i);
+	}
+
+	const uint32 HeadBaseRing = static_cast<uint32>(Vertices.size());
+	for (uint32 i = 0u; i <= SliceCount; ++i)
+	{
+		const float Theta = Tau * static_cast<float>(i) / static_cast<float>(SliceCount);
+		Vertices.push_back({
+			FVector{ ShaftLength, HeadRadius * cosf(Theta), HeadRadius * sinf(Theta) },
+			Color });
+	}
+
+	const uint32 HeadTip = static_cast<uint32>(Vertices.size());
+	Vertices.push_back({ FVector{ ArrowLength, 0.0f, 0.0f }, Color });
+
+	for (uint32 i = 0u; i < SliceCount; ++i)
+	{
+		Indices.push_back(HeadBaseRing + i);
+		Indices.push_back(HeadBaseRing + i + 1u);
+		Indices.push_back(HeadTip);
+	}
+
+	const uint32 HeadBaseCenter = static_cast<uint32>(Vertices.size());
+	Vertices.push_back({ FVector{ ShaftLength, 0.0f, 0.0f }, Color });
+	for (uint32 i = 0u; i < SliceCount; ++i)
+	{
+		Indices.push_back(HeadBaseCenter);
+		Indices.push_back(HeadBaseRing + i);
+		Indices.push_back(HeadBaseRing + i + 1u);
+	}
+
+	const FMeshDesc MeshDesc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	ArrowMesh = Renderer.CreateMesh(MeshDesc);
+	return ArrowMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
