@@ -8,6 +8,7 @@
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
 {
 	Gizmo.Initialize(*RendererLibrary);
+	Grid.Initialize(*RendererLibrary);
 	this->RendererLibrary = RendererLibrary;
 	this->SceneManager = SceneManager;
 }
