@@ -90,7 +90,7 @@ void FEditorApplication::Tick(float DeltaTime)
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
 	ConsoleWindow.Process(Editor);
-	//ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
+	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
 
 	Editor.Process();
 
@@ -106,12 +106,12 @@ void FEditorApplication::Render()
 		RenderView->RenderGrid(EditorViewport.ViewportCamera, Editor.GetGrid());
 		for (auto& PrimitiveComponent : SceneManager->CurrentScene->GetPrimitiveComponents())
 		{
-			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeft,
-				EditorViewport.Length, PrimitiveComponent);
+			RenderView->Render(EditorViewport.ViewportCamera, EditorViewport.TopLeftUV,
+				EditorViewport.LengthUV, PrimitiveComponent);
 		}
 		if (Editor.ObjectSelected())
 		{
-			RenderView->RenderGizmo(Editor.SelectedTransform, EditorViewport.ViewportCamera, EditorViewport.TopLeft, EditorViewport.Length, Editor.GetGizmo());
+			RenderView->RenderGizmo(Editor.SelectedTransform, EditorViewport.ViewportCamera, EditorViewport.TopLeftUV, EditorViewport.LengthUV, Editor.GetGizmo());
 		}
 		// TODO: render HighLight for selected object
 
