@@ -15,7 +15,7 @@ public:
 	void Process(FEditor& Editor, float DeltaTime);
 
 private:
-	void HandlePicking(FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize);
+	void HandlePicking(FEditor& Editor, FEditorViewport& Viewport);
 	void UpdateGizmoHover(FEditor& Editor, const FEditorViewport& Viewport);
 
 	FCameraInputController CameraController;

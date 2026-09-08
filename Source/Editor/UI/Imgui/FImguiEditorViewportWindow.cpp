@@ -115,7 +115,7 @@ void FImguiEditorViewportWindow::HandlePicking(
 	//       시그니처를 바꿔야 한다. 지금은 뷰포트 == 클라이언트 영역이라 그대로 사용.
 
 	const bool bHit = FRayCastingManager::RayIntersectsMeshes(
-		FRayCastingManager::CreateRayFromScreenPosition(Viewport.ViewportCamera, MousePosition, FVector2{ ViewportSize.X, ViewportSize.Y }),
+		FRayCastingManager::CreateRayFromScreenPosition(Viewport.ViewportCamera, MousePosition, FVector2{ Viewport.Length.X, Viewport.Length.Y }),
 		Components,
 		HitComponent,
 		ImpactPoint);
