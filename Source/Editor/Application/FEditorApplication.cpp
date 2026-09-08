@@ -7,6 +7,8 @@
 #include "Runtime/Input/FInputManager.h"
 #include <Windows.h>
 
+#include "ThirdParty/Imgui/imgui.h"
+
 void FEditorApplication::Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context)
 {
 	ImguiManager.Initialize_ImplWin32DX11(Window, Device, Context);
@@ -86,9 +88,12 @@ void FEditorApplication::BeginFrame()
 
 void FEditorApplication::Tick(float DeltaTime)
 {
+	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
 	EditorViewportWindow.Process(Editor, DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
+	ConsoleWindow.Process(Editor);
+	ImGui::ShowDemoWindow();
 }
 
 void FEditorApplication::Render()

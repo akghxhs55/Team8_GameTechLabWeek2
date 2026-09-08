@@ -262,10 +262,12 @@
     <ClCompile Include="Source\Editor\Application\FEditorApplication.cpp" />
     <ClCompile Include="Source\Editor\Core\FEditor.cpp" />
     <ClCompile Include="Source\Editor\EditorViewport\FEditorViewport.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiManager.cpp" />
     <ClCompile Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.cpp" />
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiToolBar.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\FUObjectArray.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UClass.cpp" />
@@ -346,10 +348,12 @@
     <ClInclude Include="Source\Editor\Application\FEditorApplication.h" />
     <ClInclude Include="Source\Editor\Core\FEditor.h" />
     <ClInclude Include="Source\Editor\EditorViewport\FEditorViewport.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiControlPanelWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.h" />
+    <ClInclude Include="Source\Editor\UI\Imgui\FImguiToolBar.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UClass.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h" />
@@ -360,6 +364,7 @@
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
     <ClInclude Include="Source\Runtime\Core\FString.h" />
+    <ClInclude Include="Source\Runtime\Core\Log.h" />
     <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
     <ClInclude Include="Source\Runtime\Core\TArray.h" />
     <ClInclude Include="Source\Runtime\Core\IntTypes.h" />

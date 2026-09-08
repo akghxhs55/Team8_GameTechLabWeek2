@@ -4,14 +4,7 @@
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
 
-#include "FImguiControlPanelWindow.h"
-
 #include "Runtime/Core/FString.h"
-
-#include "ThirdParty/Imgui/imgui.h"
-#include "ThirdParty/Imgui/imgui_internal.h"
-#include "ThirdParty/Imgui/imgui_impl_dx11.h"
-#include "ThirdParty/Imgui/imgui_impl_win32.h"
 
 namespace
 {
