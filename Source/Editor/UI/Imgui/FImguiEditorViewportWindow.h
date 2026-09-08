@@ -1,6 +1,7 @@
 #pragma once
 #include "Editor/Core/FEditor.h"
 #include "Runtime/Math/FVector2.h"
+#include "Runtime/Input/FCameraInputController.h"
 
 // 3D 씬 위를 덮는 투명한 ImGui 창.
 // - 다른 패널(ControlPanel, Property 등)이 이 창 위에 그려지므로,
@@ -11,8 +12,10 @@ class FImguiEditorViewportWindow final
 {
 
 public:
-	void Process(FEditor& Editor);
+	void Process(FEditor& Editor, float DeltaTime);
 
 private:
 	void HandlePicking(FEditor& Editor, FEditorViewport& Viewport, FVector2 ViewportSize);
+
+	FCameraInputController CameraController;
 };

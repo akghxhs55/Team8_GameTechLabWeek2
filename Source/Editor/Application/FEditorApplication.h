@@ -15,8 +15,6 @@ class FEditorApplication final {
 	FImguiControlPanelWindow ControlPanelWindow;
 	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
-
-	FCameraInputController CameraController;
 	FEditor Editor;
 	FRenderView* RenderView = nullptr;
 public:
