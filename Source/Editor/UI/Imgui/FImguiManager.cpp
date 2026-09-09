@@ -52,9 +52,25 @@ void FImguiManager::NewFrame()
 		ImGuiID ConsoleID = ImGui::DockBuilderSplitNode(MainID, ImGuiDir_Down, 0.25f, nullptr, &MainID);
 
 		ImGui::DockBuilderDockWindow("##EditorViewport", MainID);
+		if (ImGuiDockNode* Node = ImGui::DockBuilderGetNode(MainID))
+		{
+			Node->LocalFlags |= ImGuiDockNodeFlags_NoUndocking;
+		}
 		ImGui::DockBuilderDockWindow("Jungle Property Window", PropertyWindowID);
+		if (ImGuiDockNode* Node = ImGui::DockBuilderGetNode(PropertyWindowID))
+		{
+			Node->LocalFlags |= ImGuiDockNodeFlags_NoUndocking;
+		}
 		ImGui::DockBuilderDockWindow("Jungle Control Panel", ControlPanelID);
+		if (ImGuiDockNode* Node = ImGui::DockBuilderGetNode(ControlPanelID))
+		{
+			Node->LocalFlags |= ImGuiDockNodeFlags_NoUndocking;
+		}
 		ImGui::DockBuilderDockWindow("Console Window", ConsoleID);
+		if (ImGuiDockNode* Node = ImGui::DockBuilderGetNode(ConsoleID))
+		{
+			Node->LocalFlags |= ImGuiDockNodeFlags_NoUndocking;
+		}
 
 		ImGui::DockBuilderFinish(DockSpaceID);
 
