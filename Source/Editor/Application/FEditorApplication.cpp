@@ -87,7 +87,7 @@ void FEditorApplication::BeginFrame()
 void FEditorApplication::Tick(float DeltaTime)
 {
 	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
-	EditorViewportWindow.Process(Editor, ImguiManager.GetEditorViewportID(), DeltaTime);
+	EditorViewportWindow.Process(Editor ,DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
 	ConsoleWindow.Process(Editor);

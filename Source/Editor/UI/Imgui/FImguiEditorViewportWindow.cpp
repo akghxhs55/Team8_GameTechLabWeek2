@@ -7,51 +7,55 @@
 #include "ThirdParty/Imgui/imgui.h"
 
 // 뷰포트를 덮는 투명한 창
-void FImguiEditorViewportWindow::Process(FEditor& Editor, ImGuiID EditorViewportID, float DeltaTime)
+void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 {
 	const ImGuiViewport* MainViewport = ImGui::GetMainViewport();
 	FEditorViewport* Viewport = Editor.GetActiveViewport();
 	if (!Viewport)
 		return;
 
+	const FVector2 ClientSize = { MainViewport->Size.x, MainViewport->Size.y };
+	const FVector2 ViewportTopLeftPixels = Viewport->TopLeftUV * ClientSize;
+	const FVector2 ViewportSizePixels = Viewport->LengthUV * ClientSize;
+
+	//ImGui::SetNextWindowPos(ImVec2(MainViewport->Pos.x + ViewportTopLeftPixels.X,
+	//	MainViewport->Pos.y + ViewportTopLeftPixels.Y));
+	//ImGui::SetNextWindowSize(ImVec2(ViewportSizePixels.X, ViewportSizePixels.Y));
+
 	constexpr ImGuiWindowFlags WindowFlags =
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoMove |
+		//	ImGuiWindowFlags_NoTitleBar |
+		//	ImGuiWindowFlags_NoResize |
+		//	ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoScrollbar |
 		ImGuiWindowFlags_NoScrollWithMouse |
 		ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoSavedSettings |
+		//	ImGuiWindowFlags_NoSavedSettings |
 		ImGuiWindowFlags_NoBringToFrontOnFocus |
 		ImGuiWindowFlags_NoNavFocus;
 
+	//ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1.0f, 1.0f));
-	ImGui::SetNextWindowDockID(EditorViewportID, ImGuiCond_Always);
 	ImGui::Begin("##EditorViewport", nullptr, WindowFlags);
+	//ImGui::Begin("##EditorViewport", nullptr);
+
 	ImGui::PopStyleVar(3);
-
-	ImVec2 WindowTopLeft = ImGui::GetWindowPos();
-	ImVec2 WindowSize = ImGui::GetWindowSize();
-	Viewport->TopLeftUV = {
-		(WindowTopLeft.x - MainViewport->Pos.x) / MainViewport->Size.x,
-		(WindowTopLeft.y - MainViewport->Pos.y) / MainViewport->Size.y };
-	Viewport->LengthUV = {
-		WindowSize.x / MainViewport->Size.x,
-		WindowSize.y / MainViewport->Size.y };
-	Viewport->ViewportCamera.Projection.Aspect = WindowSize.x / WindowSize.y;
-
-	const FVector2 ClientSize = { MainViewport->Size.x, MainViewport->Size.y };
-	const FVector2 ViewportTopLeftPixels = Viewport->TopLeftUV * ClientSize;
-	const FVector2 ViewportSizePixels = Viewport->LengthUV * ClientSize;
 
 	// 뷰포트 영역 전체를 덮는 클릭 판정용 아이템.
 	// 다른 ImGui 창이 위에 있으면 IsItemHovered()/IsItemClicked() 가 false 가 되어
 	// 자연스럽게 focus 중재가 된다.
 	ImGui::InvisibleButton("##ViewportInput", ImVec2(ViewportSizePixels.X, ViewportSizePixels.Y),
 		ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
+
+	FVector2 WindowPos = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
+	FVector2 WindowSize = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+	WindowPos.X /= ClientSize.X; WindowPos.Y /= ClientSize.Y;
+	WindowSize.X /= ClientSize.X; WindowSize.Y /= ClientSize.Y;
+	Viewport->TopLeftUV = WindowPos;
+	Viewport->LengthUV = WindowSize;
+	Viewport->ViewportCamera.Projection.Aspect = WindowSize.X / WindowSize.Y;
 
 	const bool bHovered = ImGui::IsItemHovered();
 	const bool bFocused = ImGui::IsWindowFocused();
@@ -65,7 +69,7 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, ImGuiID EditorViewport
 		ActiveViewport->UpdateFocusedAndHovered(bFocused, bHovered);
 
 		const FVector2 LocalMouse = FInputManager::Get().GetMousePosition() - ViewportTopLeftPixels;
-	
+
 		FGizmo& Gizmo = Editor.GetGizmo();
 
 		if (bPickRequested)

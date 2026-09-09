@@ -57,4 +57,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> ObjectConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> GridConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;
+
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> EditorViewPortRTV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> EditorViewPortSRV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> renderTexture;
+
 };

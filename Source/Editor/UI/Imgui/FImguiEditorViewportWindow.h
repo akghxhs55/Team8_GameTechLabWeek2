@@ -13,7 +13,7 @@ class FImguiEditorViewportWindow final
 {
 
 public:
-	void Process(FEditor& Editor, ImGuiID EditorViewportID, float DeltaTime);
+	void Process(FEditor& Editor, float DeltaTime);
 
 private:
 	void HandlePicking(FEditor& Editor, const FEditorViewport& Viewport,

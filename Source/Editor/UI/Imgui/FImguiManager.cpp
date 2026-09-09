@@ -62,7 +62,7 @@ void FImguiManager::NewFrame()
 		if (ImGuiDockNode* Node =
 			ImGui::DockBuilderGetNode(EditorViewportID))
 		{
-			Node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+			//Node->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
 		}
 
 		Initialized = true;

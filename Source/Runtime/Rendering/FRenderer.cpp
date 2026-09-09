@@ -508,3 +508,4 @@ void FRenderer::UpdateGridConstants(const FGridConstants& Constants)
 	Context->VSSetConstantBuffers(0, 1, GridConstantBuffer.GetAddressOf());
 	Context->PSSetConstantBuffers(0, 1, GridConstantBuffer.GetAddressOf());
 }
+
