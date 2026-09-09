@@ -278,6 +278,7 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UPrimitiveComponent.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Editor\Grid\FGrid.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\USphereComp.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRayCastingManager.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FTimeManager.cpp" />
@@ -367,6 +368,7 @@
     <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\USphereComp.h" />
     <ClInclude Include="Source\Runtime\Core\FString.h" />
     <ClInclude Include="Source\Runtime\Core\Log.h" />
     <ClInclude Include="Source\Runtime\Core\PointerTypes.h" />
@@ -382,6 +384,7 @@
     <ClInclude Include="Source\Runtime\Engine\FRayCastingManager.h" />
     <ClInclude Include="Source\Runtime\Engine\UScene.h" />
     <ClInclude Include="Source\Runtime\Geometry\FTransform.h" />
+    <ClInclude Include="Source\Runtime\Geometry\Sphere.h" />
     <ClInclude Include="Source\Runtime\Input\FCameraInputController.h" />
     <ClInclude Include="Source\Runtime\Input\FInputManager.h" />
     <ClInclude Include="Source\Runtime\Math\FMatrix.h" />

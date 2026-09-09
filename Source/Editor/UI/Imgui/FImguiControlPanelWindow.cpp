@@ -48,8 +48,8 @@ void FImguiControlPanelWindow::Process(FEditor& Editor)
 
     static int spawnCount = 1;
 
-    const bool bCanSpawn = (primitive != 2); // Sphere(2) 미구현
-    ImGui::BeginDisabled(!bCanSpawn);
+
+
     if (ImGui::Button("Spawn"))
     {
         const int Count = (spawnCount < 1) ? 1 : spawnCount;
@@ -58,12 +58,8 @@ void FImguiControlPanelWindow::Process(FEditor& Editor)
             Editor.SpawnPrimitive(static_cast<EEditorPrimitiveType>(primitive));
         }
     }
-    ImGui::EndDisabled();
-    if (!bCanSpawn)
-    {
-        ImGui::SameLine();
-        ImGui::TextDisabled("(Sphere 미구현)");
-    }
+
+
     ImGui::SameLine();
     ImGui::SetNextItemWidth(180.0f);
     ImGui::InputInt("##SpawnCount", &spawnCount);

@@ -3,6 +3,7 @@
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
+#include "Runtime/CoreUObject/USphereComp.h"
 #include <numbers>
 
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
@@ -127,9 +128,9 @@ UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 	case EEditorPrimitiveType::Cylinder:
 		Component = NewObject<UCylinderComp>();
 		break;
-	case EEditorPrimitiveType::Sphere:
-		// TODO: USphereComp + 스피어 메시가 없어 아직 생성 불가
-		return nullptr;
+	case EEditorPrimitiveType::Sphere: 
+		Component = NewObject<USphereComp>();
+		break;
 	}
 
 	if (!Component)

@@ -7,6 +7,7 @@
 #include <cmath>
 #include <filesystem>
 #include <numbers>
+#include "Runtime/Geometry/Sphere.h"
 
 namespace
 {
@@ -31,7 +32,8 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateGridMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer) ||
 		!CreateDrawOverMaterial(Renderer) ||
-		!CreateGridMaterial(Renderer))
+		!CreateGridMaterial(Renderer)||
+		!CreateSphereMesh(Renderer))
 	{
 		return false;
 	}
@@ -527,6 +529,30 @@ bool FRenderResourceLibrary::CreateGridMesh(FRenderer& Renderer)
 
 	GridMesh = Renderer.CreateMesh(MeshDesc);
 	return GridMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateSphereMesh(FRenderer& Renderer)
+{
+	TArray<FVertexPositionColor> Vertices;
+	for(int i =0; i < 2400; ++i)
+	{
+		Vertices.push_back(sphere_vertices[i]);
+	}
+	
+	FMeshDesc MeshDesc{
+	.VertexLayout = EVertexLayout::PositionColor,
+	.VertexData = Vertices.data(),
+	.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+	.VertexStride = sizeof(FVertexPositionColor),
+	.VertexCount = static_cast<uint32>(Vertices.size()),
+	};
+
+
+
+
+
+	SphereMesh = Renderer.CreateMesh(MeshDesc);
+	return SphereMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)

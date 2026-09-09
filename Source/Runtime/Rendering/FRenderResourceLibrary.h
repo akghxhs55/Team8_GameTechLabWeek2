@@ -22,6 +22,7 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetCircleMesh() { return CircleMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetSquareArrowMesh() { return SquareArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetGridMesh() { return GridMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetSphereMesh() { return SphereMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetDrawOverMaterial() { return DrawOverMaterial; }
 
@@ -34,6 +35,7 @@ private:
 	bool CreateCircleMesh(FRenderer& Renderer);
 	bool CreateSquareArrowMesh(FRenderer& Renderer);
 	bool CreateGridMesh(FRenderer& Renderer);
+	bool CreateSphereMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
 	bool CreateDrawOverMaterial(FRenderer& Renderer);
 	bool CreateGridMaterial(FRenderer& Renderer);
@@ -46,6 +48,7 @@ private:
 	TSharedPtr<FMesh> CircleMesh;
 	TSharedPtr<FMesh> SquareArrowMesh;
 	TSharedPtr<FMesh> GridMesh;
+	TSharedPtr<FMesh> SphereMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
 	TSharedPtr<FMaterial> DrawOverMaterial;
 	TSharedPtr<FMaterial> GridMaterial;
