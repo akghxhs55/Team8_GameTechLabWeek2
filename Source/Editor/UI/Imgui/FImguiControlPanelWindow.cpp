@@ -3,7 +3,7 @@
 #include "ThirdParty/Imgui/imgui_internal.h"
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
-
+#include "Runtime/CoreUObject/UObject.h"
 #include "Runtime/Core/FString.h"
 #include <Windows.h>
 #include <ShlObj.h>
@@ -32,10 +32,13 @@ namespace
 
 void FImguiControlPanelWindow::Process(FEditor& Editor)
 {
+    const uint64 Count = UObject::GetTotalAllocationCount();
+    const uint64 Bytes = UObject::GetTotalAllocationBytes();
     ImGui::Begin("Jungle Control Panel");
 
     ImGui::Text("Hello Jungle World!");
     ImGui::Text("FPS %.0f (%.0f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+    ImGui::Text("Live UObjects : %llu, UObject Memory: %llu bytes (%.2f KiB)", static_cast<unsigned long long>(Count), static_cast<unsigned long long>(Bytes), static_cast<double>(Bytes) / 1024.0);
     ImGui::Separator();
 
     // ---------------- 프리미티브 스폰 ----------------

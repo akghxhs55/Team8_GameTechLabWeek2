@@ -45,6 +45,8 @@ public:
 	[[nodiscard]] TArray<UPrimitiveComponent*> GetPrimitiveComponents() const;
 	FGizmo& GetGizmo() { return Gizmo; }
 	FGrid& GetGrid() { return Grid; }
+
+	void ClearSelectionForGC();
 private:
 	FRenderResourceLibrary* RendererLibrary = nullptr;
 	USceneManager* SceneManager = nullptr; // 씬을 다중으로 가질 수 있도록 구조개선 가능-이경우 에디터쪽에 클래스를 추가해 씬과 FEditorViewport들을 연관

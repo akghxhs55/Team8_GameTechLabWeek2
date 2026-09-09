@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include "ThirdParty/Json/json.hpp"
+#include "Runtime/CoreUObject/FGarbageCollector.h"
 
 
 void USceneManager::SaveScene(const FString& path) const
@@ -47,11 +48,15 @@ void USceneManager::LoadScene(const FString& path)
 
 void USceneManager::SetScene(UScene* scene)
 {
-	if(CurrentScene != nullptr)
-	{
-		delete CurrentScene;
-	}
+	if (CurrentScene == scene) return;
+
+	UScene* OldScene = CurrentScene;
+
+	FGarbageCollector& GarbageCollector = FGarbageCollector::Get();
+
+	if (scene != nullptr) GarbageCollector.AddRoot(scene);
 
 	CurrentScene = scene;
-	
+
+	if (OldScene != nullptr) GarbageCollector.RemoveRoot(OldScene);
 }

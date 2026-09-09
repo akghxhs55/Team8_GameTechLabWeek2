@@ -120,6 +120,13 @@ TArray<UPrimitiveComponent*> FEditor::GetPrimitiveComponents() const
 	return SceneManager->CurrentScene->GetPrimitiveComponents();
 }
 
+void FEditor::ClearSelectionForGC()
+{
+	SelectedObject = nullptr;
+	Gizmo.EndInteraction();
+	Gizmo.HoveredHandle = EGizmoHandle::None;
+}
+
 UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 {
 	if (!SceneManager || !SceneManager->CurrentScene)

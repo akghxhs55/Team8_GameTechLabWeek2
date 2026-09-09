@@ -25,7 +25,7 @@ public:
 
 	void CreateFromJson(json::JSON data);
 	
-
+	void AddReferencedObjects(FReferenceCollector& Collector) override;
 private:
 	explicit UScene(FRenderResourceLibrary& RenderResources)
 		: RenderResourceLibrary(RenderResources)

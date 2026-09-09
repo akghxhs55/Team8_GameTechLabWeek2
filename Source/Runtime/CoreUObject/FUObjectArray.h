@@ -40,4 +40,7 @@ private:
 	template <typename TObject, typename ... TArgs>
 		requires std::derived_from<TObject, UObject>
 	friend TObject* NewObject(TArgs&&... Args);
+
+	friend class FGarbageCollector;
+	void DestroyObject(UObject* Object);
 };

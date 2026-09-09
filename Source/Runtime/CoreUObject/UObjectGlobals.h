@@ -9,6 +9,12 @@ template <typename TObject, typename ... TArgs>
 TObject* NewObject(TArgs&&... Args)
 {
 	TObject* Object = new TObject(std::forward<TArgs>(Args)...);
-	FUObjectArray::Get().AddObject(Object);
+	try {
+		FUObjectArray::Get().AddObject(Object);
+	}
+	catch (...) {
+		delete Object;
+		throw;
+	}
 	return Object;
 }

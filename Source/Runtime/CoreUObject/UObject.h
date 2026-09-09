@@ -2,11 +2,14 @@
 #include "UClass.h"
 #include "Runtime/Core/IntTypes.h"
 #include "ThirdParty/Json/json.hpp"
+#include <cstddef>
+#include <new>
 #include <concepts>
 //#include "Runtime/CoreUObject/UObjectGlobals.h"
 
 class UObjectGlobals;
 class UClass;
+class FReferenceCollector;
 
 /*
  * UObject를 상속받는 클래스는 반드시 GENERATED_BODY() 매크로를 사용해야 한다.
@@ -89,6 +92,30 @@ public:
 	virtual bool Deserialize(const json::JSON& data);
 	void SetUUID(uint32 _UUID) { UUID = _UUID; }
 
+	virtual void AddReferencedObjects(FReferenceCollector& Collector);
+
+	static void* operator new(std::size_t Size);
+
+	static void operator delete(void* Memory, std::size_t Size) noexcept;
+
+	static void* operator new(std::size_t Size, std::align_val_t Alignment);
+
+	static void operator delete(void* Memory, std::size_t Size, std::align_val_t Alignment) noexcept;
+
+	static void* operator new[](std::size_t) = delete;
+	static void operator delete[](void*) = delete;
+
+	[[nodiscard]]
+	static uint64 GetTotalAllocationBytes() {
+		return TotalAllocationBytes;
+	}
+
+	[[nodiscard]]
+	static uint64 GetTotalAllocationCount()
+	{
+		return TotalAllocationCount;
+	}
+
 protected:
 	UObject() = default;
 	virtual ~UObject() = default;
@@ -97,6 +124,8 @@ private:
 	uint32 UUID = 0u;
 	uint32 InternalIndex = 0u;
 
+	static inline uint64 TotalAllocationBytes = 0;
+	static inline uint64 TotalAllocationCount = 0;
 public:
 	template<typename T>
 	bool IsA() const {

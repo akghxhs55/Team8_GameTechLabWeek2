@@ -4,7 +4,8 @@
 #include "Runtime/CoreUObject/UPrimitiveComponent.h"
 #include "Runtime/Core/TArray.h"
 #include <string>
-#include "RunTime/CoreUObject/UClass.h"
+#include "Runtime/CoreUObject/UClass.h"
+#include "Runtime/CoreUObject/FReferenceCollector.h"
 
 void UScene::RegisterComponent(USceneComponent& Component)
 {
@@ -62,6 +63,15 @@ void UScene::CreateFromJson(json::JSON data)
 
 
 }
+
+void UScene::AddReferencedObjects(FReferenceCollector& Collector)
+{
+	UObject::AddReferencedObjects(Collector);
+
+	for (USceneComponent* Component : Components)
+		Collector.AddReferencedObject(Component);
+}
+
 bool UScene::Deserialize(const json::JSON& data)
 {
 	if (data.hasKey("NextUUID"))

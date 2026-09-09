@@ -4,6 +4,8 @@
 #include "Runtime/CoreUObject/UCylinderComp.h"
 #include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/Engine/FRayCastingManager.h"
+#include "Runtime/CoreUObject/FGarbageCollector.h"
+#include "Runtime/CoreUObject/FReferenceCollector.h"
 #include <Windows.h>
 
 void FEditorApplication::Initialize_ImguiWin32DX11(HWND& Window, ID3D11Device* Device, ID3D11DeviceContext* Context)
@@ -128,4 +130,16 @@ void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
 		auto& Camera = Viewport.ViewportCamera;
 		Camera.Projection.Aspect = SizePixels.X / SizePixels.Y;
 	}
+}
+
+void FEditorApplication::CollectGarbage()
+{
+	FGarbageCollector::Get().CollectGarbage(
+		[this](const FReferenceCollector& Collector) {
+			UObject* SelectedObject = Editor.GetSelectedObject();
+
+			if (SelectedObject != nullptr && !Collector.bIsReferenced(SelectedObject))
+				Editor.ClearSelectionForGC();
+		}
+	);
 }

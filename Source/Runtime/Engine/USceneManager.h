@@ -11,6 +11,6 @@ public:
 	void SetScene(UScene* scene);
 
 
-	UScene* CurrentScene;
+	UScene* CurrentScene = nullptr;
 	FRenderResourceLibrary* ResourceLibrary = nullptr;
 };
