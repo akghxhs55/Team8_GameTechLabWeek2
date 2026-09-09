@@ -96,4 +96,20 @@ protected:
 private:
 	uint32 UUID = 0u;
 	uint32 InternalIndex = 0u;
+
+public:
+	template<typename T>
+	bool IsA() const {
+		return GetClass()->IsChildOrSelfOf(T::StaticClass());
+	}
+
+	template<typename T>
+	T* Cast() {
+		return IsA<T>() ? static_cast<T*>(this) : nullptr;
+	}
+
+	template<typename T>
+	const T* Cast() const {
+		return IsA<T>() ? static_cast<const T*>(this) : nullptr;
+	}
 };

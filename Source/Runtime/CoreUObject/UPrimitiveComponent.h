@@ -8,6 +8,7 @@
 class UPrimitiveComponent : public USceneComponent
 {
 	GENERATED_BODY()
+	DECLARE_UCLASS(UPrimitiveComponent, USceneComponent)
 
 public:
 	[[nodiscard]] TSharedPtr<FMesh> GetMesh() const { return PrimitiveMesh; }

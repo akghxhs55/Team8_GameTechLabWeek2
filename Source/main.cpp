@@ -62,6 +62,8 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
+	UClass::ResolveTypeBitsets();
+
 	USceneManager SceneManager;
 	SceneManager.ResourceLibrary = &RenderResources;
 	SceneManager.SetScene(NewObject<UScene>(RenderResources));

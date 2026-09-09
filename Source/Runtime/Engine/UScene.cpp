@@ -25,7 +25,7 @@ TArray<UPrimitiveComponent*> UScene::GetPrimitiveComponents() const
 	TArray<UPrimitiveComponent*> PrimitiveComponents{};
 	for (const auto* Component : Components)
 	{
-		if (const auto* PrimitiveComponent = dynamic_cast<const UPrimitiveComponent*>(Component))
+		if (const auto* PrimitiveComponent = Component->Cast<UPrimitiveComponent>())
 		{
 			PrimitiveComponents.push_back(const_cast<UPrimitiveComponent*>(PrimitiveComponent));
 		}

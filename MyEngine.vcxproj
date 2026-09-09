@@ -273,6 +273,7 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UCylinderComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\UPrimitiveComponent.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Editor\Grid\FGrid.cpp" />
     <ClCompile Include="Source\Runtime\Engine\FRayCastingManager.cpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiManager.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiPropertyWindow.h" />
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiEditorViewportWindow.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\FClassIdSet.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\FUObjectArray.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UClass.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UConeComp.h" />

@@ -93,7 +93,7 @@ void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGr
 	}
 
 	const auto& Pipeline = Material.Pipeline;
-
+		
 	Pipeline->Bind(*Context.Get());
 	Material.BindResources(*Context.Get());
 	Mesh.BindResources(*Context.Get());

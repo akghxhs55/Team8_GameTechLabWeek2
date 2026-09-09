@@ -5,6 +5,7 @@
 #include "Runtime/Core/IntTypes.h"
 #include "Runtime/Core/PointerTypes.h"
 #include "Runtime/Core/TMap.h"
+#include "Runtime/CoreUObject/FClassIdSet.h"
 
 class UObject;
 
@@ -18,9 +19,13 @@ private:
 	FString className, superClassTypeName;
 	TFunction<UObject* ()> createFunction;
 	uint32 typeId;
+	UClass* superClass;
 	TMap<FString, FString> metadata;
+	FClassIdSet classIdSet;
+	bool processed = false;
 
 public:
+
 	UObject* CreateDefaultObject() const; 
 	static UClass* RegisterToFactory(
 		const FString& typeName,
@@ -30,16 +35,20 @@ public:
 	static UClass* FindByName(const FString& Name);
 	const FString& GetDisplayName() const;
 	void SetMeta(const FString& key, const FString& value);
+	static void ResolveTypeBitsets();
+	void ResolveTypeBitset(UClass* classPtr);
 
+	bool IsChildOrSelfOf(UClass* baseClass) const;
+
+	[[nodiscard]] const FString& GetUClassName() const { return className; }
 
 	static UClass* FindClassWithDisplayName(const FString& name)
 	{
-		// 1) DisplayName lookup
+
 		auto it = displayNameToId.find(name);
 		if (it != displayNameToId.end())
 			return GetClassById(it->second);
 
-		// 2) className fallback
 		it = nameToId.find(name);
 		return (it != nameToId.end()) ? GetClassById(it->second) : nullptr;
 	}
