@@ -34,7 +34,6 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateSphereMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer) ||
 		!CreateGridMaterial(Renderer)||
-		!CreateSphereMesh(Renderer) ||
 		!CreateGridMaterial(Renderer) ||
 		!CreateRotationGizmoMaterial(Renderer))
 	{
