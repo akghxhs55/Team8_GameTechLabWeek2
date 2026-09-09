@@ -7,8 +7,9 @@
 
 void FImguiPropertyWindow::Process(FEditor& Editor)
 {
-	// TODO: RTTI 구현시 dynamic_cast 대신 자체 방법으로 실행되어야 함
-	auto* SceneComponent = dynamic_cast<USceneComponent*>(Editor.GetSelectedObject());
+	USceneComponent* SceneComponent = nullptr;
+	if (Editor.GetSelectedObject() != nullptr)
+		SceneComponent = Editor.GetSelectedObject()->Cast<USceneComponent>();
 	ImGui::Begin("Jungle Property Window");
 
 

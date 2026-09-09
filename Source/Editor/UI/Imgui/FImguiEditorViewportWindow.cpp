@@ -5,6 +5,7 @@
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Math/FVector.h"
 #include "ThirdParty/Imgui/imgui.h"
+#include "ThirdParty/Imgui/imgui_internal.h"
 
 // 뷰포트를 덮는 투명한 창
 void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
@@ -17,6 +18,7 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 	const FVector2 ClientSize = { MainViewport->Size.x, MainViewport->Size.y };
 	const FVector2 ViewportTopLeftPixels = Viewport->TopLeftUV * ClientSize;
 	const FVector2 ViewportSizePixels = Viewport->LengthUV * ClientSize;
+	const ImVec2 WorkPos = MainViewport->WorkPos;
 
 	//ImGui::SetNextWindowPos(ImVec2(MainViewport->Pos.x + ViewportTopLeftPixels.X,
 	//	MainViewport->Pos.y + ViewportTopLeftPixels.Y));
@@ -37,11 +39,16 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 	//ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(1.0f, 1.0f));
-	ImGui::Begin("##EditorViewport", nullptr, WindowFlags);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(30.0f, 30.0f));
+
+	ImGui::Begin("Viewport", nullptr, WindowFlags);
 	//ImGui::Begin("##EditorViewport", nullptr);
+	ImGui::BringWindowToDisplayBack(ImGui::GetCurrentWindow());
 
 	ImGui::PopStyleVar(3);
+
+	FVector2 WindowPos = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
+	FVector2 WindowSize = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
 
 	// 뷰포트 영역 전체를 덮는 클릭 판정용 아이템.
 	// 다른 ImGui 창이 위에 있으면 IsItemHovered()/IsItemClicked() 가 false 가 되어
@@ -49,8 +56,7 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 	ImGui::InvisibleButton("##ViewportInput", ImVec2(ViewportSizePixels.X, ViewportSizePixels.Y),
 		ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
 
-	FVector2 WindowPos = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
-	FVector2 WindowSize = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+	
 	Viewport->ViewportCamera.Projection.Aspect = WindowSize.X / WindowSize.Y;
 	WindowPos.X /= ClientSize.X; WindowPos.Y /= ClientSize.Y;
 	WindowSize.X /= ClientSize.X; WindowSize.Y /= ClientSize.Y;
@@ -139,6 +145,13 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 				}
 			}
 		}
+	}
+
+	if (WindowPos.Y < WorkPos.y)
+	{
+		WindowPos.Y = WorkPos.y;
+		ImVec2 pos = { WindowPos.X, WindowPos.Y };
+		ImGui::SetWindowPos(pos);
 	}
 
 	ImGui::End();

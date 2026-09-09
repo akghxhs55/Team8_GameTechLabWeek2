@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "UClass.h"
 #include "Runtime/Core/IntTypes.h"
 #include "ThirdParty/Json/json.hpp"
 #include <concepts>

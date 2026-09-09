@@ -1,5 +1,5 @@
 ﻿#include "FEditor.h"
-
+#include "Runtime/CoreUObject/UObject.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/CoreUObject/UCubeComp.h"
 #include "Runtime/CoreUObject/UCylinderComp.h"
@@ -18,7 +18,7 @@ void FEditor::Process()
 {
 	if (SelectedObject)
 	{
-		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+		USceneComponent* SceneComp = SelectedObject->Cast<USceneComponent>();
 		if (SceneComp)
 		{
 			SceneComp->RelativeTransform = SelectedTransform;
@@ -84,7 +84,7 @@ bool FEditor::SelectObject(UObject* Object)
 	}
 
 	SelectedObject = Object;
-	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+	USceneComponent* SceneComp = SelectedObject->Cast<USceneComponent>();
 	if (SceneComp)
 	{
 		SelectedTransform = SceneComp->RelativeTransform;
@@ -97,7 +97,7 @@ void FEditor::UnSelectObject()
 {
 	if (SelectedObject)
 	{
-		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
+		USceneComponent* SceneComp = SelectedObject->Cast<USceneComponent>();
 		if (SceneComp)
 		{
 			SceneComp->RelativeTransform = SelectedTransform;
