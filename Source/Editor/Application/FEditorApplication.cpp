@@ -131,6 +131,8 @@ void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
 		auto& Camera = Viewport.ViewportCamera;
 		Camera.Projection.Aspect = SizePixels.X / SizePixels.Y;
 		float newFOV = 2.0f * std::atan(std::tan(InitialFOV / 2) * Camera.Projection.Aspect);
+
+		//FOV 수정 안해도 됩니다
 		Camera.Projection.FOV = newFOV * 180.0f / std::numbers::pi_v<float>;
 	}
 }
