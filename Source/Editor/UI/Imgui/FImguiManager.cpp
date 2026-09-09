@@ -11,6 +11,13 @@ bool FImguiManager::Initialize_ImplWin32DX11(HWND& Window, ID3D11Device* Device,
 	ImGui::CreateContext();
 
 	auto& IO = ImGui::GetIO();
+	IO.Fonts->AddFontFromFileTTF(
+		"C:/Windows/Fonts/malgun.ttf",
+		18.0f,
+		nullptr,
+		IO.Fonts->GetGlyphRangesKorean()
+	);
+
 	IO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImFontConfig Config;
 	Config.SizePixels = 16.0f;

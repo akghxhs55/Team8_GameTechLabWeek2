@@ -5,6 +5,7 @@
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
 #include "ThirdParty/Imgui/imgui_impl_win32.h"
 #include <string.h>
+#include <ctime>
 
 namespace {
 	void ButtonHelper(bool& bShow, int type) {
@@ -77,7 +78,11 @@ void FImguiConsoleWindow::Process(FEditor& Editor)
 		ImGui::EndMenuBar();
 	}
 
-	if (ImGui::SmallButton("Add Debug Text")) { UE_LOG("%d some text", 7); UE_LOG_WARN("some more text"); UE_LOG_ERROR("display very important message here!"); }
+	std::time_t now = std::time(nullptr);
+	std::tm local_time;
+	localtime_s(&local_time, &now);
+
+	if (ImGui::SmallButton("Add Debug Text")) { UE_LOG("%dY-%dm-%dd %dH:%dM:%dS", local_time.tm_year+1900, local_time.tm_mon+1, local_time.tm_mday, local_time.tm_hour, local_time.tm_min, local_time.tm_sec); UE_LOG_WARN("진돗개 둘"); UE_LOG_ERROR("DEFCON 1!!"); }
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	const float footer_height_to_reserve = style.SeparatorSize + style.ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
