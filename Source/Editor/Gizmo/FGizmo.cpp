@@ -20,7 +20,7 @@ void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 	GizmoMaterial = RenderResources.GetDrawOverMaterial();
 }
 
-void FGizmo::Draw(const FTransform& Transform, FRenderer& Renderer, const FCamera& Camera) const
+void FGizmo::Draw(FRenderer& Renderer, const FTransform& Transform, const FCamera& Camera) const
 {
 	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
 	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
@@ -36,21 +36,16 @@ void FGizmo::Draw(const FTransform& Transform, FRenderer& Renderer, const FCamer
 	DrawAxis(Renderer, EGizmoHandle::ZAxis, Scale * ZAxisRotation * ObjectRotation * Translation * VP);
 }
 
-EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Camera) const
+EGizmoHandle FGizmo::HitTest(const FTransform& Transform, const FRay& Ray, const FCamera& Camera) const
 {
-	if (!Editor.ObjectSelected())
-	{
-		return EGizmoHandle::None;
-	}
-	
-	float GizmoScale = CalculateGizmoScale(Editor.SelectedTransform.Location, Camera);
+	float GizmoScale = CalculateGizmoScale(Transform.Location, Camera);
 
 	static FMatrix YAxisRotation = FMatrix::MakeRotationZ(std::numbers::pi_v<float> * 0.5f);
 	static FMatrix ZAxisRotation = FMatrix::MakeRotationY(std::numbers::pi_v<float> * 0.5f);
 
 	FMatrix Scale = FMatrix::MakeScale(FVector{ GizmoScale, GizmoScale, GizmoScale });
-	FMatrix ObjectRotation = GetSpace() == EGizmoSpace::World ? FMatrix::GetIdentity() : Editor.SelectedTransform.Rotation.ToMatrixRow();
-	FMatrix Translation = FMatrix::MakeTranslation(Editor.SelectedTransform.Location);
+	FMatrix ObjectRotation = GetSpace() == EGizmoSpace::World ? FMatrix::GetIdentity() : Transform.Rotation.ToMatrixRow();
+	FMatrix Translation = FMatrix::MakeTranslation(Transform.Location);
 
 	float ClosestDistance = (std::numeric_limits<float>::max)();
 	EGizmoHandle ClosestHandle = EGizmoHandle::None;
@@ -113,13 +108,8 @@ EGizmoHandle FGizmo::HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Ca
 	return ClosestHandle;
 }
 
-void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize)
+void FGizmo::BeginInteraction(const FTransform& Transform, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize)
 {
-	if (!Editor.ObjectSelected())
-	{
-		return;
-	}
-
 	switch (Handle)
 	{
 	case EGizmoHandle::XAxis:
@@ -134,31 +124,31 @@ void FGizmo::BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVecto
 	case EGizmoHandle::None:
 		return;
 	}
-	InteractionAxisWorld = GetSpace() == EGizmoSpace::World ? InteractionAxisLocal : Editor.SelectedTransform.Rotation.RotateVector(InteractionAxisLocal);
+	InteractionAxisWorld = GetSpace() == EGizmoSpace::World ? InteractionAxisLocal : Transform.Rotation.RotateVector(InteractionAxisLocal);
 
-	InteractionStartTransform = Editor.SelectedTransform;
+	InteractionStartTransform = Transform;
 	InteractionStartMouse = MousePosition;
 
-	float GizmoScale = CalculateGizmoScale(Editor.SelectedTransform.Location, Camera);
+	float GizmoScale = CalculateGizmoScale(Transform.Location, Camera);
 
-	FVector OriginWorld = Editor.SelectedTransform.Location;
+	FVector OriginWorld = Transform.Location;
 	FVector AxisEndWorld = OriginWorld + InteractionAxisWorld * GizmoScale;
 
-	FVector2 OriginScreen = WorldToViewport(OriginWorld, Camera, ViewportSize);
-	FVector2 AxisEndScreen = WorldToViewport(AxisEndWorld, Camera, ViewportSize);
+	FVector2 OriginViewport = WorldToViewport(OriginWorld, Camera, ViewportSize);
+	FVector2 AxisEndViewport = WorldToViewport(AxisEndWorld, Camera, ViewportSize);
 
-	FVector2 AxisScreen = AxisEndScreen - OriginScreen;
-	float AxisScreenLength = AxisScreen.Size();
+	FVector2 AxisViewport = AxisEndViewport - OriginViewport;
+	float AxisViewportLength = AxisViewport.Size();
 
-	InteractionOriginViewport = OriginScreen;
+	InteractionOriginViewport = OriginViewport;
 
 	FVector CenterToCamera = Camera.Position - OriginWorld;
 	InteractionRotationSign = (CenterToCamera.Dot(InteractionAxisWorld) <= 0.0f) ? 1.0f : -1.0f;
 
-	if (AxisScreenLength > 1e-5f)
+	if (AxisViewportLength > 1e-5f)
 	{
-		InteractionAxisViewport = AxisScreen / AxisScreenLength;
-		InteractionWorldUnitsPerPixel = GizmoScale / AxisScreenLength;
+		InteractionAxisViewport = AxisViewport / AxisViewportLength;
+		InteractionWorldUnitsPerPixel = GizmoScale / AxisViewportLength;
 		ActiveHandle = Handle;
 	}
 }
@@ -171,8 +161,8 @@ void FGizmo::UpdateInteraction(FEditor& Editor, const FVector2& MousePosition)
 	}
 
 	FVector2 MouseDelta = MousePosition - InteractionStartMouse;
-	float ScreenDistance = MouseDelta.Dot(InteractionAxisViewport);
-	float WorldDistance = ScreenDistance * InteractionWorldUnitsPerPixel;
+	float ViewportDistance = MouseDelta.Dot(InteractionAxisViewport);
+	float WorldDistance = ViewportDistance * InteractionWorldUnitsPerPixel;
 
 	switch (Mode)
 	{

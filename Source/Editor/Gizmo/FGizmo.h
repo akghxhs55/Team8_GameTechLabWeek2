@@ -35,17 +35,16 @@ enum class EGizmoHandle : uint8
 	ZAxis = 3u,
 };
 
-// TODO: Rotation, Scale 추가
 class FGizmo final
 {
 public:
 	void Initialize(FRenderResourceLibrary& RenderResources); // TODO: 이거랑 메시 머티리얼 없애야 함...
 
-	void Draw(const FTransform& Transform, FRenderer& Renderer, const FCamera& Camera) const;
+	void Draw(FRenderer& Renderer, const FTransform& Transform, const FCamera& Camera) const;
 
-	[[nodiscard]] EGizmoHandle HitTest(FEditor& Editor, const FRay& Ray, const FCamera& Camera) const;
+	[[nodiscard]] EGizmoHandle HitTest(const FTransform& Transform, const FRay& Ray, const FCamera& Camera) const;
 	
-	void BeginInteraction(FEditor& Editor, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize);
+	void BeginInteraction(const FTransform& Transform, EGizmoHandle Handle, const FVector2& MousePosition, const FCamera& Camera, const FVector2& ViewportSize);
 	void UpdateInteraction(FEditor& Editor, const FVector2& MousePosition);
 	void EndInteraction();
 	[[nodiscard]] bool IsInteracting() const { return ActiveHandle != EGizmoHandle::None; }

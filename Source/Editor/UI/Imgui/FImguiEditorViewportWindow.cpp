@@ -139,7 +139,7 @@ void FImguiEditorViewportWindow::HandlePicking(
 	FGizmo& Gizmo = Editor.GetGizmo();
 	if (Gizmo.HoveredHandle != EGizmoHandle::None)
 	{
-		Gizmo.BeginInteraction(Editor, Gizmo.HoveredHandle, LocalMousePixels, Viewport.ViewportCamera, ViewportSizePixels);
+		Gizmo.BeginInteraction(Editor.SelectedTransform, Gizmo.HoveredHandle, LocalMousePixels, Viewport.ViewportCamera, ViewportSizePixels);
 		return;
 	}
 
@@ -175,5 +175,5 @@ void FImguiEditorViewportWindow::UpdateGizmoHover(FEditor& Editor, const FEditor
 		Viewport.ViewportCamera, LocalMousePixels, ViewportSizePixels);
 	
 	FGizmo& Gizmo = Editor.GetGizmo();
-	Gizmo.HoveredHandle = Gizmo.HitTest(Editor, Ray, Viewport.ViewportCamera);
+	Gizmo.HoveredHandle = Gizmo.HitTest(Editor.SelectedTransform, Ray, Viewport.ViewportCamera);
 }

@@ -74,7 +74,15 @@ FEditorViewport* FEditor::GetActiveViewport()
 bool FEditor::SelectObject(UObject* Object)
 {
 	if (Object == nullptr)
+	{
 		return false;
+	}
+
+	if (SelectedObject)
+	{
+		UnSelectObject();
+	}
+
 	SelectedObject = Object;
 	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 	if (SceneComp)
@@ -145,6 +153,6 @@ UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 	Component->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 
 	SceneManager->CurrentScene->RegisterComponent(*Component);
-	SelectedObject = Component;
+	SelectObject(Component);
 	return Component;
 }

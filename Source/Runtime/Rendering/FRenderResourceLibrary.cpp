@@ -44,10 +44,10 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 bool FRenderResourceLibrary::CreateCubeMesh(FRenderer& Renderer)
 {
 	TArray<FVertexPositionColor> Vertices = {
-		{ FVector(-0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(-0.5, -0.5, -0.5), FVector(0.0, 0.0, 0.0) },
 		{ FVector(0.5, -0.5, -0.5), FVector(1.0, 0.0, 0.0) },
-		{ FVector(0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
-		{ FVector(-0.5,  0.5, -0.5), FVector(1.0, 0.0, 0.0) },
+		{ FVector(0.5,  0.5, -0.5), FVector(1.0, 1.0, 0.0) },
+		{ FVector(-0.5,  0.5, -0.5), FVector(0.0, 1.0, 0.0) },
 		{ FVector(-0.5, -0.5,  0.5), FVector(0.0, 0.0, 1.0) },
 		{ FVector(0.5, -0.5,  0.5), FVector(1.0, 0.0, 1.0) },
 		{ FVector(0.5,  0.5,  0.5), FVector(1.0, 1.0, 1.0) },
