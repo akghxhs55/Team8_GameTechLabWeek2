@@ -32,9 +32,7 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateSquareArrowMesh(Renderer) ||
 		!CreateGridMesh(Renderer) ||
 		!CreateSphereMesh(Renderer) ||
-		!CreateSimpleMaterial(Renderer) ||
-		!CreateGridMaterial(Renderer)||
-		!CreateGridMaterial(Renderer) ||
+		!CreateLineMesh(Renderer) ||
 		!CreateRotationGizmoMaterial(Renderer))
 	{
 		return false;
@@ -615,6 +613,26 @@ bool FRenderResourceLibrary::CreateSphereMesh(FRenderer& Renderer)
 
 	SphereMesh = Renderer.CreateMesh(MeshDesc);
 	return SphereMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateLineMesh(FRenderer& Renderer)
+{
+	TArray<FVertexPositionColor> Vertices = {
+		{ FVector{ 0.0f, 0.0f, 0.0f }, FVector{ 1.0f, 1.0f, 1.0f } },
+		{ FVector{ 1.0f, 0.0f, 0.0f }, FVector{ 1.0f, 1.0f, 1.0f } },
+	};
+
+	FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = sizeof(FVertexPositionColor),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.bIsLine = true
+	};
+
+	LineMesh = Renderer.CreateMesh(Desc);
+	return LineMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
