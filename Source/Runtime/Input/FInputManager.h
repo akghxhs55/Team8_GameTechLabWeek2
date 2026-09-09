@@ -35,10 +35,6 @@ public:
 	FInputManager(FInputManager&&) = delete;
 	FInputManager& operator=(FInputManager&&) = delete;
 
-	void SetMousePos(FVector2 pos);
-	void SetMouseRightButtonDown(bool b) { bIsRightButtonDown = b; };
-	[[nodiscard]] bool IsRightMouseButtonDown() { return bIsRightButtonDown; }
-
 private:
 	FInputManager() = default;
 	~FInputManager() = default;

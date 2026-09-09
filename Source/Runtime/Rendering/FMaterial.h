@@ -28,6 +28,7 @@ struct FMaterialDesc
 	FWString VertexShaderFileName;
 	FWString PixelShaderFileName;
 	EVertexLayout VertexLayout = EVertexLayout::None;
+	bool bEnableDepthTest = true;
 	// Rasterizer Mode, Blend Mode, Depth Mode 등 추가 가능 (Pipeline에 등록)
 	// TextureSRV, Sampler, Material Constant Buffer 등 추가 가능
 };

@@ -10,21 +10,24 @@ FRenderView::FRenderView(FRenderer& Renderer):
 {
 }
 
-void FRenderView::Render(const FCamera& Camera, FVector2 TopLeft, FVector2 Length, UPrimitiveComponent* Rendered)
+void FRenderView::Render(const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, UPrimitiveComponent* Rendered)
 {
+	Renderer.SetViewportUV(TopLeftUV, LengthUV);
 	// TODO: 렌더뷰가 렌더러 구현을 알게 해서 여기서 V, P 따로 받고 월드축변환행렬을 곱하거나,
 	// 렌더러쪽 UpdateObjectConstants를 Draw함수 안에 숨긴뒤 인수로 M, V, P와 월드축을 받게 하면 렌더뷰도 렌더러 구현 모름
 	const FMatrix VP = Camera.CreateViewProjectionMatrix();
 	Renderer.Draw(*Rendered->GetMesh(), *Rendered->GetMaterial(), { Rendered->RelativeTransform.ToMatrix() * VP });
 }
 
-void FRenderView::RenderGizmo(const FVector& Location, const FCamera& Camera, FVector2 TopLeft, FVector2 Size, const FGizmo& Gizmo)
+void FRenderView::RenderGizmo(const FTransform& Transform, const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, const FGizmo& Gizmo)
 {
-	Gizmo.Draw(Location, Renderer, Camera);
+	Renderer.SetViewportUV(TopLeftUV, LengthUV);
+	Gizmo.Draw(Transform, Renderer, Camera);
 }
 
-void FRenderView::RenderGrid(const FCamera& Camera, FGrid& Grid)
+void FRenderView::RenderGrid(const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, FGrid& Grid)
 {
+	Renderer.SetViewportUV(TopLeftUV, LengthUV);
 	Grid.Draw(Renderer, Camera);
 
 }

@@ -1,9 +1,11 @@
 ﻿#pragma once
 #include "Editor/Core/FEditor.h"
 #include "Editor/UI/Imgui/FImguiManager.h"
+#include "Editor/UI/Imgui/FImguiToolBar.h"
 #include "Editor/UI/Imgui/FImguiPropertyWindow.h"
 #include "Editor/UI/Imgui/FImguiEditorViewportWindow.h"
 #include "Editor/UI/Imgui/FImguiControlPanelWindow.h"
+#include "Editor/UI/Imgui/FImguiConsoleWindow.h"
 #include "Runtime/Engine/FRenderView.h"
 #include "Runtime/Input/FCameraInputController.h"
 
@@ -14,9 +16,12 @@ class FEditorApplication final {
 
 	FImguiManager ImguiManager;
 
+	FImguiToolbar ToolBar;
 	FImguiControlPanelWindow ControlPanelWindow;
 	FImguiEditorViewportWindow EditorViewportWindow;
 	FImguiPropertyWindow PropertyWindow;
+	FImguiConsoleWindow ConsoleWindow;
+
 	FRenderView* RenderView = nullptr;
 
 public:
@@ -38,6 +43,7 @@ public:
 	bool CheckSceneExistsAndInitializeIfNotExists(const FString& path = "");
 	void Update(float DeltaTime);
 	void Render();
+	void OnWindowSize(UINT Width, UINT Height);
 
 private:
 	FEditorApplication() = default;

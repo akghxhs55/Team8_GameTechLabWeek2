@@ -1,27 +1,27 @@
 ﻿#include "Editor/Application/FEditorApplication.h"
+#include "Runtime/Core/Log.h"
 #include "Runtime/Engine/UScene.h"
 #include "Runtime/Engine/FRenderView.h"
-#include "Runtime/CoreUObject/UObjectGlobals.h"
 #include "Runtime/Input/FInputManager.h"
 #include "Runtime/Engine/FTimeManager.h"
-#include "Runtime/Engine/FRayCastingManager.h"
 #include "Runtime/Engine/USceneManager.h"
 #include "Runtime/Rendering/FRenderer.h"
 #include "Runtime/Rendering/FRenderResourceLibrary.h"
 #include "Runtime/Math/FVector2.h"
-#include "Runtime/Math/FMatrix.h"
 #include "Runtime/CoreUObject/UClass.h"
 #include "ThirdParty/Imgui/imgui.h"
 #include "ThirdParty/Imgui/imgui_internal.h"
-#include "ThirdParty/Imgui/imgui_impl_dx11.h"
-#include "ThirdParty/Imgui/imgui_impl_win32.h"
 #include <Windows.h>
 #include <windowsx.h>
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-bool bRequestNewScene = false;
-bool bRequestSaveScene = false;
-bool bRequestLoadScene = false;
+
+static bool bRequestNewScene = false;
+static bool bRequestSaveScene = false;
+static bool bRequestLoadScene = false;
+static bool bRequestResize = false;
+static UINT ResizeWidth = 0u;
+static UINT ResizeHeight = 0u;
 
 namespace
 {
@@ -88,8 +88,13 @@ int WINAPI wWinMain(
 			break;
 		}
 
+		if (bRequestResize)
+		{
+			Renderer.OnWindowSize(ResizeWidth, ResizeHeight);
+			EditorApp.OnWindowSize(ResizeWidth, ResizeHeight);
+			bRequestResize = false;
+		}
 
-		//CameraController.HandleMouseInput(Camera, FTimeManager::Get().GetDeltaTime(), FInputManager::Get().GetMouseDelta());
 		FInputManager::Get().BeginFrame();
 
 		EditorApp.Update(FTimeManager::Get().GetDeltaTime());
@@ -171,10 +176,9 @@ namespace
 		{
 			if (WParam != SIZE_MINIMIZED)
 			{
-				UINT Width = LOWORD(LParam);
-				UINT Height = HIWORD(LParam);
-
-				//Renderer.Resize(Width, Height);
+				bRequestResize = true;
+				ResizeWidth = LOWORD(LParam);
+				ResizeHeight = HIWORD(LParam);
 			}
 
 			break;

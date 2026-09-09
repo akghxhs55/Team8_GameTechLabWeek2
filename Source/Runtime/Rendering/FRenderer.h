@@ -5,6 +5,7 @@
 #include "FRenderPipeline.h"
 #include "ShaderConstants.h"
 #include "Runtime/Core/PointerTypes.h"
+#include "Runtime/Math/FVector2.h"
 #include <Windows.h>
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -15,9 +16,11 @@ public:
 	bool Initialize(HWND Window);
 	void Shutdown();
 	void BeginFrame();
+	void SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV);
 	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
 	void DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants);
 	void SwapBuffer();
+	void OnWindowSize(UINT Width, UINT Height);
 	
 	[[nodiscard]]
 	TSharedPtr<FMesh> CreateMesh(const FMeshDesc& Desc);
@@ -50,8 +53,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> DepthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> DepthStencilView;
 
-	// TODO: FRenderer가 Constants 형태에 종속되는 상태. 필요하다면 분리할 수 있음
-	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> ObjectConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> GridConstantBuffer;
 };

@@ -33,7 +33,6 @@ void FRenderer::Shutdown()
 		Context->Flush();
 	}
 
-	FrameConstantBuffer.Reset();
 	ObjectConstantBuffer.Reset();
 	GridConstantBuffer.Reset();
 
@@ -54,6 +53,17 @@ void FRenderer::BeginFrame()
 	constexpr float ClearColor[] = { 0.05f, 0.05f, 0.08f, 1.0f };
 	Context->ClearRenderTargetView(BackBufferRTV.Get(), ClearColor);
 	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void FRenderer::SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV)
+{
+	// Viewport는 전체 백버퍼 크기를 유지하고, UV는 그리기 직전에 픽셀로 변환한다.
+	D3D11_VIEWPORT RenderViewport = Viewport;
+	RenderViewport.TopLeftX = TopLeftUV.X * Viewport.Width;
+	RenderViewport.TopLeftY = TopLeftUV.Y * Viewport.Height;
+	RenderViewport.Width = LengthUV.X * Viewport.Width;
+	RenderViewport.Height = LengthUV.Y * Viewport.Height;
+	Context->RSSetViewports(1, &RenderViewport);
 }
 
 void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants)
@@ -114,6 +124,20 @@ void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGr
 void FRenderer::SwapBuffer()
 {
 	SwapChain->Present(1u, 0u);
+}
+
+void FRenderer::OnWindowSize(UINT Width, UINT Height)
+{
+	Context->OMSetRenderTargets(0, nullptr, nullptr);
+	BackBufferRTV.Reset();
+	DepthStencilView.Reset();
+	DepthStencilBuffer.Reset();
+
+	SwapChain->ResizeBuffers(0, Width, Height, DXGI_FORMAT_UNKNOWN, 0);
+	Viewport.Width = static_cast<float>(Width);
+	Viewport.Height = static_cast<float>(Height);
+
+	InitializeBackBufferAndDepthStencil();
 }
 
 TSharedPtr<FMesh> FRenderer::CreateMesh(const FMeshDesc& Desc)
@@ -386,7 +410,7 @@ TSharedPtr<FRenderPipeline> FRenderer::FindOrCreateRenderPipeline(const FMateria
 	}
 
 	D3D11_DEPTH_STENCIL_DESC DepthStencilDesc{
-		.DepthEnable = true,
+		.DepthEnable = Desc.bEnableDepthTest,
 		.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
 		.DepthFunc = D3D11_COMPARISON_LESS,
 	};

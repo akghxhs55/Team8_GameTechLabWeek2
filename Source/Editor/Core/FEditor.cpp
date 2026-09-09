@@ -5,11 +5,6 @@
 #include "Runtime/CoreUObject/UCylinderComp.h"
 #include <numbers>
 
-namespace
-{
-	constexpr float RadToDeg = 180.0f / std::numbers::pi_v<float>;
-}
-
 void FEditor::Initialize(FRenderResourceLibrary* RendererLibrary, USceneManager* SceneManager)
 {
 	Gizmo.Initialize(*RendererLibrary);
@@ -25,9 +20,7 @@ void FEditor::Process()
 		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 		if (SceneComp)
 		{
-			SceneComp->RelativeTransform.Location = SelectedLocation;
-			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
-			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+			SceneComp->RelativeTransform = SelectedTransform;
 		}
 	}
 }
@@ -43,10 +36,10 @@ void FEditor::SaveScene(const FString& Path)
 	SceneManager->SaveScene(Path);
 }
 
-void FEditor::LoadScene(const FString& Path) // TODO: 테스트용 임시 코드. 정식 코드로 교체해야 함
+void FEditor::LoadScene(const FString& Path)
 {
 	// TODO: 이전 씬과 내부 오브젝트들은 GUObject의 가비지 컬렉션에 의해 삭제됨(구현 필요-현재 메모리 누수되고있음)
-	SceneManager->CurrentScene = NewObject<UScene>(*RendererLibrary);
+	//SceneManager->CurrentScene = NewObject<UScene>(*RendererLibrary);
 	SceneManager->LoadScene(Path);
 	SelectedObject = nullptr;
 }
@@ -85,9 +78,7 @@ bool FEditor::SelectObject(UObject* Object)
 	auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 	if (SceneComp)
 	{
-		SelectedLocation = SceneComp->RelativeTransform.Location;
-		SelectedRotationDeg = SceneComp->RelativeTransform.Rotation.GetEulerXYZ() * RadToDeg;
-		SelectedScale3D = SceneComp->RelativeTransform.Scale3D;
+		SelectedTransform = SceneComp->RelativeTransform;
 	}
 
 	return true;
@@ -100,9 +91,7 @@ void FEditor::UnSelectObject()
 		auto* SceneComp = dynamic_cast<USceneComponent*>(SelectedObject);
 		if (SceneComp)
 		{
-			SceneComp->RelativeTransform.Location = SelectedLocation;
-			SceneComp->RelativeTransform.Rotation = FQuaternion::FromEulerXYZDeg(SelectedRotationDeg);
-			SceneComp->RelativeTransform.Scale3D = SelectedScale3D;
+			SceneComp->RelativeTransform = SelectedTransform;
 		}
 	}
 	SelectedObject = nullptr;
@@ -111,11 +100,6 @@ void FEditor::UnSelectObject()
 UObject* FEditor::GetSelectedObject()
 {
 	return SelectedObject;
-}
-
-const TArray<FEditorViewport>& FEditor::GetViewports() const
-{
-	return EditorViewports;
 }
 
 TArray<UPrimitiveComponent*> FEditor::GetPrimitiveComponents() const
