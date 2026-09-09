@@ -58,7 +58,7 @@ void FImguiManager::NewFrame()
 
 		ImGuiID ConsoleID = ImGui::DockBuilderSplitNode(MainID, ImGuiDir_Down, 0.25f, nullptr, &MainID);
 
-		ImGui::DockBuilderDockWindow("##EditorViewport", MainID);
+		ImGui::DockBuilderDockWindow("Viewport", MainID);
 		ImGui::DockBuilderDockWindow("Jungle Property Window", PropertyWindowID);
 		ImGui::DockBuilderDockWindow("Jungle Control Panel", ControlPanelID);
 		ImGui::DockBuilderDockWindow("Console Window", ConsoleID);
