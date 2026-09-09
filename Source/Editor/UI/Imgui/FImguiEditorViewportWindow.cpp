@@ -51,11 +51,12 @@ void FImguiEditorViewportWindow::Process(FEditor& Editor, float DeltaTime)
 
 	FVector2 WindowPos = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y };
 	FVector2 WindowSize = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+	Viewport->ViewportCamera.Projection.Aspect = WindowSize.X / WindowSize.Y;
 	WindowPos.X /= ClientSize.X; WindowPos.Y /= ClientSize.Y;
 	WindowSize.X /= ClientSize.X; WindowSize.Y /= ClientSize.Y;
 	Viewport->TopLeftUV = WindowPos;
 	Viewport->LengthUV = WindowSize;
-	Viewport->ViewportCamera.Projection.Aspect = WindowSize.X / WindowSize.Y;
+	
 
 	const bool bHovered = ImGui::IsItemHovered();
 	const bool bFocused = ImGui::IsWindowFocused();

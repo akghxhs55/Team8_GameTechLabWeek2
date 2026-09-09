@@ -371,7 +371,7 @@ bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
 {
 	constexpr uint32 SliceCount = 32u;
 	constexpr float Radius = 1.0f;
-	constexpr float Width = 0.15f;
+	constexpr float Width = 0.07f;
 
 	FVector Color{ 0.0f, 0.0f, 0.0f };
 

@@ -225,8 +225,10 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 		GizmoMaterial = Material;
 		break;
 	case EGizmoMode::Rotate:
-		GizmoMesh = RotationGizmoMesh;
-		GizmoMaterial = RotationGizmoMaterial;
+		//GizmoMesh = RotationGizmoMesh;
+		//GizmoMaterial = RotationGizmoMaterial;
+		GizmoMesh = CircleMesh;
+		GizmoMaterial = Material;
 		break;
 	case EGizmoMode::Scale:
 		GizmoMesh = SquareArrowMesh;

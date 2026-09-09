@@ -8,6 +8,6 @@ struct PS_INPUT
 
 float4 main(PS_INPUT Input) : SV_TARGET
 {
-    // clip(Input.PivotDepth - Input.Position.z);
+     clip(Input.PivotDepth - Input.Position.z);
 	return float4(ColorOverride, 1.0f);
 }
