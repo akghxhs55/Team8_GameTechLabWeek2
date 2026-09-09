@@ -150,6 +150,7 @@ UPrimitiveComponent* FEditor::SpawnPrimitive(EEditorPrimitiveType Type)
 	static int SpawnSerial = 0;
 	const float Offset = 0.25f * static_cast<float>(SpawnSerial++);
 	Component->RelativeTransform.Location = FVector{ Offset, 0.0f, 0.0f };
+	Component->RelativeTransform.Rotation = FQuaternion::Identity();
 	Component->RelativeTransform.Scale3D = FVector{ 0.5f, 0.5f, 0.5f };
 
 	SceneManager->CurrentScene->RegisterComponent(*Component);

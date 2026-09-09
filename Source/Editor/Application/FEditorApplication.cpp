@@ -48,7 +48,7 @@ void FEditorApplication::Initialize_Runtime(FRenderResourceLibrary* RendererLibr
 	Viewport.ViewportCamera.Position = FVector{ -3.0f, 3.0f, 2.0f };
 	Viewport.ViewportCamera.Pitch = -25.0f;
 	Viewport.ViewportCamera.Yaw = -45.0f;
-	Viewport.TopLeftUV = { 0.3f, 0.0f };
+	Viewport.TopLeftUV = { 0.0f, 0.0f };
 	Viewport.LengthUV = { 0.7f, 0.7f };
 	Editor.AddViewport(Viewport);
 	//Editor.LoadScene("");
@@ -87,7 +87,7 @@ void FEditorApplication::BeginFrame()
 void FEditorApplication::Tick(float DeltaTime)
 {
 	ToolBar.Process(ConsoleWindow, ControlPanelWindow, PropertyWindow);
-	EditorViewportWindow.Process(Editor, DeltaTime);
+	EditorViewportWindow.Process(Editor, ImguiManager.GetEditorViewportID(), DeltaTime);
 	ControlPanelWindow.Process(Editor);
 	PropertyWindow.Process(Editor);
 	ConsoleWindow.Process(Editor);
@@ -121,9 +121,6 @@ void FEditorApplication::Render()
 void FEditorApplication::OnWindowSize(UINT Width, UINT Height)
 {
 	// TODO: 여기서 할 일은 아니지만 급한대로
-
-	constexpr float InitialFOV = 60.0f * std::numbers::pi_v<float> / 180.0f;
-
 	for (auto& Viewport : Editor.GetViewports())
 	{
 		const FVector2 SizePixels = Viewport.LengthUV * FVector2{ static_cast<float>(Width), static_cast<float>(Height) };

@@ -1,4 +1,4 @@
-#include "FImguiControlPanelWindow.h"
+﻿#include "FImguiControlPanelWindow.h"
 #include "ThirdParty/Imgui/imgui.h"
 #include "ThirdParty/Imgui/imgui_internal.h"
 #include "ThirdParty/Imgui/imgui_impl_dx11.h"
@@ -47,8 +47,6 @@ void FImguiControlPanelWindow::Process(FEditor& Editor)
     ImGui::Text("Primitive");
 
     static int spawnCount = 1;
-
-
 
     if (ImGui::Button("Spawn"))
     {

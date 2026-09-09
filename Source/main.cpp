@@ -132,7 +132,7 @@ namespace
 			WindowClass.lpszClassName,
 			WindowName,
 			WS_POPUP | WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT, CW_USEDEFAULT, 800, 800,
+			CW_USEDEFAULT, CW_USEDEFAULT, 1200, 800,
 			nullptr, nullptr, Instance, nullptr);
 
 		return Window;
