@@ -161,11 +161,14 @@ void FImguiEditorViewportWindow::HandlePicking(
 	FEditor& Editor, const FEditorViewport& Viewport,
 	const FVector2& LocalMousePixels, const FVector2& ViewportSizePixels)
 {
-	FGizmo& Gizmo = Editor.GetGizmo();
-	if (Gizmo.HoveredHandle != EGizmoHandle::None)
+	if (Editor.GetSelectedObject() != nullptr)
 	{
-		Gizmo.BeginInteraction(Editor.SelectedTransform, Gizmo.HoveredHandle, LocalMousePixels, Viewport.ViewportCamera, ViewportSizePixels);
-		return;
+		FGizmo& Gizmo = Editor.GetGizmo();
+		if (Gizmo.HoveredHandle != EGizmoHandle::None)
+		{
+			Gizmo.BeginInteraction(Editor.SelectedTransform, Gizmo.HoveredHandle, LocalMousePixels, Viewport.ViewportCamera, ViewportSizePixels);
+			return;
+		}
 	}
 
 	TArray<UPrimitiveComponent*> Components = Editor.GetPrimitiveComponents();
