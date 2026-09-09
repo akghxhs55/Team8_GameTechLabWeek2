@@ -16,8 +16,10 @@ void FGizmo::Initialize(FRenderResourceLibrary& RenderResources)
 {
 	ArrowMesh = RenderResources.GetArrowMesh();
 	CircleMesh = RenderResources.GetCircleMesh();
+	RotationGizmoMesh = RenderResources.GetRotationGizmoMesh();
 	SquareArrowMesh = RenderResources.GetSquareArrowMesh();
-	GizmoMaterial = RenderResources.GetDrawOverMaterial();
+	Material = RenderResources.GetSimpleMaterial();
+	RotationGizmoMaterial = RenderResources.GetRotationGizmoMaterial();
 }
 
 void FGizmo::Draw(FRenderer& Renderer, const FTransform& Transform, const FCamera& Camera) const
@@ -47,9 +49,6 @@ EGizmoHandle FGizmo::HitTest(const FTransform& Transform, const FRay& Ray, const
 	FMatrix ObjectRotation = GetSpace() == EGizmoSpace::World ? FMatrix::GetIdentity() : Transform.Rotation.ToMatrixRow();
 	FMatrix Translation = FMatrix::MakeTranslation(Transform.Location);
 
-	float ClosestDistance = (std::numeric_limits<float>::max)();
-	EGizmoHandle ClosestHandle = EGizmoHandle::None;
-
 	TSharedPtr<FMesh> GizmoMesh;
 	switch (Mode)
 	{
@@ -68,6 +67,9 @@ EGizmoHandle FGizmo::HitTest(const FTransform& Transform, const FRay& Ray, const
 	case EGizmoMode::None:
 		return EGizmoHandle::None;
 	}
+
+	float ClosestDistance = (std::numeric_limits<float>::max)();
+	EGizmoHandle ClosestHandle = EGizmoHandle::None;
 
 	float HitDistance;
 	FVector ImpactPoint;
@@ -215,16 +217,20 @@ void FGizmo::DrawAxis(FRenderer& Renderer, EGizmoHandle Handle, const FMatrix& M
 	constexpr FVector HoverColor = FVector{ 0.7f, 0.7f, 0.0f };
 
 	TSharedPtr<FMesh> GizmoMesh;
+	TSharedPtr<FMaterial> GizmoMaterial;
 	switch (Mode)
 	{
 	case EGizmoMode::Translate:
 		GizmoMesh = ArrowMesh;
+		GizmoMaterial = Material;
 		break;
 	case EGizmoMode::Rotate:
-		GizmoMesh = CircleMesh;
+		GizmoMesh = RotationGizmoMesh;
+		GizmoMaterial = RotationGizmoMaterial;
 		break;
 	case EGizmoMode::Scale:
 		GizmoMesh = SquareArrowMesh;
+		GizmoMaterial = Material;
 		break;
 	case EGizmoMode::None:
 		return;

@@ -4,3 +4,9 @@ cbuffer ObjectConstants : register(b0)
     float3 ColorOverride;
     float ColorOverrideAmount;
 }
+
+cbuffer FrameConstants : register(b1)
+{
+    float2 ViewportSize;
+    float2 Padding;
+}

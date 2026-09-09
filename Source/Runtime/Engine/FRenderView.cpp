@@ -30,6 +30,7 @@ void FRenderView::Render(const FCamera& Camera, FVector2 TopLeftUV, FVector2 Len
 void FRenderView::RenderGizmo(const FTransform& Transform, const FCamera& Camera, FVector2 TopLeftUV, FVector2 LengthUV, const FGizmo& Gizmo)
 {
 	Renderer.SetViewportUV(TopLeftUV, LengthUV);
+	Renderer.ClearDepth();
 	Gizmo.Draw(Renderer, Transform, Camera);
 }
 

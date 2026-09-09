@@ -1,10 +1,9 @@
-cbuffer GridConstant : register(b1)
+cbuffer GridConstant : register(b0)
 {
-    row_major float4x4 mvp;
+    row_major float4x4 MVP;
     row_major float4x4 World;
     float CellSize;
-    float3 padd;
-
+    float3 Padding;
 }
 
 struct PS_INPUT

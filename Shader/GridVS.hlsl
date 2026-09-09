@@ -1,9 +1,9 @@
-cbuffer GridConstant : register(b1)
+cbuffer GridConstant : register(b0)
 {
-    row_major float4x4 mvp;
+    row_major float4x4 MVP;
     row_major float4x4 World;
     float CellSize;
-    float3 _Pad;
+    float3 Padding;
 }
 
 struct VS_INPUT
@@ -23,7 +23,7 @@ PS_INPUT MainVS(VS_INPUT Input)
     PS_INPUT Output;
     float4 Local = float4(Input.Position, 1.0f);
 
-    Output.Position = mul(Local, mvp);
+    Output.Position = mul(Local, MVP);
     Output.WorldPos = mul(Local, World).xyz; // ← .xyz
     return Output;
 }

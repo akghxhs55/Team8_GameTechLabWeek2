@@ -50,6 +50,7 @@ void FRenderer::BeginFrame()
 	Context->RSSetViewports(1, &Viewport);
 	Context->OMSetRenderTargets(1, BackBufferRTV.GetAddressOf(), DepthStencilView.Get());
 
+
 	constexpr float ClearColor[] = { 0.05f, 0.05f, 0.08f, 1.0f };
 	Context->ClearRenderTargetView(BackBufferRTV.Get(), ClearColor);
 	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -64,7 +65,12 @@ void FRenderer::SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV)
 	RenderViewport.Width = LengthUV.X * Viewport.Width;
 	RenderViewport.Height = LengthUV.Y * Viewport.Height;
 	Context->RSSetViewports(1, &RenderViewport);
-}
+
+	FFrameConstants Constants{ FVector2{ RenderViewport.Width, RenderViewport.Height } };
+	Context->UpdateSubresource(FrameConstantBuffer.Get(), 0, nullptr, &Constants, 0, 0);
+	Context->VSSetConstantBuffers(1, 1, FrameConstantBuffer.GetAddressOf());
+	Context->PSSetConstantBuffers(1, 1, FrameConstantBuffer.GetAddressOf());
+};
 
 void FRenderer::Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants)
 {
@@ -118,6 +124,11 @@ void FRenderer::DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGr
 	{
 		Context->Draw(Mesh.VertexCount, 0);
 	}
+}
+
+void FRenderer::ClearDepth()
+{
+	Context->ClearDepthStencilView(DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 
@@ -347,6 +358,18 @@ bool FRenderer::InitializeConstantBuffers()
 		return false;
 	}
 
+	D3D11_BUFFER_DESC FrameConstantBufferDesc = {
+		.ByteWidth = sizeof(FFrameConstants),
+		.Usage = D3D11_USAGE_DEFAULT,
+		.BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+	};
+
+	Result = Device->CreateBuffer(&FrameConstantBufferDesc, nullptr, &FrameConstantBuffer);
+	if (FAILED(Result))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -467,10 +490,10 @@ void FRenderer::UpdateObjectConstants(const FObjectConstants& Constants)
 void FRenderer::UpdateGridConstants(const FGridConstants& Constants)
 {
 	static const FMatrix UnrealClipToD3DClip{
-	FVector{ 0.0f, 0.0f, 1.0f },
-	FVector{ 1.0f, 0.0f, 0.0f },
-	FVector{ 0.0f, 1.0f, 0.0f },
-	FVector{ 0.0f, 0.0f, 0.0f }
+		FVector{ 0.0f, 0.0f, 1.0f },
+		FVector{ 1.0f, 0.0f, 0.0f },
+		FVector{ 0.0f, 1.0f, 0.0f },
+		FVector{ 0.0f, 0.0f, 0.0f }
 	};
 
 	// 언리얼 Clip -> D3D Clip 좌표 변환
@@ -482,6 +505,6 @@ void FRenderer::UpdateGridConstants(const FGridConstants& Constants)
 	memcpy(MappedResource.pData, &ShaderConstants, sizeof(ShaderConstants));
 	Context->Unmap(GridConstantBuffer.Get(), 0);
 
-	Context->VSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
-	Context->PSSetConstantBuffers(1, 1, GridConstantBuffer.GetAddressOf());
+	Context->VSSetConstantBuffers(0, 1, GridConstantBuffer.GetAddressOf());
+	Context->PSSetConstantBuffers(0, 1, GridConstantBuffer.GetAddressOf());
 }

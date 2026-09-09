@@ -169,11 +169,20 @@
     <ClCompile Include="Source\Runtime\Engine\FRenderView.cpp">
       <Filter>Source\Runtime\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Editor\Grid\FGrid.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\UI\Imgui\FImguiToolBar.cpp">
+      <Filter>Source\Editor\UI\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Runtime\CoreUObject\UPrimitiveComponent.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Editor\Grid\FGrid.cpp">
+      <Filter>Source\Editor\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\USphereComp.cpp">
+      <Filter>Source\Runtime\CoreUObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -345,11 +354,17 @@
     <ClInclude Include="Source\Editor\UI\Imgui\FImguiConsoleWindow.h">
       <Filter>Source\Editor\UI\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Editor\UI\Imgui\FImguiToolBar.h">
-      <Filter>Source\Editor\UI\Imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Runtime\Core\Log.h">
       <Filter>Source\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\FClassIdSet.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\Geometry\Sphere.h">
+      <Filter>Source\Runtime\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\USphereComp.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -363,6 +378,12 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GridVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\RotationGizmoVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\RotationGizmoPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

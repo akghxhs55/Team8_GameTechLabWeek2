@@ -28,12 +28,15 @@ bool FRenderResourceLibrary::Initialize(FRenderer& Renderer)
 		!CreateSimpleMaterial(Renderer) ||
 		!CreateGridMaterial(Renderer) ||
 		!CreateCircleMesh(Renderer) ||
+		!CreateRotationGizmoMesh(Renderer) ||
 		!CreateSquareArrowMesh(Renderer) ||
 		!CreateGridMesh(Renderer) ||
+		!CreateSphereMesh(Renderer) ||
 		!CreateSimpleMaterial(Renderer) ||
-		!CreateDrawOverMaterial(Renderer) ||
 		!CreateGridMaterial(Renderer)||
-		!CreateSphereMesh(Renderer))
+		!CreateSphereMesh(Renderer) ||
+		!CreateGridMaterial(Renderer) ||
+		!CreateRotationGizmoMaterial(Renderer))
 	{
 		return false;
 	}
@@ -368,7 +371,7 @@ bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
 {
 	constexpr uint32 SliceCount = 32u;
 	constexpr float Radius = 1.0f;
-	constexpr float Width = 0.05f;
+	constexpr float Width = 0.15f;
 
 	FVector Color{ 0.0f, 0.0f, 0.0f };
 
@@ -425,6 +428,66 @@ bool FRenderResourceLibrary::CreateCircleMesh(FRenderer& Renderer)
 
 	CircleMesh = Renderer.CreateMesh(Desc);
 	return CircleMesh != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateRotationGizmoMesh(FRenderer& Renderer)
+{
+	constexpr uint32 SliceCount = 32u;
+	constexpr float Radius = 1.0f;
+
+	FVector In{ -1.0f, 0.0f, 0.0f };
+	FVector Out{ 1.0f, 0.0f, 0.0f };
+
+	TArray<FVertexPositionColor> Vertices;
+	TArray<uint32> Indices;
+	Vertices.reserve(SliceCount * 4u);
+	Indices.reserve(SliceCount * 12u);
+
+	float Step = std::numbers::pi_v<float> *2.0f / static_cast<float>(SliceCount);
+	for (uint32 i = 0; i < SliceCount; ++i)
+	{
+		float Cos = std::cosf(Step * static_cast<float>(i));
+		float Sin = std::sinf(Step * static_cast<float>(i));
+
+		Vertices.push_back({ FVector{ 0.0f, Cos * Radius, Sin * Radius }, Out });
+		Vertices.push_back({ FVector{ 0.0f, Cos * Radius, Sin * Radius }, In });
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i - 1u);
+		Indices.push_back(2u * i + 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i - 1u);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i + 1u);
+		Indices.push_back(2u * i);
+
+		Indices.push_back(2u * i - 2u);
+		Indices.push_back(2u * i);
+		Indices.push_back(2u * i + 1u);
+	}
+	Indices[0] = 2u * SliceCount - 2u;
+	Indices[1] = 2u * SliceCount - 1u;
+	Indices[3] = 2u * SliceCount - 2u;
+	Indices[5] = 2u * SliceCount - 1u;
+	Indices[6] = 2u * SliceCount - 2u;
+	Indices[9] = 2u * SliceCount - 2u;
+
+	const FMeshDesc Desc{
+		.VertexLayout = EVertexLayout::PositionColor,
+		.VertexData = Vertices.data(),
+		.VertexDataSize = static_cast<uint32>(sizeof(FVertexPositionColor) * Vertices.size()),
+		.VertexStride = static_cast<uint32>(sizeof(FVertexPositionColor)),
+		.VertexCount = static_cast<uint32>(Vertices.size()),
+		.IndexData = Indices.data(),
+		.IndexDataSize = static_cast<uint32>(sizeof(uint32) * Indices.size()),
+		.IndexCount = static_cast<uint32>(Indices.size()),
+	};
+
+	RotationGizmoMesh = Renderer.CreateMesh(Desc);
+	return RotationGizmoMesh != nullptr;
 }
 
 bool FRenderResourceLibrary::CreateSquareArrowMesh(FRenderer& Renderer)
@@ -534,7 +597,7 @@ bool FRenderResourceLibrary::CreateGridMesh(FRenderer& Renderer)
 bool FRenderResourceLibrary::CreateSphereMesh(FRenderer& Renderer)
 {
 	TArray<FVertexPositionColor> Vertices;
-	for(int i =0; i < 2400; ++i)
+	for (int i = 2399; i >= 0; --i)
 	{
 		Vertices.push_back(sphere_vertices[i]);
 	}
@@ -570,22 +633,6 @@ bool FRenderResourceLibrary::CreateSimpleMaterial(FRenderer& Renderer)
 	return SimpleMaterial != nullptr;
 }
 
-bool FRenderResourceLibrary::CreateDrawOverMaterial(FRenderer& Renderer)
-{
-	FWString Path = GetExecutableDirectory();
-
-	FMaterialDesc Desc = {
-		.VertexShaderFileName = Path + L"/Shader/ExampleVS.cso",
-		.PixelShaderFileName = Path + L"/Shader/ExamplePS.cso",
-		.VertexLayout = EVertexLayout::PositionColor,
-		.bEnableDepthTest = false,
-	};
-
-	DrawOverMaterial = Renderer.CreateMaterial(Desc);
-
-	return DrawOverMaterial != nullptr;
-}
-
 bool FRenderResourceLibrary::CreateGridMaterial(FRenderer& Renderer)
 {
 	FWString Path = GetExecutableDirectory();
@@ -599,4 +646,19 @@ bool FRenderResourceLibrary::CreateGridMaterial(FRenderer& Renderer)
 	GridMaterial = Renderer.CreateMaterial(Desc);
 
 	return GridMaterial != nullptr;
+}
+
+bool FRenderResourceLibrary::CreateRotationGizmoMaterial(FRenderer& Renderer)
+{
+	FWString Path = GetExecutableDirectory();
+
+	FMaterialDesc Desc = {
+		.VertexShaderFileName = Path + L"/Shader/RotationGizmoVS.cso",
+		.PixelShaderFileName = Path + L"/Shader/RotationGizmoPS.cso",
+		.VertexLayout = EVertexLayout::PositionColor,
+	};
+
+	RotationGizmoMaterial = Renderer.CreateMaterial(Desc);
+
+	return RotationGizmoMaterial != nullptr;
 }

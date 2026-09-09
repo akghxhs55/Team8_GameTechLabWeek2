@@ -64,8 +64,10 @@ private:
 private:
 	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMesh> CircleMesh;
+	TSharedPtr<FMesh> RotationGizmoMesh;
 	TSharedPtr<FMesh> SquareArrowMesh;
-	TSharedPtr<FMaterial> GizmoMaterial;
+	TSharedPtr<FMaterial> Material;
+	TSharedPtr<FMaterial> RotationGizmoMaterial;
 
 	TArray<EGizmoSpace> ModeSpace = {
 		EGizmoSpace::World, // None

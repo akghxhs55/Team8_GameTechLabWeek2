@@ -20,25 +20,27 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetConeMesh() { return ConeMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetArrowMesh() { return ArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetCircleMesh() { return CircleMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetRotationGizmoMesh() { return RotationGizmoMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetSquareArrowMesh() { return SquareArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetGridMesh() { return GridMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetSphereMesh() { return SphereMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
-	[[nodiscard]] TSharedPtr<FMaterial> GetDrawOverMaterial() { return DrawOverMaterial; }
-
 	[[nodiscard]] TSharedPtr<FMaterial> GetGridMaterial() { return GridMaterial; }
+	[[nodiscard]] TSharedPtr<FMaterial> GetRotationGizmoMaterial() { return RotationGizmoMaterial; }
+
 private:
 	bool CreateCubeMesh(FRenderer& Renderer);
 	bool CreateCylinderMesh(FRenderer& Renderer, float Height, uint32 SliceCount, float TopRadius, float BottomRadius);
 	bool CreateConeMesh(FRenderer& Renderer);
 	bool CreateArrowMesh(FRenderer& Renderer);
 	bool CreateCircleMesh(FRenderer& Renderer);
+	bool CreateRotationGizmoMesh(FRenderer& Renderer);
 	bool CreateSquareArrowMesh(FRenderer& Renderer);
 	bool CreateGridMesh(FRenderer& Renderer);
 	bool CreateSphereMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
-	bool CreateDrawOverMaterial(FRenderer& Renderer);
 	bool CreateGridMaterial(FRenderer& Renderer);
+	bool CreateRotationGizmoMaterial(FRenderer& Renderer);
 
 private:
 	TSharedPtr<FMesh> CubeMesh;
@@ -46,10 +48,11 @@ private:
 	TSharedPtr<FMesh> ConeMesh;
 	TSharedPtr<FMesh> ArrowMesh;
 	TSharedPtr<FMesh> CircleMesh;
+	TSharedPtr<FMesh> RotationGizmoMesh;
 	TSharedPtr<FMesh> SquareArrowMesh;
 	TSharedPtr<FMesh> GridMesh;
 	TSharedPtr<FMesh> SphereMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
-	TSharedPtr<FMaterial> DrawOverMaterial;
 	TSharedPtr<FMaterial> GridMaterial;
+	TSharedPtr<FMaterial> RotationGizmoMaterial;
 };

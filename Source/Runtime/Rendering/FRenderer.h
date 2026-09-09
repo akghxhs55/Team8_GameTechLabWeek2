@@ -19,6 +19,7 @@ public:
 	void SetViewportUV(FVector2 TopLeftUV, FVector2 LengthUV);
 	void Draw(const FMesh& Mesh, const FMaterial& Material, const FObjectConstants& ObjectConstants);
 	void DrawGrid(const FMesh& Mesh, const FMaterial& Material, const FGridConstants& GridConstants);
+	void ClearDepth();
 	void SwapBuffer();
 	void OnWindowSize(UINT Width, UINT Height);
 	
@@ -55,4 +56,5 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> ObjectConstantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> GridConstantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> FrameConstantBuffer;
 };

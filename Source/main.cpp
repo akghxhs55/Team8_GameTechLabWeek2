@@ -99,7 +99,7 @@ int WINAPI wWinMain(
 
 		EditorApp.Update(FTimeManager::Get().GetDeltaTime());
 
-		Renderer.BeginFrame();
+		Renderer.BeginFrame(); 
 
 		EditorApp.Render();
 
