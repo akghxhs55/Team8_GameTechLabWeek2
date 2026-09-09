@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "FImguiConsoleWindow.h"
 #include "FImguiControlPanelWindow.h"
 #include "FImguiEditorViewportWindow.h"
@@ -6,7 +6,7 @@
 
 class FImguiToolbar final {
 public:
-	void Process(FImguiConsoleWindow& ConsoleWindow,
+	void Process(FEditor& Editor, FImguiConsoleWindow& ConsoleWindow,
 		FImguiControlPanelWindow& ControlPanelWindow,
 		FImguiPropertyWindow& PropertyWindow);
 };
