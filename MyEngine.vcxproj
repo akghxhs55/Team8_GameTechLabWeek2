@@ -277,6 +277,7 @@
     <ClCompile Include="Source\Runtime\CoreUObject\UCubeComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UCylinderComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UObject.cpp" />
+    <ClCompile Include="Source\Runtime\CoreUObject\UPlaneComp.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\UPrimitiveComponent.cpp" />
     <ClCompile Include="Source\Runtime\CoreUObject\USceneComponent.cpp" />
     <ClCompile Include="Source\Editor\Grid\FGrid.cpp" />
@@ -370,6 +371,7 @@
     <ClInclude Include="Source\Runtime\CoreUObject\UCylinderComp.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UObject.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UObjectGlobals.h" />
+    <ClInclude Include="Source\Runtime\CoreUObject\UPlaneComp.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\UPrimitiveComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USceneComponent.h" />
     <ClInclude Include="Source\Runtime\CoreUObject\USphereComp.h" />

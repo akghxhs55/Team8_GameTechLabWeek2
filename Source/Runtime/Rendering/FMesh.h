@@ -19,7 +19,7 @@ public:
 	[[nodiscard]] uint32 GetIndexCount() const { return IndexCount; }
 	[[nodiscard]] const TArray<FVector>& GetPositions() const { return Positions; }
 	[[nodiscard]] const TArray<uint32>& GetIndices() const { return Indices; }
-	
+
 private:
 	FMesh() = default;
 
@@ -36,6 +36,8 @@ private:
 
 	TArray<FVector> Positions;
 	TArray<uint32> Indices;
+
+	D3D11_PRIMITIVE_TOPOLOGY Topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
 struct FMeshDesc
@@ -51,5 +53,6 @@ struct FMeshDesc
 	uint32 IndexDataSize = 0u;
 	uint32 IndexCount = 0u;
 
+	bool bIsLine = false;
 	// Topology, Index Format 등 추가 가능
 };

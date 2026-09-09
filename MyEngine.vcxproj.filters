@@ -184,6 +184,9 @@
     <ClCompile Include="Source\Runtime\CoreUObject\USphereComp.cpp">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Runtime\CoreUObject\UPlaneComp.cpp">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Runtime\Rendering\FRenderer.h">
@@ -364,6 +367,9 @@
       <Filter>Source\Runtime\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Source\Runtime\CoreUObject\USphereComp.h">
+      <Filter>Source\Runtime\CoreUObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Runtime\CoreUObject\UPlaneComp.h">
       <Filter>Source\Runtime\CoreUObject</Filter>
     </ClInclude>
   </ItemGroup>

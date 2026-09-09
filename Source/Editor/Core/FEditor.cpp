@@ -88,6 +88,7 @@ bool FEditor::SelectObject(UObject* Object)
 	if (SceneComp)
 	{
 		SelectedTransform = SceneComp->RelativeTransform;
+		SelectedEulerDegDisplay = SceneComp->RelativeTransform.Rotation.GetEulerXYZ();
 	}
 
 	return true;

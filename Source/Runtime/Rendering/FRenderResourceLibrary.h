@@ -24,6 +24,8 @@ public:
 	[[nodiscard]] TSharedPtr<FMesh> GetSquareArrowMesh() { return SquareArrowMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetGridMesh() { return GridMesh; }
 	[[nodiscard]] TSharedPtr<FMesh> GetSphereMesh() { return SphereMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetLineMesh() { return LineMesh; }
+	[[nodiscard]] TSharedPtr<FMesh> GetPlaneMesh() { return PlaneMesh; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetSimpleMaterial() { return SimpleMaterial; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetGridMaterial() { return GridMaterial; }
 	[[nodiscard]] TSharedPtr<FMaterial> GetRotationGizmoMaterial() { return RotationGizmoMaterial; }
@@ -38,6 +40,8 @@ private:
 	bool CreateSquareArrowMesh(FRenderer& Renderer);
 	bool CreateGridMesh(FRenderer& Renderer);
 	bool CreateSphereMesh(FRenderer& Renderer);
+	bool CreateLineMesh(FRenderer& Renderer);
+	bool CreatePlaneMesh(FRenderer& Renderer);
 	bool CreateSimpleMaterial(FRenderer& Renderer);
 	bool CreateGridMaterial(FRenderer& Renderer);
 	bool CreateRotationGizmoMaterial(FRenderer& Renderer);
@@ -52,6 +56,8 @@ private:
 	TSharedPtr<FMesh> SquareArrowMesh;
 	TSharedPtr<FMesh> GridMesh;
 	TSharedPtr<FMesh> SphereMesh;
+	TSharedPtr<FMesh> LineMesh;
+	TSharedPtr<FMesh> PlaneMesh;
 	TSharedPtr<FMaterial> SimpleMaterial;
 	TSharedPtr<FMaterial> GridMaterial;
 	TSharedPtr<FMaterial> RotationGizmoMaterial;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Runtime/Core/IntTypes.h"
 #include "Runtime/Core/PointerTypes.h"
 #include "Runtime/Rendering/FMesh.h"
@@ -12,7 +12,8 @@ class FGrid
 private:
 	TSharedPtr<FMesh> GridMesh;
 	TSharedPtr<FMaterial> GridMaterial;
-
+	TSharedPtr<FMesh> LineMesh;
+	TSharedPtr<FMaterial> LineMaterial;
 	
 
 public:
